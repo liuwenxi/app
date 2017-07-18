@@ -1,0 +1,1203 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <title>{$xinyuan['title']}</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="format-detection" content="email=no" />
+        <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+        <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/showWish.css" />
+        <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    </head>
+    <body data-session="{$uid}">
+    <include file="Public/inc/header" />
+    <nav class="mui-bar mui-bar-tab">
+        <div class="mui-pull-left">
+            <a>
+                <span class="iconfont icon-forward" id="share"></span>
+            </a>
+            <a>
+                <span class="iconfont <if condition="$operation['is_zan'] eq 0">icon-like<else/>icon-not-like</if>"" id="zan"></span>
+            </a>
+        </div>
+        <div class="mui-pull-left">
+            <a id="" class="btn-lg <if condition=" $xinyuan[ 'chk_status'] neq 0 ">hide</if>">审核中</a>
+            <a id="" class="btn-lg <if condition=" $xinyuan[ 'chk_status'] neq 2 ">hide</if>">审核不通过</a>
+            <a id="updateWish" class="btn-lg <if condition=" $xinyuan[ 'set_user'] neq $uid or $xinyuan[ 'status'] eq 4 or $xinyuan[ 'status'] eq 2 or $xinyuan[ 'chk_status'] eq 2 ">hide</if>">更新动态</a>
+            <a id="" class="btn-lg <if condition=" $xinyuan[ 'status'] neq 1 or $xinyuan[ 'set_user'] eq $uid ">hide</if>">心愿已达成</a>
+            <a id="" class="btn-lg <if condition=" $xinyuan[ 'status'] neq 2 ">hide</if>">心愿未达成</a>
+            <a id="" class="btn-lg <if condition=" $xinyuan[ 'status'] neq 4 ">hide</if>">心愿已完结</a>
+            <a id="" class="btn-lg <if condition=" $xinyuan[ 'status'] neq 5 ">hide</if>">心愿未完结</a>
+            <a id="wantJoin" class="btn-lg <if condition=" $xinyuan[ 'set_user'] eq $uid or $xinyuan[ 'status'] eq 1 ">hide</if>">我要参与</a>
+        </div>
+        <div class="mui-pull-left">
+            <a>
+                <span class="iconfont icon-chat" id="message" data-status="{$xinyuan['chk_status']}"></span>
+            </a>
+            <a>
+                <span class="iconfont <if condition="$operation['is_follow'] eq 0">icon-star<else/>icon-not-star</if>"" id="guanzhu"></span>
+            </a>
+        </div>
+    </nav>
+    <div class="mui-content">
+        <img src="{$xinyuan['img']}" class="hide">
+        <div class="wish-banner" style="background-image: url('{: $xinyuan['img'] ? $xinyuan['img'] : $xinyuan['img'] }');">
+            <ul class="wish-tag">
+                <volist name="type" id="vo">
+                    <!--<li>{$tyname[$xinyuan['xytype']]}</li>-->
+                    <li>{$vo}</li>
+                </volist>
+            </ul>
+            <ul class="wish-data clearfix">
+                <li class="like"><i class="iconfont icon-like"></i>{$xinyuan.zan}</li>
+                <li class="read"><i class="iconfont icon-eye"></i>{$xinyuan.readnum}</li>
+                <li class="comment"><i class="mui-icon mui-icon-star"></i>{$xinyuan.guanzhu}</li>
+            </ul>
+            <php>
+                $time = time();
+                $days  = $time - $xinyuan['posttime'];
+                $sgn=(date('Y-m-d',$xinyuan['posttime']))==(date('Y-m-d'))?1:0;
+                $day = intval($days / 86400);
+                $week = intval($days / 518400);
+                $month = intval($days / 2592000);
+                $byear = intval($days / 15552000);
+                $year = intval($days / 31536000);
+                $syday = $xinyuan['set_day'] - $day;
+                $syday = ($syday <= 0 ) ? 0 : $syday ; </php>
+            <input type="hidden" id="wishid" value="{$xinyuan.id}">
+            <div class="wish-info">
+                <div class="user clearfix">
+                    <span data-id="{$xinyuan['set_user']}" value="{$xinyuan['set_user']}" class="avatar mui-pull-left" style="background-image: url('{: $toupic ? $toupic : '__PUBLIC__App/img/active/person3.png' }');"></span>
+                    <div class="name-warrper mui-pull-left <if condition=" $sex eq 0 ">male<else/>female</if>">
+                        <span class="name">{$nickname}</span>
+                    </div>
+                    <span class="post-time mui-pull-right">
+                        <if condition="$day eq 0 && $sgn eq 1">{$xinyuan['posttime']|date="H:i",###}
+                            <elseif condition="$day eq 0"/>1天前
+                            <elseif condition="$day gt 0 and $day lt 6"/>{$day}天前
+                            <elseif condition="$week gt 0 and $week lt 3"/>{$week}周前
+                            <elseif condition="$month gt 0"/>{$month}月前
+                            <elseif condition="$byear gt 0"/>半年前
+                            <elseif condition="$year gt 0"/>1年前           
+                        </if></span>
+                </div>
+                <h4>{$xinyuan.title}</h4>
+            </div>
+        </div>
+        <div class="wish-content clearfix collapse">
+            <div class="wish-progress-warrper">
+                <div class="progress-info">
+                    <span>剩余天数：{$syday}天</span>
+                    <!--<span class="mui-pull-right">目标心愿豆：<if condition="$xinyuan['set_mon'] lt 1000">{$xinyuan['set_mon']}<else/>{$xinyuan['set_mon'] /1000}k</if></span>-->
+                </div>
+                <php>
+                    $bl = ($xinyuan['have_mon'] / $xinyuan['set_mon']) * 100; $bl = sprintf("%.2f",$bl); $bl .= "%";
+                </php>
+                <div class="wish-progress-outer">
+                    <div style="width:<if condition=" $bl gt 100 ">100<else/>{$bl}</if>" class="wish-progress-inner">
+                    </div>
+                    <!--<span style="left:{$bl};"><if condition="$xinyuan['have_mon'] lt 1000">{$xinyuan['have_mon']}<else/>{$xinyuan['have_mon'] /1000}k</if></span>-->
+                </div>
+                <div class="progress-info">
+                    <span>当前心愿豆：{$xinyuan['have_mon']}</span>
+                    <span class="mui-pull-right">目标心愿豆：{$xinyuan['set_mon']}</span>
+                </div>
+            </div>
+            <div class="wish-desc">
+                <p>{$xinyuan.des}</p>
+            </div>
+            <ul class="clearfix">
+                <volist name="img" id="vo">
+                    <php>
+                        $img = $vo; $thimg = $vo;
+                    </php>
+                    <li style="background-image: url('{$thimg}');"><img src="{$img}" data-preview-src="" data-preview-group="1"></li>
+                </volist>
+            </ul>
+            <a class="mui-pull-right">展开</a>
+        </div>
+        <div class="wish-update collapse clearfix">
+            <h5>心愿动态</h5>
+            <if condition="$dongtai neq ''">
+                <ul>
+                    <volist name="dongtai" id="vv">
+                        <php>
+                            $time = time();
+                            $days = $time -$vv['pub_time'];
+                            $sgn=(date('Y-m-d',$vv['pub_time']))==(date('Y-m-d'))?1:0;
+                            $day = intval($days / 86400);
+                            $week = intval($days / 518400);
+                            $month = intval($days / 2592000);
+                            $byear = intval($days / 15552000);
+                            $year = intval($days / 31536000);
+                        </php>
+                        <li>
+                            <!--<span>{$vv.pub_time|date=" H:i",###}</span>-->
+                            <span>
+                                <if condition="$day eq 0 && $sgn eq 1">{$vv.pub_time|date="H:i",###}
+                                    <elseif condition="$day eq 0" />1天前
+                                    <elseif condition="$day gt 0 and $day lt 6"/>{$day}天前
+                                    <elseif condition="$week gt 0 and $week lt 3"/>{$week}周前
+                                    <elseif condition="$month gt 0 and $month lt 6"/>{$month}月前
+                                    <elseif condition="$byear gt 0 and $byear lt 1"/>半年前
+                                    <elseif condition="$year gt 0"/>1年前
+                                </if>
+                            </span>
+                            <div class="update-content">
+                                <p>{$vv.des}</p>
+                                <!--<p>{$vv.des|msubstr=0,1,'utf-8',true}</p>-->
+                                <ul class="clearfix">
+                                    <volist name="vv.showpic" id="pic">
+                                        <li style="background-image: url('{$pic.pic}');">
+                                            <img src="{$pic.pic}" data-preview-src="" data-preview-group="3">
+                                        </li>
+                                    </volist>
+                                </ul>
+                            </div>
+                        </li>
+                    </volist>
+                </ul>
+            </if>
+            <if condition="$dnum eq 0">
+                该心愿暂时没有新动态.
+            </if>
+            <a class="mui-pull-right <if condition="$dnum neq 3">hide</if>" id="moreWishUpdate">更多</a>
+            <!-- <a class="mui-pull-right hide" id="hideUpdate">收起</a> -->
+        </div>
+        <div class="bean-update">
+            <h5>参与心愿</h5>
+            <div class="underline-tab mui-segmented-control">
+                <a class="mui-control-item" href="#participants">参与者({$canyu})</a>
+                <a class="mui-control-item mui-active" href="#messageBoard">留言板({$liuyan})</a>
+            </div>
+            <div class="index-segmented-content">
+                <div id="participants" class="mui-control-content">
+                    <ul class="participants">
+                        <volist name="xy" id="xvo" empty="暂没人参与！">
+                            <php>
+                                $time = time();
+                                $days = $time -$xvo['invo_time'];
+                                $sgn=(date('Y-m-d',$xvo['invo_time']))==(date('Y-m-d'))?1:0;
+                                $day = intval($days / 86400);
+                                $week = intval($days / 518400);
+                                $month = intval($days / 2592000);
+                                $byear = intval($days / 15552000);
+                                $year = intval($days / 31536000);
+                            </php>
+                            <li>
+                                <span class="avatar" data-uid='{$xvo.uid}' style="background-image: url('{: ($xvo['toupic']) ? $xvo['toupic'] : '__PUBLIC__App/img/active/amy.png' }');"></span>
+                                <div class="name-wrapper <if condition=" $xvo[ 'sex'] eq 0 ">male<else/>female</if>">
+                                    <span class="name">{$xvo.invo_uid} </span>
+                                </div>
+                                <span class="bean"><span class="count">{$xvo.invo_mon}</span>心愿豆</span>
+                                <span class="time">
+                                    <if condition="$day eq 0 && $sgn eq 1">{$xvo.invo_time|date="H:i",###}
+                                        <elseif condition="$day eq 0" />1天前
+                                        <elseif condition="$day gt 0 and $day lt 6"/>{$day}天前
+                                        <elseif condition="$week gt 0 and $week lt 3"/>{$week}周前
+                                        <elseif condition="$month gt 0 and $month lt 6"/>{$month}月前
+                                        <elseif condition="$byear gt 0 and $byear lt 1"/>半年前
+                                        <elseif condition="$year gt 0"/>1年前
+                                    </if></span>
+                            </li>
+                        </volist>
+                    </ul>
+                </div>
+                <div id="messageBoard" class="mui-control-content mui-active">
+                    <div class="massage-input clearfix">
+                        <span>留言</span>
+                        <a class="mui-pull-right" id="postMessage" data-status="{$xinyuan['chk_status']}">我要留言</a>
+                    </div>
+                    <ul class="massage-list">
+                        <volist name="comm" id="cvo" empty="来聊聊你对这个心愿的看法吧！">
+                            <php>
+                                $time = time();
+                                $sgn=(date('Y-m-d',$cvo['pub_time']))==(date('Y-m-d'))?1:0;
+                                $days = $time - $cvo['pub_time'];
+                                $day = intval($days / 86400);
+                                $week = intval($days / 518400);
+                                $month = intval($days / 2592000);
+                                $byear = intval($days / 15552000);
+                                $year = intval($days / 31536000);
+                            </php>
+                            <li>
+                                <span data-id="{$cvo.id}" data-uid='{$cvo.uid}' class="avatar" style="background-image: url('{: ($cvo['toupic']) ? $cvo['toupic'] : 'APP_DEFAULT_PATH/image/tx.jpg'}');"></span>
+                                <div class="massage-content">
+                                    <div class="massage-operation">
+                                        <span class="time">
+                                            <if condition="$day eq 0 && $sgn eq 1">{$cvo.pub_time|date="H:i",###}
+                                                <elseif condition="$day eq 0"/>1天前
+                                                <elseif condition="$day gt 0 and $day lt 6"/>{$day}天前
+                                                <elseif condition="$week gt 0 and $week lt 3"/>{$week}周前
+                                                <elseif condition="$month gt 0 and $month lt 6"/>{$month}月前
+                                                <elseif condition="$byear gt 0 and $byear lt 1"/>半年前
+                                                <elseif condition="$year gt 0"/>1年前
+                                            </if></span>
+                                        <a class="reply" data-massage-id="{$cvo.id}">回复</a>
+                                        <a class="report">举报</a>
+                                    </div>
+                                    <div class="massage-creator-warpper">
+                                        <span class="name <if condition='$cvo.sex eq 0'>male <else />female</if>">{$cvo.pub_user}</span>
+                                        <span class="massage">{$cvo.pub_des}</span>
+                                    </div>
+                                    <notempty name="cvo['reply']">
+                                        <div class="massage-reply-list">
+                                            <volist name="cvo.reply" id="detail">
+                                                <div class="reply-item" data-pub-id="{$detail['id']}"  data-massage-id="{$cvo.id}">
+                                                    <span class="reply" >{$detail.reply_user}</span>&nbsp;回复&nbsp;<span class="replied"><if condition="$detail['pub_user'] neq ''">{$detail.pub_user}<else/>{$cvo.pub_user}</if></span>&nbsp;:&nbsp;<span class="massage">{$detail.reply_des}</span>
+                                                </div>
+                                            </volist>
+                                            <a class="more-reply" data-id="{$cvo.id}">共{$cvo.count}条回复&gt;</a>
+                                        </div>
+                                    </notempty>
+                                </div>
+                            </li>
+                        </volist>
+                        <li>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="{$a}">
+    <div id="payActionsheet" class="mui-popover mui-popover-bottom mui-popover-action ">
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell disable">
+                <a href=""><i class="mui-icon mui-icon-weixin"></i>微信支付</a>
+                <p>浏览器不支持微信支付，需要通过微心愿公众号登录进行操作</p>
+            </li>
+            <li class="mui-table-view-cell">
+                <a href=""><i class="mui-icon mui-icon-weibo"></i>支付宝支付</a>
+                <p>微信不支持微信支付，如有需要请用浏览器打开进行操作</p>
+            </li>
+        </ul>
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">
+                <a id="cancel"><b>取消</b></a>
+            </li>
+        </ul>
+    </div>
+    <div id="baenActionsheet" class="mui-popover mui-popover-bottom mui-popover-action ">
+        <div class="head">
+            心愿豆余额：<span class="bean-count">{$my['totalmon']}</span>
+            <span id="close"><i class="mui-icon mui-icon-closeempty"></i></span>
+        </div>
+        <ul class="clearfix">
+            <volist name="money" id="vo">
+                <li>{$vo.mon}心愿豆</li>
+            </volist>
+            <li id="randomBean">随机</li>
+        </ul>
+        <div class="selected-count">我要参与<span class="count" id="count">0</span>心愿豆</div>
+        <a class="btn-lg" id="pay">参与</a>
+    </div>
+    <div class="mui-backdrop hide update-wish">
+        <div class="wish-update-dialog">
+            <form method="POST" id="updateWishForm" enctype="multipart/form-data">
+                <div class="dialog-inner">
+                    <div class="dialog-title clearfix">
+                        <h5 class="mui-pull-left">更新动态</h5>
+                        <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                    </div>
+                    <div class="wish-update-content">
+                        <input type="hidden" value="{$xinyuan.id}" name="wishid">
+                        <textarea placeholder="说说你心愿的最新动态吧" name='cont' id="cont"></textarea>
+                        <div class="image-list clearfix">
+                            <div class="upload-image">
+                                <span>+</span>
+                                <input id="uploadImageInput" name="uploadtits0" type="file" multiple="multiple">
+                            </div>
+                        </div>
+                    </div>
+                    <p>还可以上传<span id="uploadable-count">9</span>张
+                    </p>
+                    <if condition=" $xinyuan[ 'status'] eq 1 ">
+                        <label id="finishWarpper">
+                            <input type="checkbox" name="finish" id="finish" value="4" />&nbsp;完结心愿
+                        </label>
+                        <else />
+                        <label id="finishWarpper">
+                            <a id='finish'></a>
+                        </label>
+                    </if>
+                    <p class="finish-tip hide">提示：完结此心愿，将无法再更新心愿动态。</p>
+                </div>
+                <div class="dialog-buttons">
+                    <a id='dynamic'>确定</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="mui-backdrop post-message hide">
+        <div class="message-dialog">
+            <form class="form-horizontal" role="form">
+                <div class="dialog-inner">
+                    <div class="dialog-title clearfix">
+                        <h5 class="mui-pull-left">发表留言</h5>
+                        <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                    </div>
+                    <div class="wish-update-content">
+                        <textarea placeholder="说说你的看法吧" id='Messagedes'></textarea>
+                    </div>
+                </div>
+                <div class="dialog-buttons">
+                    <a id="submitMessage">确定</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="mui-backdrop reply-message hide">
+        <div class="message-dialog">
+            <form>
+                <div class="dialog-inner">
+                    <div class="dialog-title clearfix">
+                        <h5 class="mui-pull-left">回复留言</h5>
+                        <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                    </div>
+                    <div class="wish-update-content">
+                        <textarea placeholder="说说你的看法吧" id='Replydes'></textarea>
+                    </div>
+                </div>
+                <div class="dialog-buttons">
+                    <a id="replyMessage">确定</a>
+                </div>
+            </form>
+        </div>
+    </div>
+<!--循环回复留言-->
+    <div class="mui-backdrop loopreply-message hide">
+        <div class="message-dialog">
+            <form>
+                <div class="dialog-inner">
+                    <div class="dialog-title clearfix">
+                        <h5 class="mui-pull-left">回复留言</h5>
+                        <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                    </div>
+                    <div class="wish-update-content">
+                        <textarea placeholder="说说你的看法吧" id='loopReplydes'></textarea>
+                    </div>
+                </div>
+                <div class="dialog-buttons">
+                    <a id="loopreplyMessage">确定</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mui-backdrop share-tips hide">
+        <img width="100%" src="__PUBLIC__App/image/share.png">
+    </div>
+    <include file="Public/inc/loading" />
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script src="APP_DEFAULT_PATH/js/mui.zoom.js"></script>
+    <script src="APP_DEFAULT_PATH/js/mui.previewimage.js"></script>
+    <script src="APP_DEFAULT_PATH/js/exif.js"></script>
+    <script>
+        mui.init();
+        mui.previewImage();
+
+        mui.ready(function() {
+            mui('.mui-bar').on('tap', '.logo', function() {
+                mui.openWindow({
+                    url: "{:U('Index/index')}"
+                });
+            });
+
+            /*弹出框操作*/
+            mui('.dialog-title').on('tap', 'i', function() {
+                this.parentNode.parentNode.parentNode.parentNode.parentNode.classList.toggle('hide');
+            });
+            mui('#updateWish')[0].addEventListener('tap', function() {
+                mui('.update-wish')[0].classList.toggle('hide');
+            });
+            /*分享提示*/
+            mui('#share')[0].addEventListener('tap', function() {
+                mui('.share-tips')[0].classList.toggle('hide');
+            });
+            mui('.share-tips')[0].addEventListener('tap', function() {
+                mui('.share-tips')[0].classList.toggle('hide');
+            });
+            /*我要留言*/
+            mui('#postMessage')[0].addEventListener('tap', function() {
+                var session = document.getElementsByTagName('body')[0].dataset.session;
+                var chkstatus = this.dataset.status;
+                if (session == '') {
+                    mui.confirm('你还没登录，是否先登录', ' ', ['立即登录', '下次'], function(x) {
+                        if (x.index == 0) {
+                            window.location.href = "{:U('Public/login')}";
+                        }
+                    })
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    return flase;
+                }
+                if (chkstatus == '0') {
+                    mui.alert('正在审核中,不能留言....');
+                    return flase;
+                }
+                mui('.post-message')[0].classList.toggle('hide');
+            });
+
+            /*回复留言*/
+            //         mui('#Reply')[0].addEventListener('tap', function() {
+            //            mui('.reply-message')[0].classList.toggle('hide');
+            //        });
+            mui('.massage-operation').on('tap', '.reply', function() {
+                var session = document.getElementsByTagName('body')[0].dataset.session;
+                if (session == '') {
+                    mui.confirm('你还没登录，是否先登录', ' ', ['立即登录', '下次'], function(x) {
+                        if (x.index == 0) {
+                            window.location.href = "{:U('Public/login')}";
+                        }
+                    })
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    return flase;
+                }
+                mui('.reply-message')[0].classList.toggle('hide');
+                mui('#replyMessage')[0].dataset.massageId = this.dataset.massageId;
+            });
+
+            /*循环回复留言*/
+            //         mui('#Reply')[0].addEventListener('tap', function() {
+            //            mui('.reply-message')[0].classList.toggle('hide');
+            //        });
+            mui('.massage-operation').on('tap', '.reply-item', function() {
+                var session = document.getElementsByTagName('body')[0].dataset.session;
+                if (session == '') {
+                    mui.confirm('你还没登录，是否先登录', ' ', ['立即登录', '下次'], function(x) {
+                        if (x.index == 0) {
+                            window.location.href = "{:U('Public/login')}";
+                        }
+                    })
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    return flase;
+                }
+                mui('.loopreply-message')[0].classList.toggle('hide');
+            });
+
+            /*底部留言*/
+            mui('#message')[0].addEventListener('tap', function() {
+                var session = document.getElementsByTagName('body')[0].dataset.session;
+                var chkstatus = this.dataset.status;
+                if (session == '') {
+                    mui.confirm('你还没登录，是否先登录', ' ', ['立即登录', '下次'], function(x) {
+                        if (x.index == 0) {
+                            window.location.href = "{:U('Public/login')}";
+                        }
+                    })
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    return flase;
+                }
+                if (chkstatus == '0') {
+                    mui.alert('正在审核中,不能留言....');
+                    return flase;
+                }
+                mui('.post-message')[0].classList.toggle('hide');
+            });
+            var pubId = '';
+            mui('.massage-reply-list').on('tap', '.reply-item', function() {
+                pubId = this.dataset.pubId;
+                this.style.background = '#eee';
+                var that = this;
+                setTimeout(function() {
+                    mui('.loopreply-message')[0].classList.toggle('hide');
+                    that.style.background = '#f7f7f7';
+                }, 300)
+            });
+
+
+            function renderUpdate(data) {
+                var updates = document.createDocumentFragment();
+                mui.each(data, function(i, update) {
+//                var date = new Date(parseInt(update.pub_time * 1000)),
+//                    hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours(),
+//                    minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes(),
+//                    time = hours + ':' + minutes;
+                    console.log(update);
+                    var showpics = document.createDocumentFragment();
+                    if (update.showpic.length > 0) {
+                        mui.each(update.showpic, function(i, p) {
+                            if (p) {
+                                var showpic = '<li style="background-image: url(\'' + p.pic + '\');">' +
+                                        '<img src="' + p.pic + '" data-preview-src="" data-preview-group="3">' +
+                                        '</li>';
+                                showpics.appendChild(parseDOM(showpic));
+                            }
+                        });
+                        var update = '<li>' +
+//                        '<span>' + time + '</span>' +
+                                '<span>' + update.pub_time + '</span>' +
+                                '<div class="update-content">' +
+                                '<p>' + update.des + '</p>' +
+                                '<ul class="clearfix">' +
+                                '</ul>' +
+                                '</div>' +
+                                '</li>';
+                        var showpicsList = parseDOM(update).children[1].children[1];
+                        showpicsList.appendChild(showpics);
+                        updates.appendChild(showpicsList.parentNode.parentNode);
+                    } else {
+                        var update = '<li>' +
+//                        '<span>' + time + '</span>' +
+                                '<span>' + update.pub_time + '</span>' +
+                                '<div class="update-content">' +
+                                '<p>' + update.des + '</p>' +
+                                '</div>' +
+                                '</li>';
+                        updates.appendChild(parseDOM(update));
+                    }
+                });
+                return updates;
+            }
+            /*加载更多动态*/
+            var replyNowPage = 2;
+            document.getElementById('moreWishUpdate').addEventListener('tap', function() {
+                var wishid = document.getElementById("wishid").value;
+                var that = this;
+                mui.ajax("{:U('App/Wish/ajax_dynamic')}", {
+                    success: function(json) {
+                        var json_obj = JSON.parse(json);
+                        console.log(json_obj.data);
+                        mui('.wish-update ul')[0].appendChild(renderUpdate(json_obj.data));
+                        replyNowPage++;
+                        if (json_obj.page < replyNowPage) {
+                            that.classList.toggle('hide');
+                            // document.getElementById('hideUpdate').classList.toggle('hide');
+                        }
+                    },
+                    dataType: 'JSON',
+                    type: 'GET',
+                    data: {
+                        p: replyNowPage,
+                        wishid: wishid,
+                    }
+                })
+            });
+
+            function renderReplyItem(data) {
+                var replyItems = document.createDocumentFragment();
+                console.log(data);
+                mui.each(data, function(i, reply) {
+                    var replyItem = '<div class="reply-item">' +
+                            '<span class="reply">' + reply.reply_user + '</span>&nbsp;回复&nbsp;<span class="replied">' + reply.pub_user + '</span>&nbsp;:&nbsp;<span class="massage">' + reply.reply_des + '</span>' +
+                            '</div>';
+                    replyItems.appendChild(parseDOM(replyItem));
+
+                });
+                return replyItems;
+            }
+
+            /*操作表*/
+            document.querySelector('#pay').addEventListener('tap', function() {
+                //            mui('#payActionsheet').popover('toggle');
+            });
+            document.querySelector('#cancel').addEventListener('tap', function() {
+                mui('#payActionsheet').popover('toggle');
+            });
+            /*参与*/
+            document.querySelector('#wantJoin').addEventListener('tap', function() {
+                var session = document.getElementsByTagName('body')[0].dataset.session;
+                if (session == '') {
+                    mui.confirm('你还没登录，是否先登录', ' ', ['立即登录', '下次'], function(x) {
+                        if (x.index == 0) {
+                            window.location.href = "{:U('Public/login')}";
+                        }
+                    })
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    return flase;
+                }
+                mui('#baenActionsheet').popover('toggle');
+            });
+            document.querySelector('#close').addEventListener('tap', function() {
+                mui('#baenActionsheet').popover('toggle');
+            });
+            document.querySelector('.wish-content a').addEventListener('tap', function() {
+                if (this.innerHTML == '收起') {
+                    this.innerHTML = '展开';
+                } else {
+                    this.innerHTML = '收起';
+                }
+                this.classList.toggle('collapse');
+                mui('.wish-content')[0].classList.toggle('collapse');
+            });
+            /*参与心愿豆数目生成*/
+            mui('#baenActionsheet ul').on('tap', '#baenActionsheet li', function() {
+                mui('#baenActionsheet li').each(function(i, e) {
+                    e.classList.remove('active');
+                });
+                this.classList.add('active');
+                if (this.id == 'randomBean') {
+                    var number = parseInt(Math.random() * 1000) + 10;
+                    mui('#count')[0].innerHTML = number;
+                } else {
+                    mui('#count')[0].innerHTML = this.innerHTML.split('心')[0];
+                }
+
+            });
+            /*赞*/
+            document.getElementById('zan').addEventListener('tap', function() {
+                var wishid = document.getElementById("wishid").value,
+                        session = document.getElementsByTagName('body')[0].dataset.session,
+                        that = this;
+                if (session == '') {
+                    mui.confirm('你还没登录，是否先登录', ' ', ['立即登录', '下次'], function(x) {
+                        if (x.index == 0) {
+                            window.location.href = "{:U('Public/login')}";
+                        }
+                    })
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    return flase;
+                }
+                mui.ajax("{:U('Wish/handle')}", {
+                    type: 'GET',
+                    dataType: 'JSON',
+                    data: {
+                        handle: 1,
+                        wishid: wishid
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        if (data == 1) {
+                            mui.toast('点赞成功');
+                            that.classList.toggle('icon-like');
+                            that.classList.toggle('icon-not-like');
+                        } else if (data == 2) {
+                            mui.toast('取消点赞');
+                            that.classList.toggle('icon-not-like');
+                            that.classList.toggle('icon-like');
+                        }
+                    }
+                })
+            });
+            /*关注*/
+            document.getElementById('guanzhu').addEventListener('tap', function() {
+                var wishid = document.getElementById("wishid").value,
+                        session = document.getElementsByTagName('body')[0].dataset.session,
+                        that = this;
+                if (session == '') {
+                    mui.confirm('你还没登录，是否先登录', ' ', ['立即登录', '下次'], function(x) {
+                        if (x.index == 0) {
+                            window.location.href = "{:U('Public/login')}";
+                        }
+                    })
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    return flase;
+                }
+                mui.ajax("{:U('Wish/handle')}", {
+                    type: 'GET',
+                    dataType: 'JSON',
+                    data: {
+                        handle: 2,
+                        wishid: wishid
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        if (data == 1) {
+                            mui.toast('关注成功');
+                            that.classList.toggle('icon-star');
+                            that.classList.toggle('icon-not-star');
+                        } else if (data == 2) {
+                            mui.toast('取消关注');
+                            that.classList.toggle('icon-star');
+                            that.classList.toggle('icon-not-star');
+                        }
+                    }
+                })
+
+            });
+            /*参与*/
+            document.getElementById('pay').addEventListener('tap', function() {
+
+                mui.confirm('是否确认参与?', ' ', ['确认', '我再看看'], function(v) {
+                    if (v.index == 0) {
+                        go_pay();
+                    } else {
+                        mui('#baenActionsheet').popover('toggle');
+                    }
+                })
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+            });
+
+            function go_pay() {
+                var wishid = document.getElementById("wishid").value;
+                var mon = mui('#count')[0].innerHTML;
+                mui.ajax("{:U('Wish/handle')}", {
+                    type: 'GET',
+                    dataType: 'JSON',
+                    data: {
+                        handle: 3,
+                        wishid: wishid,
+                        mon: mon
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        if (data == 1) {
+                            mui.confirm('余额不足，是否充值?', ' ', ['下次', '充值'], function(v) {
+                                if (v.index == 1) {
+                                    var jump_url = window.location.href
+                                    //设置名称为name,值为value的Cookie
+                                    document.cookie = "jump_url" + "=" + jump_url + ";path=/"
+                                    window.location.href = "{:U('App/WishBean/index')}";
+                                }
+                            })
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                            return flase;
+                        } else if (data == 3) {
+                            mui.alert('请选择你要参与的心愿豆', ' ', ['好的']);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                            return false;
+                        } else if (data == 5) {
+                            mui.alert('心愿状态已改变', ' ', ['好的', ' ']);
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                            return false;
+                        } else if (data == 2) {
+                            mui.alert('参与成功');
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+                            return false;
+                        } else if (data == 4) {
+                            mui.confirm('目标心愿豆已完成，多余的心愿豆将自动返还', ' ', ['好的'], function(v) {
+                                if (v.index == 0) {
+                                    window.location.reload();
+                                }
+                            })
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                            return false;
+                        } else {
+                            mui.alert('参与失败');
+                            return false;
+                        }
+                    }
+                })
+            }
+
+            /*加载更多回复*/
+            var replyNowPage = 2;
+            mui('.massage-list li').on('tap', '.more-reply', function() {
+                var id = this.dataset.id;
+                var that = this;
+                mui.ajax("{:U('Wish/ajax_Reply')}", {
+                    success: function(json) {
+                        var json_obj = JSON.parse(json)
+                        that.parentNode.insertBefore(renderReplyItem(json_obj.data), that);
+                        replyNowPage++;
+                        if (json_obj.page < replyNowPage) {
+                            that.classList.add('hide');
+                        }
+                    },
+                    dataType: 'JSON',
+                    type: 'GET',
+                    data: {
+                        id: id,
+                        p: replyNowPage
+                    }
+                })
+            });
+            /*我要留言*/
+            document.getElementById('submitMessage').addEventListener('tap', function() {
+                var wishid = document.getElementById("wishid").value,
+                        des = document.getElementById("Messagedes").value;
+                if (!des.trim()) {
+                    mui.alert('留言内容不能为空或空格', ' ', ['好的'], null);
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                    return;
+                }
+                mui.ajax("{:U('Wish/message')}", {
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        type: 1,
+                        wishid: wishid,
+                        des: des
+                    },
+                    success: function(json) {
+                        console.log(json);
+                        var json_obj = JSON.parse(json);
+                        if (json_obj.status == 1) {
+                            mui('.post-message')[0].classList.toggle('hide');
+                            mui.alert(json_obj.msg, ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            mui('.post-message')[0].classList.toggle('hide');
+                            mui.alert(json_obj.msg, ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')"
+                        }
+                    }
+                })
+
+            });
+
+            /*回复留言 */
+            document.getElementById('replyMessage').addEventListener('tap', function() {
+                var cid = this.dataset.massageId;
+                var wishid = document.getElementById("wishid").value;
+                var des = document.getElementById("Replydes").value;
+                if (!des.trim()) {
+                    mui.alert('留言内容不能为空或空格', ' ', ['好的'], null);
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                    return;
+                }
+                mui.ajax("{:U('Wish/message')}", {
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        type: 2,
+                        wishid: wishid,
+                        des: des,
+                        cid: cid
+                    },
+                    success: function(json) {
+                        console.log(json);
+                        var json_obj = JSON.parse(json);
+                        if (json_obj.status == 3) {
+                            mui('.reply-message')[0].classList.toggle('hide');
+                            mui.alert(json_obj.msg, ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            mui.alert(json_obj.msg, ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                        }
+                    }
+                })
+
+            });
+
+            /*循环回复留言 */
+            document.getElementById('loopreplyMessage').addEventListener('tap', function() {
+                var cid = this.dataset.massageId;
+                var id = pubId;
+                var wishid = document.getElementById("wishid").value;
+                var des = document.getElementById("loopReplydes").value;
+                if (!des.trim()) {
+                    mui.alert('留言内容不能为空或空格', ' ', ['好的'], null);
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                    return;
+                }
+                mui.ajax("{:U('Wish/message')}", {
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        type: 3,
+                        wishid: wishid,
+                        des: des,
+                        cid: cid,
+                        id: id
+                    },
+                    success: function(json) {
+                        console.log(json);
+                        var json_obj = JSON.parse(json);
+                        if (json_obj.status == 3) {
+                            mui('.reply-message')[0].classList.toggle('hide');
+                            mui.alert(json_obj.msg, ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            mui.alert(json_obj.msg, ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                        }
+                    }
+                })
+
+            });
+
+
+            /*完结心愿*/
+            document.getElementById("finishWarpper").addEventListener('tap', function() {
+                document.getElementById('finish').checked = !document.getElementById('finish').checked;
+                mui('.finish-tip')[0].classList.toggle('hide');
+            });
+            /*更新动态返回参数*/
+            var imagefiles = [];
+            document.getElementById('dynamic').addEventListener('tap', function() {
+                mui('#postingMask')[0].classList.remove('hide');
+                var fd = new FormData(document.forms['updateWishForm']);
+                finishBtn = document.getElementById('finish'),
+                        status = 0;
+                if (finishBtn.checked) {
+                    status = finishBtn.value;
+                }
+
+                var strObj = {};
+                for (var i = 0; i < imagefiles.length; i++) {
+                    strObj[i + ''] = imagefiles[i];
+                }
+                //        console.log(JSON.stringify(strObj));
+
+                fd.append('uploadtits', JSON.stringify(strObj));
+                fd.append('cont', document.getElementById("cont").value);
+                fd.append('wishid', document.getElementById("wishid").value);
+                fd.append('status', status);
+                var xrh = new XMLHttpRequest();
+                xrh.open("POST", "{:U('Wish/updateDynamic')}");
+                xrh.send(fd);
+                xrh.onload = function(e) {
+                    console.log(xrh.responseText);
+                    if (xrh.status == 200) {
+                        if (xrh.responseText == 2) {
+                            mui.alert('提交的内容含有敏感词汇，请更改后再上传！', ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            mui('#postingMask')[0].classList.add('hide');
+                        } else if (xrh.responseText == 3) {
+                            mui('.update-wish')[0].classList.toggle('hide');
+                            mui.alert('更新成功', ' ', ['好的'], function() {
+                                window.location.reload();
+                            });
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            mui('#postingMask')[0].classList.add('hide');
+
+                        } else if (xrh.responseText == 1) {
+                            mui.alert('请填写后再提交', ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            mui('#postingMask')[0].classList.add('hide');
+                        } else if (xrh.responseText == 4) {
+                            mui.alert('更新失败，请重新提交', ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            mui('#postingMask')[0].classList.add('hide');
+                        }
+                    } else {
+                        console.log('提交失败');
+                        mui('#postingMask')[0].classList.add('hide');
+                    }
+                };
+
+            });
+
+
+            /*更新图片上传预览*/
+            var detailsImage = [],
+                    imageListElm = document.querySelector('.image-list'),
+                    uploadImageInput = mui('#uploadImageInput')[0];
+
+            function renderImage(uploadImageInput) {
+                var imageElms = [],
+                        uploadImage = uploadImageInput.parentNode;
+
+                imagefiles = []; //清空全局数组
+
+                imageListElm.innerHTML = '';
+                imageListElm.appendChild(uploadImage);
+
+                detailsImage.forEach(function(file, i) {
+                    var orientation;
+                    EXIF.getData(file, function() {
+                        orientation = EXIF.getTag(this, 'Orientation');
+                    });
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        getImgData(this.result, orientation, function(data) {
+                            var imageElm = ('<div data-index="' + i + '" class="image" style="background-image: url(\'' + data + '\');"><i class="mui-icon mui-icon-closeempty" ></i><img src="' + data + '" data-preview-src="" data-preview-group="1"></div>');
+                            imageListElm.insertBefore(parseDOM(imageElm), uploadImage);
+                            imagefiles.push(data);
+                            // console.log(imagefiles);
+                        });
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            mui('.image-list').on('change', '#uploadImageInput', function() {
+                var m = 1024 * 1024;
+                var minSize = 5;
+                /*计算照片数量*/
+                var uploadableCount = document.querySelector('#uploadable-count'),
+                        arrUtils = [];
+                arrUtils.forEach.call(this.files, function(file, i) {
+                    if (file.size < minSize * m) {
+                        detailsImage.push(file);
+                    } else {
+                        mui.toast('图片过大');
+                    }
+                });
+                var detailsImageLength = detailsImage.length;
+                uploadableCount.innerHTML = 9 - detailsImageLength;
+
+                if (detailsImageLength > 9) {
+                    mui.toast('上传照片不能多于9张');
+                    detailsImage.splice(0, detailsImage.length);
+                    uploadableCount.innerHTML = 9;
+                } else {
+                    renderImage(this);
+                    // console.log(detailsImage);
+                    if (detailsImageLength == 9)
+                        document.querySelector('.upload-image').classList.add('hide');
+                }
+            });
+
+            /*删除多图片*/
+            mui('.image-list').on('tap', '.image i', function() {
+                var imageElmIndex = this.parentNode.dataset.index;
+                detailsImage.splice(imageElmIndex, 1);
+                imagefiles.splice(imageElmIndex, 1);
+                renderImage(uploadImageInput);
+
+            });
+
+            function parseDOM(str) {
+                var tempDom = document.createElement('div');
+                tempDom.innerHTML = str;
+                return tempDom.children[0];
+            }
+            // @param {string} img 图片的base64
+            // @param {int} dir exif获取的方向信息
+            // @param {function} next 回调方法，返回校正方向后的base64
+            function getImgData(img, dir, next) {
+                var image = new Image();
+                image.onload = function() {
+                    var degree = 0,
+                            drawWidth, drawHeight, width, height;
+                    drawWidth = this.naturalWidth;
+                    drawHeight = this.naturalHeight;
+                    //以下改变一下图片大小
+                    var maxSide = Math.max(drawWidth, drawHeight);
+                    if (maxSide > 1024) {
+                        var minSide = Math.min(drawWidth, drawHeight);
+                        minSide = minSide / maxSide * 1024;
+                        maxSide = 1024;
+                        if (drawWidth > drawHeight) {
+                            drawWidth = maxSide;
+                            drawHeight = minSide;
+                        } else {
+                            drawWidth = minSide;
+                            drawHeight = maxSide;
+                        }
+                    }
+                    var canvas = document.createElement('canvas');
+                    canvas.width = width = drawWidth;
+                    canvas.height = height = drawHeight;
+                    var context = canvas.getContext('2d');
+                    //判断图片方向，重置canvas大小，确定旋转角度，iphone默认的是home键在右方的横屏拍摄方式
+                    switch (dir) {
+                        //iphone横屏拍摄，此时home键在左侧
+                        case 3:
+                            degree = 180;
+                            drawWidth = -width;
+                            drawHeight = -height;
+                            break;
+                            //iphone竖屏拍摄，此时home键在下方(正常拿手机的方向)
+                        case 6:
+                            canvas.width = height;
+                            canvas.height = width;
+                            degree = 90;
+                            drawWidth = width;
+                            drawHeight = -height;
+                            break;
+                            //iphone竖屏拍摄，此时home键在上方
+                        case 8:
+                            canvas.width = height;
+                            canvas.height = width;
+                            degree = 270;
+                            drawWidth = -width;
+                            drawHeight = height;
+                            break;
+                    }
+                    //使用canvas旋转校正
+                    context.rotate(degree * Math.PI / 180);
+                    context.drawImage(this, 0, 0, drawWidth, drawHeight);
+                    //返回校正图片
+                    next(canvas.toDataURL("image/jpeg", .8));
+                }
+                image.src = img;
+            }
+            /*点击头像跳转*/
+            /*留言*/
+            mui('.massage-list li').on('tap', '.avatar', function() {
+                mui.openWindow({
+                    url: '/App/UserCenter/index/user/' + this.dataset.uid
+                });
+            });
+            /*参与*/
+            mui('.participants li').on('tap', '.avatar', function() {
+                mui.openWindow({
+                    url: '/App/UserCenter/index/user/' + this.dataset.uid
+                });
+            });
+            /*发布者*/
+            mui('.user').on('tap', '.avatar', function() {
+                mui.openWindow({
+                    url: '/App/UserCenter/index/user/' + this.dataset.id
+                });
+            });
+        });
+        wx.config({
+            appId: '{$JsConfig["appId"]}',
+            timestamp: '{$JsConfig["timestamp"]}',
+            nonceStr: '{$JsConfig["nonceStr"]}',
+            signature: '{$JsConfig["signature"]}',
+            jsApiList: [
+                // 所有要调用的 API 都要加到这个列表中
+                'onMenuShareTimeline',
+                'onMenuShareAppMessage',
+            ]
+        });
+        //微信分享配置
+        wx.ready(function() {
+            // 在这里调用 API
+            wx.onMenuShareTimeline({
+                title: '{$xinyuan["title"]}', // 分享标题
+                link: window.location.href, // 分享链接
+                imgUrl: "{$xinyuan['img']}", // 分享图标
+                success: function() {
+                    WeiXinShareBtn();
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function() {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+
+            wx.onMenuShareAppMessage({
+                title: '{$xinyuan["title"]}', // 分享标题
+                desc: '微心愿，极青春，95后心愿社交神器！在这里分享你的心愿故事，寻找到与你‘心相似’的一群青年好友，在TA们的帮助下，实现你的心愿。微心愿，助你心愿达成！', // 分享描述
+                link: window.location.href, // 分享链接
+                imgUrl: "{$xinyuan['img']}", // 分享图标
+                type: '', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: function() {
+                    WeiXinShareBtn();
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function() {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+        });
+
+        function WeiXinShareBtn() {
+            var wishid = document.getElementById("wishid").value;
+            mui.ajax("{:U('Wish/share')}", {
+                type: 'GET',
+                dataType: 'JSON',
+                data: {
+                    wishid: wishid
+                },
+                success: function(data) {
+                    console.log(data);
+                    //                if (data == 1) {
+                    //                    mui.toast('关注成功');
+                    //                } else if (data == 2) {
+                    //                    mui.toast('取消关注');
+                    //                } else {
+                    //
+                    //                }
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

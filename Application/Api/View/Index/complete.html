@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <title>微心愿 | 达成</title>
+    <link href="APP_DEFAULT_PATH/css/mui.min.css" rel="stylesheet" />
+    <link href="APP_DEFAULT_PATH/css/index.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="mui-off-canvas-wrap mui-draggable mui-slide-in">
+        <include file="Index/inc/aside" />
+        <div class="mui-inner-wrap">
+            <include file="Index/inc/indexHeader" />
+            <div class="mui-content">
+                <div class="underline-tab mui-segmented-control">
+                    <a id="index" data-nowPage="1" class="mui-control-item">推荐</a>
+                    <a id="choice" data-nowPage="1" class="mui-control-item">精选</a>
+                    <a id="top" class="mui-control-item">TOP</a>
+                    <a id="explore" class="mui-control-item">探索</a>
+                    <a id="complete" class="mui-control-item mui-active">达成</a>
+                </div>
+                <div class="index-segmented-content reached">
+                    <div class="mui-control-content mui-active">
+                        <div id="pullrefresh" class="mui-scroll-wrapper">
+                            <div class="mui-scroll">
+                                <div class="capsule-tab mui-segmented-control">
+                                    <a data-id="1" data-request-page="2" class="mui-control-item mui-active" href="#willReach">即将达成</a>
+                                    <a data-id="2" data-request-page="1" class="mui-control-item" href="#haveReach">已经达成</a>
+                                </div>
+                                <div>
+                                    <div id="willReach" class="mui-control-content mui-active">
+                                        <ul class="wish-list-full-page">
+                                            <volist name="xylist" id="v">
+                                                <li class="mui-card wish-item" data-id="{$v.id}">
+                                                    <div class="mui-card-header mui-card-media" style="background-image:url('{: ($v['changimg']) ? $v['changimg'] : $v['img'] }')">
+                                                        <div class="wish-top clearfix">
+                                                            <span class="avatar" style="background-image:url('{: ($v['toupic']) ? $v['toupic'] : 'APP_DEFAULT_PATH/image/tx.jpg'}');"></span>
+                                                            <div class="name-wrapper <if condition=" $v[ 'sex'] eq 0 ">male<else/>female</if>"><span class="name">{$v.nickname}</span></div>
+                                                            <span class="wish-tag">#{$v['tid']}#</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mui-card-content">
+                                                        <div class="transform-wrapper">
+                                                            <div class="wish-mid">
+                                                                <ul class="wish-data clearfix">
+                                                                    <li><i class="iconfont icon-like"></i>{$v.zan}</li>
+                                                                    <li><i class="iconfont icon-eye"></i>{$v.readnum}</li>
+                                                                    <li><i class="mui-icon mui-icon-star"></i>{$v.guanzhu}</li>
+                                                                </ul>
+                                                                <span class="wish-bean"><i class="iconfont icon-bean"></i><span class="now-bean">{$v['have_mon']}/{$v['set_mon']}</span> </span>
+                                                                <a>赏</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mui-card-content-inner">
+                                                            <h4>{$v.title}</h4>
+                                                            <p>{$v.des}</p>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </volist>
+                                        </ul>
+                                    </div>
+                                    <div id="haveReach" class="mui-control-content">
+                                        <ul class="wish-list-full-page"></ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mui-off-canvas-backdrop"></div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.min.js"></script>
+    <script src="APP_DEFAULT_PATH/js/waterfallRender.js"></script>
+    <script>
+    mui.ready(function() {
+        /**
+         * 初始化
+         */
+        mui.init({
+            pullRefresh: {
+                container: '#pullrefresh',
+                up: {
+                    contentrefresh: '正在加载...',
+                    contentnomore: '心愿有点少 许个好不好',
+                    callback: pullupRefresh
+                }
+            }
+        });
+
+        /*滚动设置*/
+        var deceleration = mui.os.ios ? 0.003 : 0.0009;
+        mui('.mui-scroll-wrapper').scroll({
+            bounce: false,
+            indicators: true, //是否显示滚动条
+            deceleration: deceleration
+        });
+
+        /**
+         * 事件绑定
+         */
+        /*点击二级导航刷新*/
+        mui('.capsule-tab').on('tap', 'a', function() {
+            mui('#pullrefresh').pullRefresh().refresh(true);
+            pullupRefresh();
+        });
+
+
+    });
+
+
+    /*渲染愿望*/
+    function renderFullWishItem(data) {
+        var wishItems = document.createDocumentFragment();
+        mui.each(data, function(i, wish) {
+            var gender = wish.sex == 0 ? 'male' : 'female';
+            var wishItem = '<li class="mui-card wish-item" data-id="' + wish.id + '">' +
+                '<div class="mui-card-header mui-card-media" style="background-image:url(\'' + wish.img + '\')">' +
+                '<div class="wish-top clearfix">' +
+                '<span class="avatar" style="background-image:url(\'' + wish.toupic + '\');"></span>' +
+                '<div class="name-wrapper ' + gender + '"><span class="name">' + wish.nickname + '</span></div>' +
+                '<span class="wish-tag">#' + wish.tid + '#</span>' +
+                '</div>' +
+                '</div>' +
+                '<div class="mui-card-content">' +
+                ' <div class="transform-wrapper">' +
+                '<div class="wish-mid">' +
+                '<ul class="wish-data clearfix">' +
+                '<li><i class="mui-icon mui-icon-star"></i>' + wish.zan + '</li>' +
+                '<li><i class="mui-icon mui-icon-image"></i>' + wish.readnum + '</li>' +
+                '<li><i class="mui-icon mui-icon-star"></i>' + wish.guanzhu + '</li>' +
+                '</ul>' +
+                '<span class="wish-bean"><i class="iconfont icon-bean"></i><span class="now-bean">' + wish.have_mon + '/' + wish.set_mon + '</span></span>' +
+
+                '<a>赏</a>' +
+                '</div>' +
+                '</div>' +
+                '<div class="mui-card-content-inner">' +
+                '<h4>' + wish.title + '</h4>' +
+                '<p>' + wish.des + '</p>' +
+                '</div>' +
+                '</div>' +
+                '</div>' +
+                '</li>';
+            wishItems.appendChild(parseDOM(wishItem));
+        });
+        return wishItems;
+    }
+    /**
+     * 上拉加载具体业务实现
+     */
+    function pullupRefresh() {
+        setTimeout(function() {
+            var activeItem = mui('.index-segmented-content .mui-control-item.mui-active')[0];
+            var typeId = activeItem.dataset.id;
+            // console.log(activeItem.dataset.requestPage);
+            mui.ajax("{:U('Index/ajax_reached')}", {
+                success: function(json) {
+                    var json_obj = JSON.parse(json)
+                    var wishList = mui('.index-segmented-content .mui-control-content .mui-control-content.mui-active .wish-list-full-page')[0];
+                    wishList.appendChild(renderFullWishItem(json_obj.data));
+                    activeItem.dataset.requestPage = parseInt(activeItem.dataset.requestPage) + 1;
+                    mui('#pullrefresh').pullRefresh().endPullupToRefresh((activeItem.dataset.requestPage > json_obj.page));
+                },
+                data: {
+                    type: typeId,
+                    p: parseInt(activeItem.dataset.requestPage)
+
+                },
+                type: 'GET',
+                dataType: 'JSON'
+            });
+        }, 1500);
+    }
+    </script>
+    <include file="Index/inc/redirect" />
+</body>
+
+</html>

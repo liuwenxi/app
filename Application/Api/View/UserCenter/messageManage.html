@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/userCenter.css" />
+</head>
+
+<body>
+    <div class="mui-content message-manage">
+        <div class="list">
+            <ul class="mui-table-view">
+                <li class="mui-table-view-cell list-head">
+                    消息管理
+                </li>
+                <li data-type="1" class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        <i class="iconfont icon-bell"></i>
+                        <if condition="$Noread1 neq 0"><span class="mui-badge mui-badge-danger">{$Noread1}</span>
+                            <else/>
+                        </if>
+                        系统通知
+                    </a>
+                </li>
+                <li data-type="2" class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        <i class="iconfont icon-progress"></i>
+                        <if condition="$Noread2 neq 0"><span class="mui-badge mui-badge-danger">{$Noread2}</span>
+                            <else/>
+                        </if>
+                        心愿进展
+                    </a>
+                </li>
+                <li data-type="3" class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        <i class="iconfont icon-join"></i>
+                        <if condition="$Noread3 neq 0"><span class="mui-badge mui-badge-danger">{$Noread3}</span>
+                            <else/>
+                        </if>
+                        心愿参与
+                    </a>
+                </li>
+                <li data-type="4" class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        <i class="iconfont icon-exchange"></i>
+                        <if condition="$Noread4 neq 0"><span class="mui-badge mui-badge-danger">{$Noread4}</span>
+                            <else/>
+                        </if>
+                        兑换信息
+                    </a>
+                </li>
+                <li data-type="5" class="mui-table-view-cell">
+                    <a class="mui-navigate-right">
+                        <i class="iconfont icon-redeem"></i>
+                        <if condition="$Noread5 neq 0"><span class="mui-badge mui-badge-danger">{$Noread5}</span>
+                            <else/>
+                        </if>
+                        赎回信息
+                    </a>
+                </li>
+            </ul>
+            <!--<button type="button" class="mui-btn mui-btn-blue mui-btn-block">返回</button>-->
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init()
+    mui.ready(function() {
+
+        mui('.mui-table-view').on('tap', '.mui-table-view-cell', function() {
+            console.log(this.dataset.type)
+            mui.openWindow({
+                url: '/App/UserCenter/messageList/type/' + this.dataset.type
+            });
+
+        })
+    })
+    </script>
+</body>
+
+</html>

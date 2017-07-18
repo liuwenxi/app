@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>设置标签</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/login_register.css" />
+</head>
+
+<body>
+    <header class="mui-bar mui-bar-nav backward-nav">
+        <a class="mui-action-back mui-pull-left">
+            <i class="mui-icon mui-icon-left-nav mui-pull-left"></i>
+            <span class="mui-pull-left">返回</span>
+            <h1 class="mui-center mui-title">猜你喜欢</h1>
+        </a>
+    </header>
+    <div class="mui-content set-tag">
+        <h4>选择你喜欢的标签</h4>
+        <form action="{:U('Public/guesslove')}" id="myForm" method="post">
+            <input type="hidden" name="love" id="love" value="1">
+            <div class="select-tag-list">
+                <div class="list-body clearfix">
+                    <volist name="list" id="vo">
+                        <div class="tag-item">
+                            <input type="checkbox" id="tag{$vo.id}" name="tag" value="{$vo.name}">
+                            <label>{$vo.name}</label>
+                        </div>
+                    </volist>
+                </div>
+                <div class="list-foot">
+                    <p><i class="mui-icon mui-icon-loop"></i>更多标签</p>
+                    <a class="btn-lg" id="btn-orange">我选好了</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init();
+
+    mui.ready(function() {
+
+        mui(".list-body").on('tap', 'input', function() {
+            if (!this.checked) {
+                this.parentNode.classList.add('active');
+            } else {
+                this.parentNode.classList.remove('active');
+            }
+        });
+
+        mui('.list-foot p')[0].addEventListener('tap', function() {
+            mui.ajax("{:U('Public/ajax_glove')}", {
+                dataType: 'JSON',
+                type: 'GET',
+                success: function(json) {
+                    console.log(JSON.parse(json).data);
+                    var dataArray = JSON.parse(json).data;
+                    mui('.list-body')[0].appendChild(renderTag(dataArray));
+                }
+            });
+        });
+
+
+        document.getElementById('btn-orange').addEventListener('tap', function() {
+            var str = document.getElementsByName("tag");
+            var objarray = str.length;
+            var _ids = "";
+            for (i = 0; i < objarray; i++) {
+                if (str[i].checked == true) {
+                    _ids += str[i].value + ",";
+                }
+            }
+            if (_ids == '') {
+                mui.alert('请最少选择一项兴趣！', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            } else {
+                document.getElementById("love").value = _ids;
+                document.forms["myForm"].submit();
+            }
+        });
+    })
+
+    /*渲染标签*/
+    function renderTag(data) {
+        var tagItems = document.createDocumentFragment();
+        mui.each(data, function(i, tag) {
+
+            var tagItem = '<div class="tag-item">' +
+                '<input type="checkbox" id="tag' + tag.id + '" name="tag" value="' + tag.id + '">' +
+                '<label>' + tag.name + '</label>' +
+                '</div>';
+            tagItems.appendChild(parseDOM(tagItem));
+        });
+        return tagItems;
+    }
+
+    function parseDOM(str) {
+        var tempDom = document.createElement('div');
+        tempDom.innerHTML = str;
+        return tempDom.children[0];
+    }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,20 @@
+{
+  "name" : "topthink/thinkphp",
+  "description" : "the ThinkPHP Framework",
+  "require" : {
+    "php" : ">=5.3.0",
+    "pingplusplus/pingpp-php" : "dev-master"
+  },
+  "authors" : [ {
+    "name" : "liu21st",
+    "email" : "liu21st@gmail.com"
+  } ],
+  "keywords" : [ "framework", "thinkphp", "ORM" ],
+  "minimum-stability" : "dev",
+  "license" : "Nginx/1.10.0",
+  "type" : "framework",
+  "homepage" : "http://thinkphp.cn/",
+  "autoload" : {
+  	"psr-4" : {"Application\\":"Lib/"}
+  }
+}

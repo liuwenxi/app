@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>账单</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/wishBean.css" />
+</head>
+
+<body>
+    <div class="mui-content bill">
+        <div class="balance">账户余额：<span>{$mon}</span></div>
+        <ul class="bill-list clearfix">
+            <volist name="tasklist" id="v">
+            <li class="increase">
+                <div class="mui-pull-left">
+                    <h5>{$v.title}</h5>
+                    <span>{$v.awardtime|date="m-d H:i",###}</span>
+                </div>
+                <span class="mui-pull-right">+{$v.xinmon}</span>
+            </li>
+            </volist>
+           <volist name="bill" id="v">
+            <li class="increase">
+                <div class="mui-pull-left">
+                    <h5><if condition="$v['type'] eq 3">参与了#{$v.title}#心愿<elseif condition="$v['type'] eq 4"/>参与的心愿#{$v.title}#没达成退回心愿豆<elseif condition="$v['type'] eq 1"/>申请赎回<elseif condition="$v['type'] eq 5 "/>赎回申请失败<else/>赎回转账失败</if></h5>
+                    <span>{$v.posttime|date="m-d H:i",###}</span>
+                </div>
+                <span class="mui-pull-right"><if condition="$v['type'] eq 1 or $v['type'] eq 3">-<else/>+</if>{$v.mon}</span>
+            </li>
+            </volist>
+
+        </ul>
+    </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init();
+    </script>
+</body>
+
+</html>

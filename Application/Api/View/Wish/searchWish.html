@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>搜索</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/searchWish.css" />
+</head>
+
+<body>
+    <include file="Public/inc/header" />
+    <div id="pullrefresh" class="mui-content">
+        <div class="mui-scroll">
+            <div class="mui-content search">
+                <div class="search-bar">
+                    <div class="search-input clearfix">
+                        <i class="mui-icon mui-icon-search mui-pull-left"></i>
+                        <input type="text" class="mui-input-clear" id="keyword" placeholder="请输入关键词搜索">
+                        <a class="mui-pull-right" id="dosel">搜索</a>
+                        <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                    </div>
+                    <ul class="search-history hide">
+                        <!-- <li><i class="mui-icon mui-icon-reload"></i><span class="content">哈哈哈哈</span><i class="mui-icon mui-icon-trash mui-pull-right"></i></li> -->
+                        <li class="operation">
+                            <div class="mui-pull-left clear-history">
+                                <i class="iconfont icon-trash"></i>
+                                <span>清除全部搜索记录</span>
+                            </div>
+                            <a class="close-history mui-pull-right">关闭</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search-result-none hide">
+                    <div class="expression"></div>
+                    <h4>很抱歉没有找到相匹配的内容</h4>
+                    <p>可以通过所属类，</p>
+                    <p>以及标题或描述中的关键字来查找</p>
+                </div>
+                <div class="hit-search">
+                    <!--<h5><span>热门搜索</span></h5>-->
+                    <!--<ul class="tag-list clearfix">-->
+                        <!--<li>极限挑战</li>-->
+                        <!--<li>健美哈哈</li>-->
+                        <!--<li>创艺工</li>-->
+                        <!--<li>创艺工作哈哈</li>-->
+                        <!--<li>创艺工作</li>-->
+                    <!--</ul>-->
+                </div>
+                <div class="search-result hide">
+                    <h5><span>心愿搜索结果共<strong id="wishCount"></strong>个</span></h5>
+                    <div class="wish-list clearfix" data-pullupUrl="">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init({
+        pullRefresh: {
+            container: '#pullrefresh',
+            up: {
+                contentrefresh: '正在加载...',
+                contentnomore:'心愿有点少 许个好不好',
+                callback: pullupRefresh
+            }
+        }
+    });
+    mui('.wish-list ').on('tap', '.wish-item', function() {
+        mui.openWindow({
+            url: '/App/Wish/showWish/wishid/' + this.dataset.id
+        });
+    });
+
+    function renderHistoryItem() {
+        var HistoryItems = document.createDocumentFragment();
+        for (var i = 0; i < localStorage.length - 1; i++) {
+            HistoryItem = '<li><i class="mui-icon mui-icon-reload"></i><span class="content">' + localStorage[i + ''] + '</span><i data-id="' + i + '" class="mui-icon mui-icon-trash mui-pull-right"></i></li>';
+            HistoryItems.appendChild(parseDOM(HistoryItem));
+        }
+        return HistoryItems;
+    }
+
+    function renderWishItems(data) {
+        var wishItems = document.createDocumentFragment();
+        mui.each(data, function(i, wish) {
+            var gender = wish.sex == 0 ? 'male' : 'female';
+            var haveMon = ((wish.have_mon / wish.set_mon) * 100).toFixed(2);
+            var wishItem = '<a class="wish-item mui-card" id="wishDetails" data-id="' + wish.id + '">' +
+                '<div class="mui-card-header mui-card-media" style="background-image: url(\'' + wish.img + '\');">' +
+                '<div class="progress-outer">' +
+                '<div class="progress-inner" style="width: ' + haveMon + '%;">' + haveMon + '%</div>' +
+                '<div class="bean" style="left: 0%;"></div>' +
+                '</div>' +
+                '</div>' +
+                '<div class="mui-card-content">' +
+                '<h4>' + wish.title + '</h4>' +
+                '<div class="name-wrapper ' + gender + '"><span class="name">' + wish.set_user + '</span></div>' +
+                '<span class="tag">' + wish.typename + '</span>' +
+                '</div>' +
+                '</a>';
+            wishItems.appendChild(parseDOM(wishItem));
+        });
+        return wishItems;
+    }
+
+    function searchWish(search) {
+        // if (false) {
+        //     mui('.hit-search')[0].classList.add('hide');
+        //     mui('.search-result')[0].classList.remove('hide');
+
+        //     mui('#wishCount')[0].innerHTML = 2;
+
+        //     mui('.wish-list')[0].innerHTML = '';
+        //     mui('#pullrefresh')[0].classList.add('mui-scroll-wrapper');
+        //     mui('#pullrefresh')[0].dataset.pullupUrl = 'json.url';
+        //     mui('.wish-list')[0].append(renderWishItems([{},{}]));
+
+        // } else {
+        //     mui('.wish-list')[0].innerHTML = '';
+        //     mui('.search-result-none')[0].classList.remove('hide');
+
+        // }
+
+        mui.ajax("{:U('Wish/search')}", {
+            dataType: 'JSON',
+            type: 'GET',
+            data: {
+                keywords: search
+            },
+            success: function(json) {
+                var json_obj = JSON.parse(json)
+                console.log(json_obj);
+                if (json_obj.data.length) {
+                    mui('.search-result-none')[0].classList.add('hide');
+                    // mui('.hit-search')[0].classList.add('hide');
+                    mui('.search-result')[0].classList.remove('hide');
+
+                    mui('#wishCount')[0].innerHTML = json_obj.count;
+
+                    mui('.wish-list')[0].innerHTML = '';
+                    mui('#pullrefresh')[0].classList.add('mui-scroll-wrapper');
+                    //                    mui('.mui-scroll-wrapper')[0].dataset.pullupUrl = json_obj.url;
+                    mui('.wish-list')[0].appendChild(renderWishItems(json_obj.data));
+
+                } else {
+                    mui('.wish-list')[0].innerHTML = '';
+                    mui('.search-result')[0].classList.add('hide');
+                    mui('.hit-search')[0].classList.remove('hide');
+                    mui('.search-result-none')[0].classList.remove('hide');
+
+                }
+            }
+        });
+    }
+
+
+    mui.ready(function() {
+        localStorage.index = localStorage.index || 0;
+        if (!(localStorage.length == 1)) {
+            mui('.search-history')[0].insertBefore(renderHistoryItem(), mui('.search-history li:last-child')[0]);
+            // console.log(renderHistoryItem());
+        }
+
+
+
+        /*搜索框交互效果*/
+        mui('.search-input input')[0].addEventListener('focusin', function() {
+            mui('.search-history')[0].classList.remove('hide');
+        });
+        mui('.search-input input')[0].addEventListener('tap', function() {
+            mui('.search-history')[0].classList.remove('hide');
+        });
+        mui('.close-history')[0].addEventListener('tap', function() {
+            mui('.search-history')[0].classList.add('hide');
+        });
+        mui('.mui-icon-closeempty')[0].addEventListener('tap', function() {
+            mui('.search-input input')[0].value = '';
+        });
+
+        var historyLength = 5;
+        mui('.search-input a')[0].addEventListener('tap', function() {
+            mui('.search-history')[0].classList.add('hide');
+            localStorage.length == 1 ? localStorage.index = 0 : localStorage.index = localStorage.index % historyLength;
+            var search = mui('.search-input input')[0].value;
+            if (search) {
+                for (var i = 0; i < historyLength; i++) {
+                    console.log(localStorage[i + '']);
+                    if (localStorage[i + ''] == search) {
+                        searchWish(search);
+                        return;
+                    }
+                }
+                localStorage[localStorage.index + ''] = search;
+                mui('.search-history li').each(function(index, el) {
+                    if (!el.classList.contains('operation')) {
+                        mui('.search-history')[0].removeChild(el);
+                    }
+
+                });
+                mui('.search-history')[0].insertBefore(renderHistoryItem(), mui('.search-history li:last-child')[0]);
+                localStorage.index++;
+                searchWish(search);
+            }
+        });
+        /*历史记录交互效果*/
+        mui('.search-history').on('tap', 'li', function() {
+            mui('.search-history')[0].classList.add('hide');
+            if (!this.classList.contains('operation')) {
+                mui('.search-input input')[0].value = this.children[1].innerHTML;
+                searchWish(this.children[1].innerHTML);
+            }
+        });
+        mui('.search-history').on('tap', '.mui-icon-trash', function(e) {
+            e.stopPropagation();
+            var historyId = this.dataset.id;
+            localStorage.removeItem(historyId + '');
+            mui('.search-history')[0].removeChild(this.parentNode);
+        });
+        mui('.search-history .clear-history')[0].addEventListener('tap', function() {
+            localStorage.clear();
+            localStorage.index = 0;
+            mui('.search-history li').each(function(index, el) {
+                if (!el.classList.contains('operation')) {
+                    mui('.search-history')[0].removeChild(el);
+                }
+            });
+        });
+
+        /*热门搜索交互效果*/
+        mui('.hit-search').on('tap', 'li', function() {
+            mui('.search-history')[0].classList.add('hide');
+            mui('.search-input input')[0].value = this.innerHTML;
+
+            searchWish(this.innerHTML);
+            
+            localStorage.length == 1 ? localStorage.index = 0 : localStorage.index = localStorage.index % historyLength;
+            for (var i = 0; i < historyLength; i++) {
+                console.log(localStorage[i + '']);
+                if (localStorage[i + ''] == this.innerHTML) {
+                    return;
+                }
+            }
+            localStorage[localStorage.index + ''] = this.innerHTML;
+            mui('.search-history li').each(function(index, el) {
+                if (!el.classList.contains('operation')) {
+                    mui('.search-history')[0].removeChild(el);
+                }
+
+            });
+            mui('.search-history')[0].insertBefore(renderHistoryItem(), mui('.search-history li:last-child')[0]);
+            localStorage.index++;
+
+            
+        });
+
+    });
+    var count = 2;
+
+    function pullupRefresh() {
+
+        setTimeout(function() {
+
+
+            // var wishList = mui('.wish-list')[0];
+            // wishList.append(renderWishItems([{}, {}]));
+            // mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2));
+
+            mui.ajax("{:U('Index/goSeach')}", {
+                success: function(json) {
+                    var json_obj = JSON.parse(json);
+                    var wishList = mui('.wish-list')[0];
+                    wishList.appendChild(renderWishItems(json_obj.data));
+
+                    mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > json_obj.page)); //参数为true代表没有更多数据了。
+                },
+                data: {
+                    keywords: mui('.search-input input')[0].value,
+                    p: count,
+                },
+                type: 'GET',
+                dataType: 'JSON'
+            });
+        }, 1500);
+    }
+
+    function parseDOM(str) {
+        var tempDom = document.createElement('div');
+        tempDom.innerHTML = str;
+        return tempDom.children[0];
+    }
+    </script>
+</body>
+
+</html>

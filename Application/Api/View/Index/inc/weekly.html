@@ -1,0 +1,13 @@
+<div class="weekly">
+    <volist name="newsweek" id="n">
+        <a class="weekly-focus" style="background-image: url('APP_DEFAULT_PATH/image/banner3.png')" href="weekly"></a>
+    </volist>
+    <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted weekly-list-wrapper">
+        <div class="mui-scroll weekly-list">
+            <volist name="newsweeks" id="ns">
+                <a class="mui-control-item" style="background-image:url('{: ($ns['touimg']) ? $ns['touimg'] : 'APP_DEFAULT_PATH/image/secondBanner1.png'}');">
+                </a>
+            </volist>
+        </div>
+    </div>
+</div>

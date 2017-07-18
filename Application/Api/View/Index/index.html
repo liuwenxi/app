@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <title>微心愿 | 推荐</title>
+    <meta name="sogou_site_verification" content="re7u8FS3af"/>
+    <meta name="keywords" content="微心愿,wish4you,社交,梦想,">
+    <meta name="description" content="微心愿，极青春，95后心愿社交神器！在这里分享你的心愿故事，寻找到与你‘心相似’的一群青年好友，在TA们的帮助下，实现你的心愿。微心愿，助你心愿达成！">
+    <link href="APP_DEFAULT_PATH/css/mui.min.css" rel="stylesheet" />
+    <link href="APP_DEFAULT_PATH/css/index.css" rel="stylesheet" />
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e8cb9350eb5cb4669b808bf6996bfd85";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="mui-off-canvas-wrap mui-draggable mui-slide-in">
+        <include file="Index/inc/aside" />
+        <div class="mui-inner-wrap">
+            <include file="Index/inc/indexHeader" />
+            <div class="mui-content ">
+                <div class="underline-tab mui-segmented-control">
+                    <a id="index" class="mui-control-item mui-active">推荐</a>
+                    <a id="choice" class="mui-control-item">精选</a>
+                    <a id="top" class="mui-control-item">TOP</a>
+                    <a id="explore" class="mui-control-item">探索</a>
+                    <a id="complete" class="mui-control-item">达成</a>
+                </div>
+                <div class="index-segmented-content recommend">
+                    <div class="mui-control-content mui-active">
+                        <div id="pullrefresh" class="mui-scroll-wrapper">
+                            <div class="mui-scroll">
+                                <include file="Index/inc/banner" />
+                                <div class="wish-list">
+                                    <volist name="tuijian" id="v">
+                                        <a class="mui-card wish-item" data-id="{$v['id']}">
+                                            <div class="mui-card-header mui-card-media" style="background-image:url('{: ($v['img']) ? $v['img'] : 'APP_DEFAULT_PATH/image/pic.jpg'}')">
+                                                <div class="title-wrapper">
+                                                    <span class="wish-bean">
+                                                <i class="iconfont icon-bean"></i>
+                                                <span">{$v['have_mon']}/{$v['set_mon']}</span>
+                                                    </span>
+                                                    <h4>{$v.title}</h4></div>
+                                                <span>#{$v['typename']}#</span>
+                                            </div>
+                                            <div class="mui-card-content">
+                                                <div class="wisher-content clearfix">
+                                                    <span data-id="{$v['set_user']}" class="avatar" style="background-image:url('{: ($v['toupic']) ? $v['toupic'] : 'APP_DEFAULT_PATH/image/tx.jpg'}');"></span>
+                                                    <div class="name-wrapper <if condition=" $v[ 'sex'] eq 0 "> male <else/>female </if>">
+                                                        <span class="name">{$v['username']}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="participant-content">
+                                                    <volist name="v['allinfo']" id="cy">
+                                                        <div class="participant-item">
+                                                            <span data-id="{$cy.id}" class="avatar" style="background-image:url('{: ($cy['toupic']) ? $cy['toupic'] : 'APP_DEFAULT_PATH/image/tx.jpg' }');" data-oid="{$cy['id']}" id="other"></span>
+                                                            <div class="name-wrapper <if condition=" $cy[ 'sex'] eq 0 ">male <else/> female</if>">
+                                                                <span class="name">{$cy.nickname}</span>
+                                                            </div>
+                                                            <span class="participant-bean">{$cy['invo_mon']}心愿豆</span>
+                                                        </div>
+                                                    </volist>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </volist>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mui-off-canvas-backdrop"></div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script src="APP_DEFAULT_PATH/js/waterfallRender.js"></script>
+    <script>
+    mui.ready(function() {
+        /**
+         * 初始化
+         */
+        var requestPage = 2;
+        mui.init({
+            pullRefresh: {
+                container: '#pullrefresh',
+                up: {
+                    contentrefresh: '正在加载...',
+                    contentnomore: '心愿有点少 许个好不好',
+                    callback: pullupRefresh
+                }
+            },
+            swipeBack:true //启用右滑关闭功能
+        });
+
+        var slider = mui("#slider");
+        slider.slider({
+            interval: 5000
+        });
+
+        /*滚动设置*/
+        var deceleration = mui.os.ios ? 0.003 : 0.0009;
+        mui('.mui-scroll-wrapper').scroll({
+            bounce: false,
+            indicators: true, //是否显示滚动条
+            deceleration: deceleration
+        });
+        /*瀑布流初始化*/
+        waterfallRender(mui('.wish-list a'));
+
+        /**
+         * 事件绑定
+         */
+        mui('.mui-slider-item').on('tap', 'a', function() {
+            mui.openWindow({
+                url: this.dataset.url
+            });
+        });
+
+        /**
+         * [上拉加载业务逻辑]
+         * @return {[type]} [description]
+         */
+        function pullupRefresh() {
+            setTimeout(function() {
+                mui.ajax("{:U('Index/ajax_tuijian')}", {
+                    success: function(json) {
+                        var json_obj = JSON.parse(json);
+                        var wishList = mui('.index-segmented-content > .mui-control-content.mui-active .wish-list')[0];
+                        wishList.appendChild(refreshWishItem(json_obj.data));
+                        waterfallRender(mui('.index-segmented-content > .mui-control-content.mui-active .wish-list a'));
+                        mui('#pullrefresh').pullRefresh().endPullupToRefresh((++requestPage > json_obj.page)); //参数为true代表没有更多数据了。
+                    },
+                    data: {
+                        p: requestPage
+                    },
+                    type: 'GET',
+                    dataType: 'JSON'
+                });
+            }, 1500);
+        }
+        /**
+         * [愿望生成]
+         * @param  {[type]} data [自定的json数据]
+         * @return {[type]}      [多个心愿项]
+         */
+        function refreshWishItem(data) {
+            var wishItems = document.createDocumentFragment();
+            mui.each(data, function(i, wish) {
+                var participantItems = document.createDocumentFragment();
+                mui.each(wish.allinfo, function(i, p) {
+                    var gender = p.sex == 0 ? 'male' : 'female';
+                    var participantItem =
+                        '<div class="participant-item">' +
+                        '<span class="avatar" style="background-image:url(\'' + p.toupic + '\');"></span>' +
+                        '<div class="name-wrapper ' + gender + '">' +
+                        '<span class="name">' + p.nickname + '</span>' +
+                        '</div>' +
+                        '<span class="participant-bean">' + p.invo_mon + '心愿豆</span>' +
+                        '</div>';
+                    participantItems.appendChild(parseDOM(participantItem));
+
+                });
+                var gender = wish.sex == 0 ? 'male' : 'female';
+                var wishItem = '<a data-id="' + wish.id + '" class="mui-card wish-item">' +
+                    '<div class="mui-card-header mui-card-media" style="background-image:url(\'' + wish.img + '\')">' +
+                    '<div class="title-wrapper"><span class="wish-bean"><i class="iconfont icon-bean"></i><span">' + wish.have_mon + '/' + wish.set_mon + '</span></span><h4>' + wish.title + '</h4></div>' +
+                    '<span>#' + wish.typename + '#</span>' +
+                    '</div>' +
+                    '<div class="mui-card-content">' +
+                    '<div class="wisher-content clearfix">' +
+                    '<span data-id='+ wish.set_user +' class="avatar" style="background-image:url(\'' + wish.toupic + '\');"></span>' +
+                    '<div class="name-wrapper ' + gender + '">' +
+                    '<span class="name">' + wish.username + '</span>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="participant-content">' +
+
+                    '</div>' +
+                    '</div>' +
+                    '</a>';
+                var participants = parseDOM(wishItem).children[1].children[1];
+                participants.appendChild(participantItems);
+                wishItems.appendChild(participants.parentNode.parentNode);
+            });
+            return wishItems;
+        }
+    });
+    wx.config({
+        appId: '{$JsConfig["appId"]}',
+        timestamp: '{$JsConfig["timestamp"]}',
+        nonceStr: '{$JsConfig["nonceStr"]}',
+        signature: '{$JsConfig["signature"]}',
+        jsApiList: [
+            // 所有要调用的 API 都要加到这个列表中
+            'onMenuShareTimeline',
+			'onMenuShareAppMessage',
+        ]
+    });
+    //微信分享配置
+    wx.ready(function () {
+
+        // 在这里调用 API
+        wx.onMenuShareTimeline({
+            title: '微心愿，极青春，95后心愿社交神器！', // 分享标题
+            link: 'http://m.wish4you.com.cn', // 分享链接
+            imgUrl: 'http://m.wish4you.com.cn/APP_DEFAULT_PATH/image/logo.jpg', // 分享图标
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+
+        wx.onMenuShareAppMessage({
+            title: '微心愿', // 分享标题
+            desc: '微心愿，极青春，95后心愿社交神器！在这里分享你的心愿故事，寻找到与你‘心相似’的一群青年好友，在TA们的帮助下，实现你的心愿。微心愿，助你心愿达成！', // 分享描述
+            link: 'http://m.wish4you.com.cn', // 分享链接
+            imgUrl: 'http://m.wish4you.com.cn/APP_DEFAULT_PATH/image/logo.jpg', // 分享图标
+            type: '', // 分享类型,music、video或link，不填默认为link
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });
+    });
+    </script>
+    <include file="Index/inc/redirect" />
+</body>
+
+</html>

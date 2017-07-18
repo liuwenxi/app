@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>消息</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/userCenter.css" />
+</head>
+
+<body>
+    <include file="Public/inc/header" />
+    <div class="mui-content massage">
+        <ul class="massage-list">
+            <volist name="msg" id="v" empty="$empty">
+                <li class="item-collapse">
+                    <span class="avatar"><i class="iconfont <if condition="$type eq 1">icon-bell<elseif condition="$type eq 2"/>icon-progress<elseif condition="$type eq 3"/>icon-join<elseif condition="$type eq 4"/>icon-exchange<elseif condition="$type eq 5"/>icon-redeem</if>"></i></span>
+                    <div class="massage-content clearfix">
+                        <h5>
+                            <if condition="$type eq 1">系统通知
+                                <elseif condition="$type eq 2"/>心愿进展
+                                <elseif condition="$type eq 3"/>我的参与
+                                <elseif condition="$type eq 4"/>兑换信息
+                                <elseif condition="$type eq 5"/>赎回信息
+                            </if>
+                        </h5><span>{$v.releasetime|date='m-d H:i',###}</span>
+                        <if condition="$v['url'] eq ''">
+                            <p>{$v.des0}
+                                <if condition="$v['title'] eq ''">
+                                    <else/><a data-xid='{$v.xid}'>#{$v.title}#</a></if>{$v.des2}</p>
+                            <else/>
+                            <p>{$v.des3}<b style="color:#007aff;font-weight:200;" data-url="{$v['url']}">#{$v['des4']}#</b></p>
+                        </if>
+                    </div>
+                    <div class="icon-bar">
+                        <i class="iconfont icon-trash" data-id='{$v.id}' id="delete"></i>
+                        <i class="mui-icon arrow"></i>
+                    </div>
+                </li>
+            </volist>
+        </ul>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui('.mui-bar').on('tap', '.logo', function() {
+            mui.openWindow({
+                url: "{:U('Index/index')}",
+                id: 'recommend'
+            });
+        });
+        mui.init();
+        mui('.mui-scroll-wrapper').scroll({
+            deceleration: 0.0005
+        });
+        mui(".massage-list").on("tap", "li", function() {
+            this.classList.toggle('item-collapse');
+        });
+
+        mui(".icon-bar").on("tap", ".mui-icon-trash", function() {
+            var tkid = this.dataset.id;
+            //                    alert(tkid);
+            mui.confirm('你确定删除吗？', ' ', ['返回', '是的'], function(v) {
+                if (v.index == 1) {
+                    mui.ajax("{:U('UserCenter/delsysTask')}", {
+                        type: 'POST',
+                        dataType: 'JSON',
+                        data: {
+                            tkid: tkid
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            if (data == 1) {
+                                mui.alert('删除成功', ' ', ['好的'], function() {});
+                                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                                setTimeout(function() {
+                                    window.location.reload();
+                                }, 1000);
+                            } else {
+                                mui.alert('删除失败', ' ', ['好的'], function() {});
+                                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            }
+                        },
+                    })
+
+                }
+            });
+        });
+    });
+    mui(".massage-content").on("tap", "a", function() {
+        mui.openWindow({
+            url: '/App/Wish/showWish/wishid/' + this.dataset.xid
+        });
+    });
+    mui(".massage-content").on("tap", "b", function() {
+        mui.openWindow({
+            url: '/App/' + this.dataset.url
+        });
+    });
+    </script>
+</body>
+
+</html>

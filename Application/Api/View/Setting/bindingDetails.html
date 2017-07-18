@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>账号与安全</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/setting.css" />
+</head>
+
+<body>
+    <div class="mui-content acount">
+        <div class="list">
+            <ul class="mui-table-view">
+                <li class="mui-table-view-cell">
+                    <if condition="$ngs neq ''">
+                        <label><i class="iconfont icon-user"></i>手机号码</label>
+                        <span>{$user['phone']}</span>
+                        <else/>
+                        <label><i class="iconfont icon-user"></i>账号</label>
+                        <span>{$user['nickname']}</span>
+                        <span class="avatar" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                    </if>
+                </li>
+            </ul>
+            <a class="btn-lg <if condition="$type eq '4'">hide</if>" data-id="{$type}" id="remove">解除绑定</a>
+            <a class="btn-lg <if condition="$type neq '4'">hide</if>" data-id="{$type}" id="phone">修改绑定</a>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui.init();
+
+         document.getElementById('remove').addEventListener('tap', function() {
+             var that=this;
+             mui.confirm('您是否确认取消绑定，要不再想想？', ' ', ['取消绑定', '我再想想'], function(x) {
+                 if (x.index == 0) {
+                     mui.ajax("{:U('Setting/unbound')}", {
+                         type: 'POST',
+                         dataType: 'JSON',
+                         data:{
+                             type:that.dataset.id
+                         },
+                         success: function(data) {
+                             console.log(data);
+                             var obj = eval("(" + data + ")");
+                             if(obj['status'] == 0){
+                                 mui.alert('取消成功', ' ', ['好的'], null);
+                                 document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                                 setTimeout(function() {
+                                     window.location.href = "{:U('Setting/accountSecurity')}";
+                                 }, 2000);
+                                 return false;
+                             }else {
+                                 mui.alert(obj['msg'], ' ', ['好的'], null);
+                                 document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                                 setTimeout(function() {
+                                     window.location.href = "{:U('Setting/accountSecurity')}";
+                                 }, 2000);
+                                 return false;
+                             }
+                         },
+                     })
+                 }
+             });
+             document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+        });
+
+        document.getElementById('phone').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/modifyPhoneBd')}",
+                id: 'phone'
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>资料编辑</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/userCenter.css" />
+</head>
+
+<body>
+    <div class="mui-content">
+        <div class="list">
+            <ul class="mui-table-view">
+                <li class="mui-table-view-cell list-head">
+                    资料编辑
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>修改头像</label>
+                    <input type="file" id="touimg">
+                    <switch name="user.login_type">
+                        <case value="1">
+                            <span class="avatar" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                        </case>
+                        <case value="2">
+                            <span class="avatar" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                        </case>
+                        <case value="3"></case>
+                        <default />
+                        <span class="avatar" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                    </switch>
+                    <input type="hidden" id="result" value="">
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>我的昵称</label>
+                    <input type="text" id="nickname" value="{$user.nickname}">
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>性别</label>
+                    <select class="mui-pull-right <if condition=" $user[ 'sex_status'] eq 1 ">hide</if>" id="sex">
+                        <option value="0">男</option>
+                        <option value="1">女</option>
+                    </select>
+                    <span class="tip <if condition=" $user[ 'sex_status'] eq 1 ">hide</if>">仅可修改一次</span>
+                    <span class="mui-pull-right <if condition=" $user[ 'sex_status'] eq 0 ">hide</if>">{: ($user['sex'] == 0) ? '男' : '女' }<span class="tip">不可修改</span></span>
+                    </span>
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>个性签名</label>
+                    <input type="text" id="psn_sgntre" value="{$user.psn_sgntre|msubstr=0,20,'utf-8',false}">
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>我的标签</label>
+                    <span id="editTag" class="mui-pull-right"><if condition="$user['ext_hobby'] neq ''">{$user['ext_hobby']}<else/>请选择自己喜好的标签</if></span>
+                </li>
+            </ul>
+            <a id="fbsure" class="btn-lg"  data-mid="{$user['id']}">保存</a>
+        </div>
+    </div>
+    <div class="edit-tag hide">
+        <header class="mui-bar mui-bar-nav backward-nav">
+            <a class="mui-pull-left" id="cancel">
+                <i class="mui-icon mui-icon-left-nav mui-pull-left"></i>
+                <span class="mui-pull-left">取消</span>
+                <h1 class="mui-center mui-title">设置档位</h1>
+            </a>
+        </header>
+        <div class="tag-list-warpper">
+            <div class="tag-list clearfix">
+                <h4>选择你的标签，变得与众不同</h4>
+                <ul class="clearfix">
+                    <volist name='hobbyarr' id='v'>
+                        <li>{$v}<i class="mui-icon mui-icon-closeempty hide"></i></li>
+                    </volist>
+                </ul>
+                <a id="diyTag" class="mui-pull-left"><i class="mui-icon mui-icon-compose"></i>自定义标签</a>
+                <a id="removeTag" class="mui-pull-right"><i class="mui-icon mui-icon-trash"></i>删除标签点我</a>
+            </div>
+            <a id="save" class="btn-lg">确定</a>
+        </div>
+        <div class="tag-class-list">
+            <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted scroll-tab">
+                <div class="mui-scroll">
+                    <a href="#type1" class="mui-control-item mui-active" href="#dream"><i class="iconfont icon-dream"></i>梦想</a>
+                    <a href="#type2" class="mui-control-item" href="#interest"><i class="iconfont icon-interest"></i>兴趣</a>
+                    <a href="#type3" class="mui-control-item" href="#family"><i class="iconfont icon-famliy"></i>家庭</a>
+                    <a href="#type4" class="mui-control-item" href="#education"><i class="iconfont icon-edu"></i>教育</a>
+                    <a href="#type5" class="mui-control-item" href="#culture"><i class="iconfont icon-culture"></i>文体</a>
+                    <a href="#type6" class="mui-control-item" href="#business"><i class="iconfont icon-business"></i>商业</a>
+                    <a href="#type7" class="mui-control-item" href="#healthy"><i class="iconfont icon-healthy"></i>健康</a>
+                    <a href="#type8" class="mui-control-item"><i class="iconfont icon-setting"></i>其他</a>
+                </div>
+            </div>
+            <div>
+                <volist name="list" key="k" id="vo">
+                    <div id="type{$k}" class="mui-control-content <if condition='$k == 1 '> mui-active </if>">
+                        <div class="select-tag-list">
+                            <div class="list-body clearfix">
+                                <volist name="vo" id="v">
+                                    <div class="tag-item">
+                                        <input type="hidden" value="{$vo.id}">
+                                        <em>{$v.name}</em>
+                                    </div>
+                                </volist>
+                            </div>
+                        </div>
+                    </div>
+                </volist>
+            </div>
+        </div>
+    </div>
+    <div class="mui-backdrop hide">
+        <div class="diy-tag-dialog">
+            <div class="dialog-inner">
+                <div class="dialog-title clearfix">
+                    <h5 class="mui-pull-left">自定义标签</h5>
+                    <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                </div>
+                <div class="selected-tag clearfix">
+                    <input type="text" name="tag" maxlength="4" autofocus="autofocus" placeholder="用四个字描述你的标签">
+                </div>
+            </div>
+            <div class="dialog-buttons">
+                <span>确定</span>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+    window.onload = function() {
+        var input = document.getElementById("touimg");
+        var result = document.getElementById("result");
+        var img_area = document.getElementById("img_area");
+        if (typeof(FileReader) === 'undefined') {
+            result.innerHTML = "抱歉，你的浏览器不支持 FileReader，请使用现代浏览器操作！";
+            input.setAttribute('disabled', 'disabled');
+        } else {
+            input.addEventListener('change', readFile, false);
+        }
+    }
+
+    function readFile() {
+        var file = this.files[0];
+        //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
+        if (!/image\/\w+/.test(file.type)) {
+            mui.alert("请确保文件为图像类型");
+            return false;
+        }
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(e) {
+            result.value = this.result;
+        }
+    }
+    </script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui.init();
+        /*滚动设置*/
+        var deceleration = mui.os.ios ? 0.003 : 0.0009;
+        mui('.mui-scroll-wrapper').scroll({
+            bounce: false,
+            indicators: true, //是否显示滚动条
+            deceleration: deceleration
+        });
+        /*编辑标签*/
+        document.getElementById('editTag').addEventListener('tap', function() {
+            mui('.edit-tag')[0].classList.toggle('hide');
+            mui('.list')[0].classList.toggle('hide');
+        });
+        mui('#cancel')[0].addEventListener('tap', function() {
+            mui('.edit-tag')[0].classList.toggle('hide');
+            setTimeout(function() {
+                mui('.list')[0].classList.toggle('hide');
+            }, 10);
+        });
+        /*头像预览*/
+        document.getElementById('touimg').addEventListener('change', function() {
+            var url = URL.createObjectURL(this.files[0]);
+            mui('.avatar')[0].style.backgroundImage = 'url(\'' + url + '\')';
+        });
+
+        //提交
+        document.getElementById('fbsure').addEventListener('tap', function() {
+            var img = document.getElementById("result").value,
+                nickname = document.getElementById("nickname").value,
+                psn_sgntre = document.getElementById("psn_sgntre").value,
+                sex = document.getElementById("sex").value,
+                tag = document.getElementById("editTag").innerHTML,
+                mid = this.dataset.mid;
+            if (nickname.length > 10) {
+                mui.alert("昵称不能超过10个字哦", ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            }
+            if (img != '' || psn_sgntre != '' || sex != '') {
+                mui.ajax("{:U('UserCenter/userInfo')}", {
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        img: img,
+                        nickname: nickname,
+                        psn_sgntre: psn_sgntre,
+                        sex: sex,
+                        tag: tag
+                    },
+                    success: function(msg) {
+                        if (msg == 1) {
+                            mui.alert("保存成功", ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            //                        setCookie("toupicurl","");
+                            setTimeout(function() {
+                                window.location.href = "/App/UserCenter/index/user/" + mid
+                            }, 2000);
+                        } else {
+                            mui.alert("保存成功", ' ', ['好的'], null);
+                            setTimeout(function() {
+                                window.location.href = "/App/UserCenter/index/user/" + mid
+                            }, 2000);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                        }
+                    },
+                    error: function() {
+
+                    }
+                });
+            } else {
+                window.location.href = "{:U('UserCenter/index')}";
+            }
+
+        });
+        /*点击大类标签*/
+        mui(".list-body").on('tap', '.tag-item', function() {
+            var that = this;
+            if (!this.classList.contains('active')) {
+                this.classList.add('active');
+                if (mui('#removeTag')[0].innerHTML == '取消') {
+                    mui('.tag-list ul')[0].appendChild(parseDOM('<li>' + this.children[1].innerHTML + '<i class="mui-icon mui-icon-closeempty"></i></li>'))
+                } else {
+                    mui('.tag-list ul')[0].appendChild(parseDOM('<li>' + this.children[1].innerHTML + '<i class="mui-icon mui-icon-closeempty hide"></i></li>'))
+                }
+
+            } else {
+                this.classList.remove('active');
+                mui('.tag-list ul li').each(function(index, el) {
+                    if (el.childNodes[0].nodeValue == that.children[1].innerHTML) {
+                        this.parentNode.removeChild(el);
+                    }
+                });
+
+            }
+        });
+        /*点击删除已选标签*/
+        mui('.tag-list').on('tap', 'li', function() {
+            if (!(this.children[0].classList.contains('hide'))) {
+                this.parentNode.removeChild(this);
+            }
+        });
+        /*删除标签按钮事件添加*/
+        document.getElementById('removeTag').addEventListener('tap', function() {
+            if (this.innerHTML == '取消') {
+                this.innerHTML = '<i class="mui-icon mui-icon-trash"></i>点击标签删除';
+                mui(".tag-list li i").each(function(index, el) {
+                    el.classList.add('hide');
+                });
+            } else {
+                this.innerHTML = '取消';
+
+                mui(".tag-list li i").each(function(index, el) {
+                    el.classList.remove('hide');
+                });
+            }
+        });
+        /*自定义标签按钮*/
+        document.getElementById('diyTag').addEventListener('tap', function() {
+            mui('.mui-backdrop')[0].classList.toggle('hide');
+        });
+        /*自定义标签弹出框关闭按钮*/
+        document.querySelector('.dialog-title i').addEventListener('tap', function() {
+            mui('.mui-backdrop')[0].classList.toggle('hide');
+        });
+        /*自定义标签弹出框确定按钮*/
+        document.querySelector('.dialog-buttons span').addEventListener('tap', function() {
+            var newTag = mui('.selected-tag input')[0].value;
+            mui('.mui-backdrop')[0].classList.toggle('hide');
+            if (newTag) {
+                if (mui('#removeTag')[0].innerHTML == '返回') {
+                    mui('.tag-list ul')[0].appendChild(parseDOM('<li>' + +'<i class="mui-icon mui-icon-closeempty"></i></li>'))
+                } else {
+                    mui('.tag-list ul')[0].appendChild(parseDOM('<li>' + mui('.selected-tag input')[0].value + '<i class="mui-icon mui-icon-closeempty hide"></i></li>'))
+                }
+            }
+
+        });
+        /*编辑标签页面确定按钮*/
+        document.getElementById('save').addEventListener('tap', function() {
+            var selectedTag = [];
+            mui('.tag-list li').each(function(index, el) {
+                selectedTag.push(el.childNodes[0].nodeValue);
+            });
+            mui('#editTag')[0].innerHTML = selectedTag.join(',');
+            mui('.edit-tag')[0].classList.toggle('hide');
+            setTimeout(function() {
+                mui('.list')[0].classList.toggle('hide');
+            }, 10);
+        });
+
+    });
+
+    function parseDOM(str) {
+        var tempDom = document.createElement('div');
+        tempDom.innerHTML = str;
+        return tempDom.children[0];
+    }
+    </script>
+</body>
+
+</html>

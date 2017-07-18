@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>添加银行卡</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/wishBean.css" />
+</head>
+
+<body>
+    <div class="mui-content">
+        <div class="list">
+            <ul class="mui-table-view">
+                <li class="mui-table-view-cell">
+                    <label>开户名称：</label>
+                    <input type="text" name="bankuname" id="bankuname" placeholder="请输入您的开户名称">
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>所属银行：</label>
+                    <span class="bank-input" id="bank" data-bank-id="">请选择银行</span>
+                    <select id="bankSelect">
+                        <option>选择银行</option>
+                        <volist name="bankname" id='v'>
+                            <option value="{$v.bankname}" data-bank-id="{$v.id}">{$v.bankname}</option>
+                        </volist>
+                    </select>
+                    <i class="mui-icon mui-icon-arrowdown"></i>
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>银行卡号：</label>
+                    <input type="number" name="cardnum" id="cardnum" placeholder="请输入您的银行卡号">
+                </li>
+            </ul>
+            <a class="btn-lg" id="add">添加</a>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui.init();
+        document.getElementById('bankSelect').addEventListener('change', function(e) {
+            var option = e.target.selectedOptions[0];
+            if (this.value != '选择银行') {
+                document.getElementById('bank').innerHTML = this.value;
+                document.getElementById('bank').dataset.bankId = option.dataset.bankId;
+            }
+
+        });
+
+        document.getElementById('add').addEventListener('tap', function() {
+            var bankuname = document.getElementById("bankuname").value;
+            var cardnum = document.getElementById("cardnum").value;
+            var bank = document.getElementById("bank").innerHTML;
+            var bankid = document.getElementById("bank").dataset.bankId;
+
+            if (bankuname == '') {
+                mui.alert('开户名称不能为空', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            } else if (bankuname.match(/[^\u4e00-\u9fa5]/g)) {
+                mui.alert('开户名称必须为汉字', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            }
+
+            if (bank == '') {
+                mui.alert('请选择银行卡或者输入银行卡', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            }
+
+            if (cardnum == '') {
+                mui.alert('请输入银行卡号', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+
+            } else if (!cardnum.match(/^\d{16}|\d{19}$/)) {
+                mui.alert('银行卡长度应为16或19位', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+
+            }
+            mui.ajax("{:U('UserCenter/addBankCard')}", {
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    bankuname: bankuname,
+                    bank: bank,
+                    cardnum: cardnum,
+                    bankid: bankid
+                },
+                success: function(data) {
+                    console.log(data);
+                    if (data == 0) {
+                        mui.alert('信息不能为空');
+                        return false;
+                    } else if (data == 1) {
+                        mui.alert('添加成功', ' ', ['好的'], function() {
+                            setTimeout(function() {
+                                window.location.href = "{:U('/App/UserCenter/heartRedeemOne')}";
+                            }, 1000)
+                        });
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    } else {
+                        mui.alert('添加失败', ' ', ['好的'], null);
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/tears.png')";
+                    }
+                },
+            })
+
+        });
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>账号与安全</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/setting.css" />
+</head>
+
+<body>
+
+    <header class="mui-bar mui-bar-nav head-nav">
+        <h1 class="mui-title logo"></h1>
+    </header>
+
+    <div class="mui-content acount">
+        <div class="list">
+            <ul class="mui-table-view">
+                <li class="mui-table-view-cell">
+                    <label><i class="iconfont icon-user"></i>账号</label>
+                    <span>{$user.nickname}</span>
+                    <!-- <a class="mui-btn <if condition=" $user[ 'username'] neq '' ">hide</if>" id="phoneBinding">绑定手机</a> -->
+                </li>
+            </ul>
+            <p>绑定账号</p>
+            <ul class="mui-table-view binding">
+                <li class="mui-table-view-cell">
+                    <label><i class="iconfont icon-phone"></i>手机号</label>
+                    <a data-type="1" class="mui-btn has-binding" id="tellphone">已绑定</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <label><i class="iconfont icon-wechat"></i>微信</label>
+                    <a data-type="2" class="mui-btn <if condition="$user['wechat'] neq ''">has-binding</if>" id="wechat"><if condition="$user['wechat'] neq ''">已绑定<else/>未绑定</if></a>
+                    <!-- <span>需要先绑定手机号，才可绑定账号</span> -->
+                </li>
+                <li class="mui-table-view-cell">
+                    <label><i class="iconfont icon-qq"></i>QQ</label>
+                    <a data-type="3" class="mui-btn <if condition="$user['qq'] neq ''">has-binding</if>" id="QQ"><if condition="$user['qq'] neq ''">已绑定<else/>未绑定</if></a>
+                    <!--<span>需先绑定手机</span>-->
+                    <!--<a class="mui-btn un-binding" id="QQ">不可绑定</a>-->
+                </li>
+                <li class="mui-table-view-cell">
+                    <label><i class="iconfont icon-weibo"></i>微博</label>
+                    <a data-type="4" class="mui-btn <if condition="$user['weibo'] neq ''">has-binding</if>" id="weibo"><if condition="$user['weibo'] neq ''">已绑定<else/>未绑定</if></a>
+                    <!--<a class="mui-btn" id="weibo">绑定</a>-->
+                </li>
+            </ul>
+            <p>修改密码</p>
+            <ul class="mui-table-view password">
+                <li class="mui-table-view-cell <if condition=" $user[ 'password'] neq '' ">hide</if>">
+                    <label><i class="iconfont icon-login-password"></i>登录密码</label>
+                    <if condition="$user['password'] neq ''"><span>******</span></if>
+                    <a class="mui-btn" id="setPassword">设置</a>
+                </li>
+                <li class="mui-table-view-cell <if condition=" $user[ 'password'] eq '' ">hide</if>">
+                    <label><i class="iconfont icon-login-password"></i>登录密码</label>
+                    <if condition="$user['password'] neq ''"><span>******</span></if>
+                    <a class="mui-btn" id="modifyPassword">修改</a>
+                </li>
+                <li class="mui-table-view-cell  <if condition=" $user[ 'pay_pwd'] neq '' ">hide</if>">
+                    <label><i class="iconfont icon-login-password"></i>支付密码</label>
+                    <a class="mui-btn" id="setPayPassword">设置</a>
+                </li>
+                <li class="mui-table-view-cell  <if condition=" $user[ 'pay_pwd'] eq '' ">hide</if> ">
+                    <label><i class="iconfont icon-pay-password"></i>支付密码</label><span>******</span>
+                    <a class="mui-btn" id="modifyPayPassword">修改</a>
+                </li>
+            </ul>
+            <a class="btn-lg" id="logout">退出登录</a>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui.init();
+        document.getElementById('tellphone').addEventListener('tap', function(e) {
+            e.stopPropagation();
+            mui.openWindow({
+                url: '/App/Setting/bindingDetails/type/' + this.dataset.type
+            });
+        });
+        document.getElementById('wechat').addEventListener('tap', function(e) {
+            e.stopPropagation();
+            if(this.classList.contains('has-binding')){
+                mui.openWindow({
+                    url: '/App/Setting/bindingDetails/type/' + this.dataset.type
+                });
+            }else{
+                mui.openWindow({
+                    url: "{:U('Public/weilogin')}",
+                    id: 'unbd-wechat'
+                });
+            }
+        });
+        document.getElementById('QQ').addEventListener('tap', function(e) {
+            e.stopPropagation();
+            if(this.classList.contains('has-binding')){
+                mui.openWindow({
+                    url: '/App/Setting/bindingDetails/type/' + this.dataset.type
+                });
+            }else{
+                mui.openWindow({
+                    url: "{:U('Public/qqlogin')}",
+                    id: 'unbd-wechat'
+                });
+            }
+        });
+        document.getElementById('weibo').addEventListener('tap', function(e) {
+            e.stopPropagation();
+            if(this.classList.contains('has-binding')){
+                mui.openWindow({
+                    url: '/App/Setting/bindingDetails/type/' + this.dataset.type
+                });
+            }else{
+                mui.openWindow({
+                    url: "{:U('Public/wblogin')}",
+                    id: 'unbd-wechat'
+                });
+            }
+        });
+        document.getElementById('setPassword').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/setPassword')}",
+                id: 'setPayPassword'
+            });
+        });
+        document.getElementById('modifyPassword').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/modifyPassword')}",
+                id: 'modifyPassword'
+            });
+        });
+        document.getElementById('setPayPassword').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/setPayPassword')}",
+                id: 'setPayPassword'
+            });
+        });
+        document.getElementById('modifyPayPassword').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/modifyPayPassword')}",
+                id: 'modifyPayPassword'
+            });
+        });
+        document.getElementById('logout').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Public/logout')}",
+                id: 'logout'
+
+            });
+        });
+        mui('.mui-bar').on('tap', '.logo', function() {
+            mui.openWindow({
+                url: "{:U('Index/index')}"
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>实名认证</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/userCenter.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.picker.min.css" />
+</head>
+
+<body data-auth="{$is_auth}">
+    <include file="Public/inc/header" />
+    <div class="mui-content name-verify">
+        <form action="" name=myform method="" id="myForm">
+            <div class="list">
+                <ul class="mui-table-view">
+                    <li class="mui-table-view-cell list-head">
+                        <h5 class="mui-pull-left">尊敬的用户 您现在的星级是</h5>
+                        <div class="outer-star" style="background-image: url('APP_DEFAULT_PATH/image/gray-star.png');">
+                            <div class="inner-star" style="width:<if condition=" $is_auth eq 3 or $is_auth eq 4 or $is_auth eq 0 ">0%;"<else/>{$level *20}%;"></if>
+                        </div>
+            </div>
+            </li>
+            <li class="mui-table-view-cell">
+                <label class="tip">真实姓名</label>
+                <input maxlength="12" type="text" name="name" id="name" value="{$true.name}" placeholder="请填写您的姓名">
+            </li>
+            <li class="mui-table-view-cell">
+                <label class="tip">身份证号</label>
+                <input type="text" name="id" value="{$true.id}" id="sfid" placeholder="请填写真实有效的信息">
+            </li>
+            <li class="mui-table-view-cell">
+                <label>出生年月</label>
+                <input id='birth' data-options='{"type":"date","beginYear":1980,"endYear":2016}' type="text" id="birth" name="birth" value="{: $ext['birth'] ? $ext['birth'] : '' }" placeholder="选择日期">
+                </span>
+            </li>
+            <li class="mui-table-view-cell">
+                <label>联系电话</label>
+                <input type="text" name="phone" value="{$phone}" id="phone" placeholder="仅支持中国大陆地区手机号码">
+            </li>
+            </ul>
+            <ul class="mui-table-view" style="margin-top: 15px;">
+                <li class="mui-table-view-cell">
+                    <label>毕业院校</label>
+                    <input type="text" name="edu" value="{$ext.edu}" id="edu">
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>工作单位</label>
+                    <input type="text" name="company" value="{$ext.company}" id="company">
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>联系地址</label>
+                    <input type="text" name="comaddr" value="{$ext.comaddr}" id="comaddr">
+                </li>
+                <li class="mui-table-view-cell">
+                    <label>电子邮箱</label>
+                    <input type="text" name="email" value="{$ext.email}" id="email" placeholder="请填写有效的邮箱地址">
+                </li>
+            </ul>
+            <a class="btn-lg" id="postInfo" type="button">提交</a>
+    </div>
+    </form>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script src="APP_DEFAULT_PATH/js/mui.picker.min.js"></script>
+    <script>
+    function textCounter(field, countfield, maxlimit) {
+        // 函数，3个参数，表单名字，表单域元素名，限制字符；  
+        if (field.value.length > maxlimit)
+        //如果元素区字符数大于最大字符数，按照最大字符数截断；  
+            field.value = field.value.substring(0, maxlimit);
+        else
+        //在记数区文本框内显示剩余的字符数；  
+            countfield.value = maxlimit - field.value.length;
+    }
+    </script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui.init();
+
+        mui('.mui-bar').on('tap', '.logo', function() {
+            mui.openWindow({
+                url: "{:U('Index/index')}",
+                id: 'recommend'
+            });
+        });
+        /*选择日期*/
+        document.getElementById('birth').addEventListener('tap', function() {
+            var optionsJson = this.getAttribute('data-options') || '{}',
+                options = JSON.parse(optionsJson),
+                id = this.getAttribute('id'),
+                picker = new mui.DtPicker(options),
+                that = this;
+            picker.show(function(rs) {
+                that.value = rs.text;
+                picker.dispose();
+            });
+        }, false);
+
+        /*是否已经实名验证判断*/
+        var isAuth = document.getElementsByTagName('body')[0].dataset.auth;
+        if (isAuth == 3) {
+            mui.confirm('微心愿正在审核你提交的认证信息，\n马上就好啦~', ' ', ['好的'], function(x) {
+                if (x.index == 0) {
+                    window.location.href = "{:U('/App/Index/index')}";
+                }
+            });
+
+            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+        }
+        if (isAuth == 4) {
+            mui.confirm('你的实名认证不通过，\n请修改后再提交审核~', ' ', ['好的'], function(x) {
+
+            });
+
+            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+        }
+
+        /*表单验证*/
+        document.getElementById('postInfo').addEventListener('tap', function() {
+            var name = document.getElementById("name").value,
+                sfid = document.getElementById("sfid").value,
+                birth = document.getElementById("birth").value,
+                edu = document.getElementById("edu").value,
+                company = document.getElementById("company").value,
+                comaddr = document.getElementById("comaddr").value,
+                phone = document.getElementById("phone").value,
+                email = document.getElementById("email").value;
+            // bank = document.getElementById("bank").value,
+            // bankcard = document.getElementById("bankcard").value,
+            // acount = document.getElementById("acount").value;
+
+            var myreg = /^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{4}$/;
+            //            var mobilephone = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+            if (name == '') {
+                mui.alert("“为什么不填好姓名和身份？\n别乱来啊，大家都是有身份的人！”", ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/fretful.png')";
+                return false;
+            } else if (!myreg.test(sfid)) {
+                mui.alert("“为什么不填好姓名和身份？\n别乱来啊，大家都是有身份的人！”", ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/fretful.png')";
+                return false;
+            } else {
+                mui.ajax("{:U('UserCenter/psnAuth')}", {
+                    type: 'POST',
+                    dataType: 'JOSN',
+                    data: {
+                        name: name,
+                        id: sfid,
+                        birth: birth,
+                        edu: edu,
+                        company: company,
+                        comaddr: comaddr,
+                        phone: phone,
+                        email: email
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        if (data == 1) {
+                            mui.alert('实名认证信息已提交，请耐心等待审核~', ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            setTimeout(function() {
+                                window.location.href = "{:U('/App/Index/index')}";
+                            }, 2000)
+                        } else {
+                            mui.alert('“提交失败”', ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/tears.png')";
+                        }
+                    },
+                })
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>更多银行卡</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/wishBean.css" />
+</head>
+
+<body>
+    <div class="mui-content bank-card">
+        <div class="bank-card-warpper">
+            <volist name='card' id='v'>
+                <div class="bank-card-item <if condition=" $v[ 'use'] eq 1 "> active <else/></if>" data-id="{$v['id']}">
+                    <span class="bank-card-img bank-card-{$v.bankid}"></span>
+                    <h5>{: ($v['bank']) ? $v['bank'] : $v['bankname']}</h5>
+                    <p>**** **** **** {$v.cardnum}</p>
+                    <i class="mui-icon mui-icon-checkmarkempty"></i>
+                    <i class="mui-icon mui-icon-closeempty hide"></i>
+                </div>
+            </volist>
+        </div>
+        <p>△选择默认赎回卡片<span class="mui-pull-right <if condition="$num eq 0">hide<else/></if>" id="deleteBankCard"><i class="mui-icon mui-icon-trash"></i>删除卡片</span><span class="mui-pull-right hide" id="cancel">取消</span></p>
+        <a class="add-bank-card" id="addBankCard">
+            <i class="mui-icon mui-icon-plusempty"></i>添加银行卡
+        </a>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui.init();
+        document.getElementById('addBankCard').addEventListener('tap', function() {
+            mui.openWindow({
+                url: '/App/WishBean/addBankCard/',
+                id: 'addBankCard'
+            });
+        });
+        /*点击删除银行卡*/
+        document.getElementById('deleteBankCard').addEventListener('tap', function() {
+            this.classList.toggle('hide');
+            document.getElementById('cancel').classList.toggle('hide');
+            mui('.bank-card-warpper').off('tap', '.bank-card-item', selectBankCard);
+            mui('.bank-card-warpper').on('tap', '.bank-card-item', deletdBankCard);
+
+            mui('.mui-icon-closeempty').each(function(i, e) {
+                e.classList.toggle('hide');
+            });
+            mui('.bank-card')[0].classList.add('delete-status');
+            mui('.bank-card-item').each(function(i, e) {
+                e.classList.remove('active');
+            });
+
+
+        });
+        /*取消删除银行卡*/
+        document.getElementById('cancel').addEventListener('tap', function() {
+            this.classList.toggle('hide');
+            document.getElementById('deleteBankCard').classList.toggle('hide');
+            mui('.bank-card-warpper').off('tap', '.bank-card-item', deletdBankCard);
+            mui('.bank-card-warpper').on('tap', '.bank-card-item', selectBankCard);
+            mui('.mui-icon-closeempty').each(function(i, e) {
+                e.classList.toggle('hide');
+            });
+            mui('.bank-card')[0].classList.remove('delete-status');
+        });
+        /*选择银行卡*/
+        mui('.bank-card-warpper').on('tap', '.bank-card-item', selectBankCard);
+
+        function deletdBankCard() {
+            var bid = this.dataset.id;
+            mui.confirm("确认要删除该银行卡嘛？", ' ', ['取消', '确认'], function(b) {
+                if (b.index == 1) {
+                    mui.ajax("{:U('WishBean/deletebank')}", {
+                        type: 'POST',
+                        dataType: 'JSON',
+                        data: {
+                         bid: bid
+                        },
+                        success: function(data) {
+                            console.log(data);
+                            if (data == 1) {
+                                mui.toast('删除成功');
+                                setTimeout(function() {
+                                    window.location.reload();
+                                }, 1000);
+                            } else {
+                                mui.toast('删除失败');
+                            }
+                        },
+                    })
+                }
+            });
+            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+
+        }
+
+        function selectBankCard() {
+            var id = this.dataset.id;
+            //            alert(id);
+            mui.ajax("{:U('WishBean/bankCard')}", {
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    id: id
+                },
+                success: function(data) {
+                    console.log(data);
+                    if (data == 1) {
+                        mui.alert('选取成功', ' ', ['好的'], null);
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                        setTimeout(function() {
+                            window.location.href = "{:U('App/WishBean/redeem')}";
+                        }, 2000)
+
+                    } else {
+                        mui.alert('选取失败', ' ', ['好的'], null);
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                    }
+
+                },
+            })
+            mui('.bank-card-item').each(function(i, e) {
+                e.classList.remove('active');
+            });
+            this.classList.add('active');
+        }
+    });
+    </script>
+</body>
+
+</html>

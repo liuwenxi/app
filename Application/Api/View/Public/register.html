@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>注册</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/login_register.css" />
+</head>
+
+<body>
+    <header class="mui-bar mui-bar-nav opactiy-bar backward-nav">
+        <a class="mui-action-back mui-pull-left">
+            <i class="mui-icon mui-icon-left-nav mui-pull-left"></i>
+            <span class="mui-pull-left">返回</span>
+        </a>
+    </header>
+    <div class="mui-content login-register">
+        <div class="dynamic-bg"></div>
+        <div class="form">
+            <img src="APP_DEFAULT_PATH/image/logo.png" ait="wish4you logo">
+                <div class="form-item">
+                    <i class="mui-icon mui-icon-person"></i>
+                    <input type="text" name="phone" id="phone" placeholder="请输入您的手机号" />
+                </div>
+                <div class="form-item">
+                    <i class="mui-icon mui-icon-locked"></i>
+                    <input type="text" id="verify" placeholder="请输入右侧数字" /><img class="v-code" id="verimg"  alt="验证码" src="{:U('Public/verify_c',array())}" title="点击刷新">
+                </div>
+                <div class="form-item">
+                    <i class="mui-icon mui-icon-locked"></i>
+                    <input type="text" name="password" id="identifyingCode" placeholder="请输入验证码" />
+                    <a class="code" id="getCode">获取验证码</a>
+                </div>
+                <div class="form-item">
+                    <i class="mui-icon mui-icon-locked"></i>
+                    <input type="password" name="password" id="pwd" placeholder="请设置密码" />
+                </div>
+                <div class="form-item">
+                    <i class="mui-icon mui-icon-locked"></i>
+                    <input type="password" name="password" id="againPwd" placeholder="请再次输入密码" />
+                </div>
+                <input id="regSubmit" type="button" value="注册" />
+                <div class="config">
+                    <input checked class="mui-pull-left" id="terms" type="checkbox" name="terms">
+                    <label class="mui-pull-left">我已阅读并同意</label>
+                    <a id="termsInfo">《微心愿服务条款》</a>
+                </div>
+            <a class="mui-pull-right has-account" id="login">已有账号</a>
+            <div class="orther-login">
+                <div>
+                    <div class="line mui-pull-left"></div>或
+                    <div class="line mui-pull-right"></div>
+                </div>
+                <ul class="clearfix">
+                    <li><a href="{:U('Public/weilogin')}"><i class="mui-icon mui-icon-weixin"></i></a></li>
+                    <li><a href="{:U('Public/qqlogin')}"><i class="mui-icon mui-icon-qq"></i></a></li>
+                    <li><a href="{:U('Public/wblogin')}"><i class="mui-icon mui-icon-weibo"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="mui-backdrop terms-info hide">
+        <div class="info-dialog">
+            <div class="dialog-inner ">
+                <div class="dialog-title clearfix">
+                    <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                </div>
+                <div class="dialog-content mui-scroll-wrapper">
+                    <div class="mui-scroll">
+                        <h4>微心愿服务条款</h4>
+                        <p>数据未对接</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script type="text/javascript">
+    mui.init();
+    mui.ready(function() {
+        /*说明弹出框*/
+        mui('.dialog-title').on('tap', 'i', function() {
+            this.parentNode.parentNode.parentNode.parentNode.classList.toggle('hide');
+        });
+        document.getElementById('termsInfo').addEventListener('tap', function() {
+            mui('.terms-info')[0].classList.toggle('hide');
+        });
+
+        document.getElementById('verimg').addEventListener('tap', function() {
+            mui('#verimg')[0].src="{:U('Public/verify_c',array())}";
+        });
+        /*滚动设置*/
+        mui('.mui-scroll-wrapper').scroll({
+            deceleration: 0.0005
+        });
+        //获取验证码
+        var flag = true;
+        document.getElementById('getCode').addEventListener('tap', function() {
+            if (flag) {
+                var verify = document.getElementById("verify").value;
+                if(verify ==''){
+                    mui.alert("请选输入验证码！");return false;
+                }
+                var phone = document.getElementById("phone").value;
+                var that = this;
+                if (chkPhone(phone)) {
+                    mui.ajax("{:U('Public/sendSms')}", {
+                        type: 'POST',
+                        dataType: 'JSON',
+                        data: {
+                            phone: phone,
+                            type: 0,
+                            verify: verify,
+                        },
+                        success: function(data) {
+                            if (data == 1) {
+                                flag = !flag;
+
+                                var second = 180;
+                                var timer = setInterval(function() {
+                                    that.innerHTML = '验证码(' + (--second) + ')s';
+                                    that.style.background = 'gray';
+                                    if (second == 0) {
+                                        that.innerHTML = '重新获取';
+                                        that.style.background = '#60ceff';
+                                        clearInterval(timer);
+                                        flag = !flag;
+                                    }
+                                }, 1000);
+
+                                mui.toast('短信发送成功，请注意查收短信！');
+                            } else if (data == 3) {
+                                mui.alert("三分钟内不能重复发送短信！", ' ', ['好的'], null);
+                                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            }else if(data == 2){
+                                mui.alert("号码非法！");return false;
+                            }else if(data == 4){
+                                mui.alert("非法类型！");return false;
+                            }else if(data == 5){
+                                mui.alert("验证码错误！");
+                                mui('#verimg')[0].src="{:U('Public/verify_c',array())}";
+                                return false;
+                            }
+                        },
+                        error: function() {
+
+                        }
+                    })
+                }
+            }
+
+        });
+
+        //提交注册认证信息
+        document.getElementById('regSubmit').addEventListener('tap', function() {
+            var phone = document.getElementById("phone").value,
+                pwd = document.getElementById("pwd").value,
+                repwd = document.getElementById("againPwd").value,
+                smscode = document.getElementById("identifyingCode").value,
+                terms = document.getElementById("terms").checked;
+            if (!terms) {
+                mui.alert("“你已经了解 微心愿服务条款 了么？\n需要确认哦”", ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/boring.png')";
+                return false;
+            }
+            console.log(terms);
+            //数据不能为空才能操作提交
+            if (phone == '' || pwd == '' || repwd == '' || smscode == '') {
+                mui.alert("信息不能有空！", ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            } else if (pwd != repwd) {
+                mui.alert("两次输入的密码不一致！请重新输入！", ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            } else if (pwd.length < 6 || pwd.length > 16) {
+                mui.alert("密码长度应为6-16位！", ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            }
+            chkPhone(phone)
+
+            mui.ajax("{:U('Public/register')}", {
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    phone: phone,
+                    pwd: pwd,
+                    smscode: smscode,
+                    type: 0
+                },
+                success: function(data) {
+                    console.log(data);
+                    if (data == 1) {
+                        mui.openWindow({
+                            url: "{:U('Public/selectTag')}",
+                        });
+                    } else if (data == 2) {
+                        mui.alert('该手机号已注册！', ' ', ['好的'], null);
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                        return false;
+                    } else if (data == 3) {
+                        mui.alert('验证码错误！', ' ', ['好的'], null);
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                        return false;
+                    } else if (data == 4) {
+                        mui.alert('短信已过期，请重新发送！', ' ', ['好的'], null);
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                        return false;
+                    } else {
+                        mui.alert('注册失败！请重新注册！', ' ', ['好的'], null);
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                        return false;
+                    }
+                },
+                error: function() {
+
+                }
+            });
+        });
+
+        function chkPhone(phone) {
+            var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+            if (!myreg.test(phone)) {
+                mui.alert('请输入有效的手机号码！', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            } else {
+                return true;
+            }
+        }
+        document.getElementById('login').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Public/login')}",
+                id: 'login'
+            });
+        });
+    })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<div id="slider" class="mui-slider">
+    <div class="mui-slider-group mui-slider-loop">
+        <volist name="banner" key="k" id="vo">
+            <if condition="$bc==$k">
+                <div class="mui-slider-item mui-slider-item-duplicate">
+                    <a href="#" data-url="{$vo['jump_url']}" class="jump_url" style="background-image:url('{:($vo['img']) ? $vo['img'] :'APP_DEFAULT_PATH/image/banner.png'}');">
+                    </a>
+                </div>
+            </if>
+        </volist>
+        <volist name="banner" id="vo">
+            <div class="mui-slider-item mui-slider-item-duplicate">
+                <a href="#" data-url="{$vo['jump_url']}" class="jump_url" style="background-image:url('{:($vo['img']) ? $vo['img'] :'APP_DEFAULT_PATH/image/banner.png'}');">
+                </a>
+            </div>
+        </volist>
+        <volist name="banner" key="k" id="vo">
+            <if condition="$k == 1">
+                <div class="mui-slider-item mui-slider-item-duplicate">
+                    <a href="#" data-url="{$vo['jump_url']}" class="jump_url" style="background-image:url('{:($vo['img']) ? $vo['img'] :'APP_DEFAULT_PATH/image/banner.png'}');">
+                    </a>
+                </div>
+            </if>
+        </volist>
+    </div>
+    <div class="mui-slider-indicator">
+        <volist name="banner" key="k" id="vo">
+            <if condition="$k==1">
+                <div class="mui-indicator mui-active"></div>
+                <else/>
+                <div class="mui-indicator"></div>
+            </if>
+        </volist>
+    </div>
+</div>

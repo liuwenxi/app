@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>我要兑奖</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/exchange.css" />
+</head>
+
+<body>
+    <include file="inc/header" />
+    <nav class="mui-bar mui-bar-tab">
+        <button id="wantExchange" disabled="disabled" <if condition=" $sgn eq 1 ">class="hide" </if>>我要兑奖</button>
+        <button id="myCoupon"  <if condition=" $sgn eq 0 ">class="hide" </if>>我的奖券</button>
+    </nav>
+    <div class="mui-content mui-scroll-wrapper exchange">
+        <div class="mui-scroll">
+            <ul id="firstLine" class="clearfix">
+                <volist name="actList0" id="al" empty="暂无兑奖信息">
+                    <li data-id="{$al['id']}" class="exchange-item">
+                        <span data-id="" class="avatar" style="background-image:url('{: ($al['toupic']) ? $al['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                        <h6>{$al['nickname']}</h6>
+                        <p class="title">{$al['level']}</p>
+                        <p class="content"> {$al['remark']}<span>{$al['money']}元</span></p>
+                    </li>
+                </volist>
+            </ul>
+            <ul class="clearfix">
+                <volist name="actList1" id="al">
+                    <li data-id="{$al['id']}" class="exchange-item">
+                        <span data-id="" class="avatar" style="background-image:url('{: ($al['toupic']) ? $al['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                        <h6>{$al['nickname']}</h6>
+                        <p class="title">{$al['level']}</p>
+                        <p class="content"> {$al['remark']}<span>{$al['money']}元</span></p>
+                    </li>
+                </volist>
+            </ul>
+            <ul class="clearfix">
+                <volist name="actList2" id="al">
+                    <li data-id="{$al['id']}" class="exchange-item">
+                        <span data-id="" class="avatar" style="background-image:url('{: ($al['toupic']) ? $al['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                        <h6>{$al['nickname']}</h6>
+                        <p class="title">{$al['level']}</p>
+                        <p class="content"> {$al['remark']}<span>{$al['money']}元</span></p>
+                    </li>
+                </volist>
+            </ul>
+        </div>
+    </div>
+    <div class="mui-backdrop post-exchange hide">
+        <div class="exchange-item-details">
+            <span class="avatar" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+            <h6>{$user['nickname']}</h6>
+            <span><php>echo date('Y-m-d',time());</php></span>
+            <p>少年，看你骨骼惊奇，你不中奖谁中奖，快输入兑换码，领取你的大奖吧！</p>
+            <div class="upload-wrapper" id="image">
+                <div class="upload">
+                    <input type="file" id="uploadImage" name="uploadImage">
+                    <span>+</span>
+                    <h5>上传图片</h5>
+                    <p>（上传你和锦囊的合照奖品会更大哦）</p>
+                </div>
+            </div>
+            <div class="voucher clearfix ">
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <input id="exchangNumInput" type="text" name="cdkey" placeholder="请输入你的兑奖码">
+                <p><a id="exchange">点击<br>兑奖</a></p>
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+        </div>
+        <div class="tips hide">
+            <i class="mui-icon mui-icon-closeempty"></i>
+            <h4></h4>
+            <p></p>
+        </div>
+        <div class="receive hide">
+            <i class="mui-icon mui-icon-closeempty"></i>
+            <img src="">
+            <p>亲可以在“我要兑奖-我的奖券”中找到体验券哦！</p>
+            <a id="receive">点击领取</a>
+        </div>
+    </div>
+    <include file="inc/loading" />
+    <div class="mui-backdrop show-exchange hide">
+        <div class="exchange-item-details">
+            <span class="avatar" data-id=""></span>
+            <h6></h6>
+            <span class="time"></span>
+            <p></p>
+            <div class="image">
+            </div>
+            <div class="voucher clearfix ">
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <h4></h4>
+                <p>代金券
+                    <br><span></span><small>元</small></p>
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            <div class="level" style="margin-top: 20px">
+                <h4 style="font-size: 14px; color: #60ceff"></h4></div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js "></script>
+    <script src="APP_DEFAULT_PATH/js/exif.js "></script>
+    <script>
+    mui.ready(function() {
+        /*兑换墙布局*/
+        var scrollElem = mui('.mui-scroll')[0],
+            firstlineCount = mui('#firstLine li').length,
+            exChangeElemWidth = mui('#firstLine li')[0] ? mui('#firstLine li')[0].offsetWidth : 180,
+            exChangeElemMar = mui('#firstLine li')[1] ? parseInt(getComputedStyle(mui('#firstLine li')[1], null).marginLeft) : 0,
+            wallWidth = exChangeElemWidth * firstlineCount + exChangeElemMar * (firstlineCount - 1),
+            padWidth = parseInt(getComputedStyle(scrollElem, null)) * 2,
+            scrollWidth = scrollElem.offsetWidth,
+            bodywidth = mui('body')[0].offsetWidth,
+            /*最大长度设置*/
+            maxWidth = wallWidth > bodywidth ? wallWidth + 'px' : bodywidth * 2 + 'px';
+        mui('#firstLine')[0].style.width = maxWidth;
+
+        scrollElem.addEventListener('swipeleft', function() {
+            console.log('left');
+        });
+        scrollElem.addEventListener('swiperight', function() {
+            console.log('right');
+        });
+
+        // animate(scrollElem,wallWidth);
+
+        var timer;
+
+        function animate(elem, dest) {
+            var step = 10;
+            timer = setInterval(function() {
+                console.log(elem.style.transform)
+            }, 1000 / 16);
+        }
+
+
+        mui.init();
+        mui('.mui-bar').on('tap', '.logo', function() {
+            mui.openWindow({
+                url: "{:U('Index/index')}"
+            });
+        });
+        /*滚动设置*/
+        var deceleration = mui.os.ios ? 0.003 : 0.0009;
+        mui('.mui-scroll-wrapper').scroll({
+            scrollY: false, //是否竖向滚动
+            scrollX: true, //是否横向滚动
+            indicators: true, //是否显示滚动条
+            deceleration: deceleration, //阻尼系数,系数越小滑动越灵敏
+            bounce: false, //是否启用回弹
+        });
+        document.getElementById('myCoupon').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U( 'Activity/myCoupon')} ",
+            });
+        });
+        /*图片上传预览*/
+        var image = '';
+        document.querySelector('#uploadImage').addEventListener('change', function() {
+
+            var file = this.files[0];
+            var orientation;
+            //EXIF js 可以读取图片的元信息  https://github.com/exif-js/exif-js
+            EXIF.getData(file, function() {
+                orientation = EXIF.getTag(this, 'Orientation');
+            });
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                getImgData(this.result, orientation, function(data) {
+                    image = data;
+                    document.querySelector('#image').style.backgroundImage = 'url(" ' + data + ' ")';
+                    mui('.upload')[0].classList.add('hide');
+                });
+            }
+            reader.readAsDataURL(file);
+        });
+        /*点击兑奖*/
+        mui('#exchange')[0].addEventListener('tap', function(e) {
+            mui('#postingMask')[0].classList.remove('hide');
+            var exchangeNum = mui('#exchangNumInput')[0].value;
+            if (exchangeNum == '' || image == '') {
+                mui.toast('兑换码和锦囊自拍缺一不可哟~');
+                mui('#postingMask')[0].classList.add('hide');
+                return;
+            }
+            mui.ajax("{:U( 'Activity/ajax_uploads')} ", {
+                success: function(json) {
+                    
+                    var json_obj = JSON.parse(json);
+                    if (json_obj.status == 0) {
+                        mui('.receive img')[0].src = 'APP_DEFAULT_PATH/image/prize-' + json_obj.prize + '.png';
+                        mui('.receive')[0].classList.remove('hide');
+                        mui('.exchange-item-details')[0].classList.add('hide');
+                        mui('#postingMask')[0].classList.add('hide');
+                    } else if (json_obj.status == 1) {
+                        mui.toast("兑换码和锦囊自拍缺一不可哟~ ");
+                        mui('#postingMask')[0].classList.add('hide');
+                    } else if (json_obj.status == 2) {
+                        renderTips('咦，中奖信息咋没有呢？', '没有找到该兑换码的信息，检查一下兑换码有没有输错，再试一遍吧~');
+                        mui('#postingMask')[0].classList.add('hide');
+                    } else if (json_obj.status == 3) {
+                        renderTips('呀，您已兑换过了~', '一个账户只能兑换一次哦');
+                        mui('#postingMask')[0].classList.add('hide');
+                    } else if (json_obj.status == 4) {
+                        mui.toast("呀，兑奖时间已到期了~ ");
+                        mui('#postingMask')[0].classList.add('hide');
+                    } else if (json_obj.status == 5) {
+                        mui.toast("咦，兑换失败，刷新再试试吧 ");
+                        mui('#postingMask')[0].classList.add('hide');
+                    }
+
+                },
+                type: 'POST',
+                data: {
+                    cdkey: exchangeNum,
+                    image: image
+                }
+            });
+
+            function renderTips(title, content) {
+                mui('.tips')[0].classList.remove('hide');
+                mui('.tips h4')[0].innerHTML = title;
+                mui('.tips p')[0].innerHTML = content;
+            }
+        });
+        /*关闭提示*/
+        mui('.tips i')[0].addEventListener('tap', function(e) {
+            e.stopPropagation();
+            var that = this;
+            setTimeout(function() {
+                that.parentNode.classList.add('hide');
+            }, 300);
+        });
+        mui('.receive')[0].addEventListener('tap', function(e) {
+            e.stopPropagation();
+            mui.toast('领取成功~');
+            setTimeout(function() {
+                mui.openWindow({
+                    url: "{:U( 'Activity/exchange')} "
+                });
+            }, 500);
+
+        });
+        /*关闭代金券详情及相关处理*/
+        mui('body').on('tap', '.mui-backdrop', function() {
+            this.classList.toggle('hide');
+        });
+        mui('#wantExchange')[0].addEventListener('tap', function() {
+            mui('.post-exchange')[0].classList.toggle('hide');
+        });
+        mui('.mui-backdrop').on('tap', '.exchange-item-details', function(e) {
+            e.stopPropagation();
+        });
+        mui('#exchangNumInput')[0].addEventListener('tap', function(e) {
+            e.stopPropagation();
+        });
+        mui('#uploadImage')[0].addEventListener('tap', function(e) {
+            e.stopPropagation();
+        });
+        /*点击头像跳转*/
+        mui('.show-exchange').on('tap','.avatar',function(e){
+            e.stopPropagation();
+            mui.openWindow({
+                url: '/App/Hiscenter/hiscenter/user/' + this.dataset.id
+            });
+        });
+        /*打开代金券详情*/
+        mui('.mui-scroll').on('tap', '.exchange-item', function() {
+            var exchangeId = this.dataset.id,
+                exchengDetails = mui('.show-exchange')[0],
+                time = mui('.exchange-item-details span')[0],
+                slogan = mui('.exchange-item-details > p')[0],
+                image = mui('.image')[0];
+
+            mui('.exchange-item-details .avatar')[0].dataset.id = this.children[0].dataset.id;
+//            mui('.exchange-item-details .avatar')[0].style.cssText = this.children[0].style.cssText;
+//            mui('.exchange-item-details h6')[0].innerHTML = this.children[1].innerHTML;
+//            mui('.exchange-item-details .voucher h4')[0].innerHTML = this.children[2].innerHTML;
+//            mui('.exchange-item-details .voucher p span')[0].innerHTML = this.children[3].children[0].innerHTML.split('元')[0];
+
+
+
+            mui.ajax("{:U( 'Activity/ajax_getInfo')} ", {
+                success: function(json) {
+                    var json_obj = JSON.parse(json);
+                    mui('.show-exchange .avatar')[0].style.backgroundImage = 'url(" ' + json_obj.toupic + ' ")';
+                    mui('.show-exchange .avatar')[0].dataset.id = json_obj.uid;
+                    mui('.show-exchange .image')[0].style.backgroundImage = 'url(" ' + json_obj.user_img + ' ")';
+                    mui('.show-exchange .time')[0].innerHTML = json_obj.time;
+                    mui('.show-exchange .voucher h4')[0].innerHTML = json_obj.level;
+                    mui('.show-exchange .level h4')[0].innerHTML = json_obj.prize;
+                    mui('.show-exchange .voucher p span')[0].innerHTML = json_obj.money.split('元')[0];
+
+                    exchengDetails.classList.toggle('hide');
+                },
+                type: 'POST',
+                data: {
+                    id: exchangeId
+                }
+            });
+        });
+        // @param {string} img 图片的base64
+        // @param {int} dir exif获取的方向信息
+        // @param {function} next 回调方法，返回校正方向后的base64
+        function getImgData(img, dir, next) {
+            var image = new Image();
+            image.onload = function() {
+                var degree = 0,
+                    drawWidth, drawHeight, width, height;
+                drawWidth = this.naturalWidth;
+                drawHeight = this.naturalHeight;
+                //以下改变一下图片大小
+                var maxSide = Math.max(drawWidth, drawHeight);
+                if (maxSide > 1024) {
+                    var minSide = Math.min(drawWidth, drawHeight);
+                    minSide = minSide / maxSide * 1024;
+                    maxSide = 1024;
+                    if (drawWidth > drawHeight) {
+                        drawWidth = maxSide;
+                        drawHeight = minSide;
+                    } else {
+                        drawWidth = minSide;
+                        drawHeight = maxSide;
+                    }
+                }
+                var canvas = document.createElement('canvas');
+                canvas.width = width = drawWidth;
+                canvas.height = height = drawHeight;
+                var context = canvas.getContext('2d');
+                //判断图片方向，重置canvas大小，确定旋转角度，iphone默认的是home键在右方的横屏拍摄方式
+                switch (dir) {
+                    //iphone横屏拍摄，此时home键在左侧
+                    case 3:
+                        degree = 180;
+                        drawWidth = -width;
+                        drawHeight = -height;
+                        break;
+                        //iphone竖屏拍摄，此时home键在下方(正常拿手机的方向)
+                    case 6:
+                        canvas.width = height;
+                        canvas.height = width;
+                        degree = 90;
+                        drawWidth = width;
+                        drawHeight = -height;
+                        break;
+                        //iphone竖屏拍摄，此时home键在上方
+                    case 8:
+                        canvas.width = height;
+                        canvas.height = width;
+                        degree = 270;
+                        drawWidth = -width;
+                        drawHeight = height;
+                        break;
+                }
+                //使用canvas旋转校正
+                context.rotate(degree * Math.PI / 180);
+                context.drawImage(this, 0, 0, drawWidth, drawHeight);
+                //返回校正图片
+                next(canvas.toDataURL("image/jpeg ", .8));
+            }
+            image.src = img;
+        }
+    });
+    </script>
+</body>
+
+</html>

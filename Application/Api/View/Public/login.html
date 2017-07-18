@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>登录</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/login_register.css" />
+</head>
+
+<body>
+    <header class="mui-bar mui-bar-nav opactiy-bar backward-nav">
+        <a class="mui-action-back mui-pull-left">
+            <i class="mui-icon mui-icon-left-nav mui-pull-left"></i>
+            <span class="mui-pull-left">返回</span>
+        </a>
+    </header>
+    <div class="mui-content login-register">
+        <div class="dynamic-bg"></div>
+        <div class="form">
+            <img src="APP_DEFAULT_PATH/image/logo.png" ait="wish4you logo">
+            <form action="" method="post">
+                <div class="form-item">
+                    <i class="mui-icon mui-icon-person"></i>
+                    <input type="text" name="phone" id="phone" placeholder="请输入您的手机号" />
+                </div>
+                <div class="form-item">
+                    <i class="mui-icon mui-icon-locked"></i>
+                    <input type="password" name="password" id="pwd" placeholder="请输入密码" />
+                </div>
+                <input type="button" id="login" value="登录" />
+            </form>
+            <div class="register-forget">
+                <a id="register" class="register">立即注册！</a>
+                <a id="forget" class="forget">忘记密码？</a>
+            </div>
+            <div class="orther-login">
+                <div>
+                    <div class="line mui-pull-left"></div>或
+                    <div class="line mui-pull-right"></div>
+                </div>
+                <ul class="clearfix">
+                    <li><a href="{:U('Public/weilogin')}"><i class="mui-icon mui-icon-weixin"></i></a></li>
+                    <li><a href="{:U('Public/qqlogin')}"><i class="mui-icon mui-icon-qq"></i></a></li>
+                    <li><a href="{:U('Public/wblogin')}"><i class="mui-icon mui-icon-weibo"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script>
+    mui.ready(function() {
+        mui.init();
+
+        document.getElementById('register').addEventListener('tap', function() {
+            setTimeout(function() {
+                mui.openWindow({
+                    url: "{:U('Public/register')}",
+                    id: 'register'
+                });
+            }, 300);
+
+        });
+        document.getElementById('forget').addEventListener('tap', function() {
+            setTimeout(function() {
+                mui.openWindow({
+                    url: "{:U('Public/forgetPassword')}",
+                    id: 'forget'
+                });
+            }, 300);
+        });
+
+        document.getElementById('login').addEventListener('tap', function() {
+            var pwd = document.getElementById("pwd").value;
+            var phone = document.getElementById("phone").value;
+            chkPhone(phone)
+            if (phone == '') {
+                return false;
+            };
+            if (pwd == '') {
+                mui.alert("密码不能为空", ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            }
+            mui.ajax("{:U('Public/login')}", {
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        phone: phone,
+                        pwd: pwd
+                    },
+                    success: function(msg) {
+                        console.log(msg);
+                        if (msg == 1) {
+                            mui.toast("登录成功,正在跳转...");
+                            setTimeout(function() {
+                                location.href = "{:U('/App/Index/index')}";
+                            }, 2000)
+                        } else if (msg == 2) {
+                            mui.alert("密码错误！请重新输入", ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            return false;
+                        } else if (msg == 3) {
+                            mui.confirm('密码错误，是否修改密码？', '提示', ['马上修改', '返回'], function(x) {
+                                if (x.index == 0) {
+                                    location.href = "/App/Public/modifyAccount/phone/" + phone + ".html";
+                                }
+                            })
+                        } else {
+                            mui.toast("该号码还没有注册！请先注册！");
+                            setTimeout(function() {
+                                location.href = "{:U('/App/Public/register')}";
+                            }, 2000);
+                        }
+                    },
+                    error: function() {
+
+                    }
+                })
+                //$("#loginForm").submit();
+                //     //return true;
+                // }
+        })
+
+        function chkPhone(phone) {
+            var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+            if (!myreg.test(phone)) {
+                mui.alert('请输入有效的手机号码！', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            } else {
+                return true;
+            }
+        };
+    });
+    </script>
+</body>
+
+</html>

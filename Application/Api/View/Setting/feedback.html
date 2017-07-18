@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>帮助与反馈</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/setting.css" />
+</head>
+
+<body>
+    <div class="mui-content help">
+        <div class="feedback clearfix">
+            <h5>意见反馈</h5>
+            <textarea id="des" maxlength="200"></textarea>
+            <span>(<span id="nowCount">0</span> / 200)</span>
+            <a class="btn mui-pull-right" id="fbsure">提交</a>
+        </div>
+        <div class="list">
+            <ul class="mui-table-view">
+                <li class="mui-table-view-cell list-head">
+                    用户使用指引
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="acount" class="mui-navigate-right">微心愿用户</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="help" class="mui-navigate-right">虚拟道具</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="about" class="mui-navigate-right">发布心愿</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="terms" class="mui-navigate-right">参与和还愿</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="contact" class="mui-navigate-right">等级与心级</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui.init();
+        document.getElementById('des').addEventListener('keyup', function() {
+            console.log(this.value.length);
+            document.getElementById('nowCount').innerHTML = this.value.length;
+        });
+
+        document.getElementById('fbsure').addEventListener('tap', function() {
+
+            var des = document.getElementById("des").value;
+
+            if (des == '') {
+                mui.alert('“提交的内容不能为空”', ' ', ['好的'], null);
+                document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                return false;
+            }
+
+            mui.ajax("{:U('Hiscenter/feedback')}", {
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    des: des
+                },
+                success: function(data) {
+                    if (data == 1) {
+
+                        mui.alert('“你说的每一句话我们都会深深地记着\n谢谢你( ^_^ )”', ' ', ['好的'], null);
+                        setTimeout(function() {
+                            window.location.href = "{:U('/App/Hiscenter/setting')}";
+                        }, 2000)
+                         document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+
+
+                        return false;
+                    } else if (data == 2) {
+
+                        mui.alert('提交的内容含有敏感词汇，请更改后上传！', ' ', ['好的'], null);
+                        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/surprise.png')";
+                        return false;
+                    } else {
+                        /* layer.open({
+                         content:'提交失败！',
+                         style:'background-color:#09C1FF; color:#fff; border:none;',
+                         time:2,
+                         }); */
+                    }
+                },
+                error: function() {
+
+                }
+            });
+        });
+        document.getElementById('acount').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/wishQA',array('type'=>1))}"
+            });
+        });
+        document.getElementById('help').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/wishQA',array('type'=>2))}"
+            });
+        });
+        document.getElementById('about').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/wishQA',array('type'=>3))}"
+            });
+        });
+        document.getElementById('terms').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/wishQA',array('type'=>4))}"
+            });
+        });
+        document.getElementById('contact').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/wishQA',array('type'=>5))}"
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>

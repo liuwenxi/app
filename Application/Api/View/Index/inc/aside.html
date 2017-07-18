@@ -1,0 +1,55 @@
+<aside class="mui-off-canvas-left" id="offCanvasSide">
+    <div class="mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <div class="side-bar-head clearfix <if condition="$tuser['uid'] eq 0 || $tuser['uid'] eq ''">hide<else/></if>">
+                <span class="avatar" id="login" data-mid="{$uid}" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/image/peas.png' }');"></span>
+                <a id="wishPool">还愿</a>
+                <if condition="$user !=''">
+                    <div class="content">
+                            <h4>{:($user['nickname']) ? $user['nickname'] : $user['username']}</h4><i class="<if condition="$user['sex'] eq '1'"> female <else /> male </if> "></i>
+                            <span>心愿豆：{$user['totalmon']}</span>
+                            <p>{$user['psn_sgntre']}</p>
+                    </div>
+                <else />
+                    <p>点击头像登录</p>
+                </if>
+            </div>
+
+            <div class="log-out-head clearfix <if condition="$tuser['uid'] neq 0">hide<else/></if>">
+                <span class="avatar" id="login" data-id="{$uid}" style="background-image: url('{: ($tuser['toupic']) ? $tuser['toupic'] : '__PUBLIC__App/image/peas.png' }');"></span>
+            </div>
+
+            <ul class="side-bar-body <if condition="$tuser['uid'] eq 0 || $tuser['uid'] eq ''">hide<else/></if>">
+                <li>
+                    <a id="UserCenter" data-mid="{$uid}"><i class="iconfont icon-user"></i>个人中心</a>
+                </li>
+                <li>
+                    <a id="nameVerify"><i class="iconfont icon-name-verify"></i>实名认证</a>
+                </li>
+                <li>
+                    <a id="wishBean"><i class="iconfont icon-bean"></i>我的心愿豆</a>
+                </li>
+                <li>
+                    <a id="level"><i class="iconfont icon-task"></i>任务与等级</a>
+                </li>
+                <li>
+                    <a id="massage"><i class="iconfont icon-chat"></i>消息<if condition="$unread neq 0"><span class="mui-badge mui-badge-danger">{$unread}</span></if></a>
+                </li>
+                <li>
+                    <a id="setting"><i class="iconfont icon-setting"></i>设置</a>
+                </li>
+            </ul>
+           <div class="log-out-body <if condition="$tuser['uid'] neq 0">hide</if>">
+             <if condition="$tuser['uid'] eq ''">
+                 <a id="loginBtn" class="btn-lg">登录</a>
+                 <elseif condition="$tuser['uid'] eq 0"/>
+                 <a id="phoneBinding" class="btn-lg">绑定</a>
+             </if>
+                <!-- <a id="registerBtn" class="btn-lg ">注册</a> -->
+                <p>登录后，可查看个人心愿，参与别人的心愿，完成任务获取奖励。更多功能等你来玩</p>
+                <a class="userSet" ><i class="iconfont icon-setting"></i>设置</a>
+                <a id="phoneBinding" class="btn-lg hide"></a><a id="loginBtn" class="btn-lg hide"></a>
+            </div>
+        </div>
+    </div>
+</aside>

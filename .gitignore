@@ -1,0 +1,12 @@
+
+
+.svn
+.idea
+gulpfile.js
+node_modules
+package.json
+Application/Common/Conf/config.php
+Runtime
+Uploads
+/nbproject/private/
+Application/Home

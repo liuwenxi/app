@@ -1,0 +1,213 @@
+<script>
+mui.ready(function() {
+    document.getElementById('index').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Index/index')}",
+            id: 'index'
+        });
+    });
+    document.getElementById('choice').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Index/choice')}",
+            id: 'choice'
+        });
+    });
+    document.getElementById('top').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Index/top')}",
+            id: 'top'
+        });
+    });
+    document.getElementById('explore').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Index/explore')}",
+            id: 'explore'
+        });
+    });
+    document.getElementById('complete').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Index/complete')}",
+            id: 'complete'
+        });
+    });
+    // document.getElementById('getFJxy').addEventListener('tap', function() {
+    //     //            mui.openWindow({
+    //     //                url: "{:U('Index/getFJxy')}",
+    //     //                id: 'getFJxy'
+    //     //            });
+    //     var currentActive = mui('.underline-tab .mui-control-item.mui-active')[0],
+    //     that = this;
+    //     mui.alert('附件功能暂未开放，敬请期待！', ' ', ['好的'], function() {
+    //     document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/boring.png')";
+    //     return false;
+    // });
+    document.getElementById('wishPool').addEventListener('tap', function() {
+         mui.alert('还愿功能暂未开放，敬请期待！', ' ', ['好的'], function() {
+
+        });
+        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/boring.png')";
+        return false;
+    });
+
+    document.getElementById('loginBtn').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Public/login')}"
+        });
+    });
+    // document.getElementById('registerBtn').addEventListener('tap', function() {
+    //     mui.openWindow({
+    //         url: "{:U('Public/register')}",
+    //         id: 'register'
+
+    //     });
+    // });
+
+    // document.getElementById('admin').addEventListener('tap', function() {
+    //     mui.openWindow({
+    //         url: "view/wishPool/admin.html',
+    //         id: 'admin'
+    //     });
+    // });
+    document.getElementById('postWish').addEventListener('tap', function() {
+        mui.ajax("{:U('Public/chk_auth')}", {
+            type: 'GET',
+            dataType: 'JSON',
+            data: {
+                auth: 1
+            },
+            success: function(data) {
+                if (data == 1) {
+                    window.location.href = "{:U('Wish/postWish')}";
+                } else if (data == 2) {
+                    mui.confirm('你还没登录呢，快去登录吧！', ' ', ['我再看看', '马上登录'], function(v) {
+                        if (v.index == 1) {
+                            mui.openWindow({
+                                url: "{:U('Public/login')}",
+                                id: 'login'
+                            });
+                        }
+                    });
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+
+                    return false;
+                } else if (data == 3) {
+                    mui.confirm('“您还没有实名认证！\n请先完善资料！”', ' ', ['我再看看', '马上完善'], function(v) {
+                        if (v.index == 1) {
+                            mui.openWindow({
+                                url: "{:U('UserCenter/nameVerify')}",
+                                id: 'nameVerify'
+                            });
+                        }
+                    });
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                    return false;
+                } else if (data == 4) {
+                    mui.alert("您的实名认证已在审核中，再耐心等等吧，先看看其他心愿吧~", ' ', ['好的'], null);
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                    return false;
+                }
+            },
+            error: function() {
+
+            }
+        });
+    })
+    document.getElementById('search').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Wish/searchWish')}",
+            id: 'wishDetails'
+        });
+    });
+    document.getElementById('login').addEventListener('tap', function() {
+        var uid = this.dataset.id;
+        if(uid !== ''){
+            return false;
+        }
+         mui.openWindow({
+            url: "{:U('Public/login')}",
+            id: 'login'
+        });
+
+    });
+    document.getElementById('UserCenter').addEventListener('tap', function() {
+        mui.openWindow({
+            url: '/App/UserCenter/index/user/' + this.dataset.mid,
+            id: 'UserCenter'
+        });
+    });
+    document.getElementById('nameVerify').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('UserCenter/nameVerify')}",
+            id: 'nameVerify'
+        });
+    });
+    document.getElementById('wishBean').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('WishBean/index')}",
+            id: 'wishBean'
+        });
+    });
+    document.getElementById('level').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('UserCenter/taskLevel')}",
+            id: 'level'
+        });
+    });
+    document.getElementById('massage').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('UserCenter/messageManage')}",
+            id: 'massage'
+        });
+    });
+    document.getElementById('setting').addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Setting/index')}",
+            id: 'setting'
+        });
+    });
+    mui('.userSet')[0].addEventListener('tap', function() {
+        mui.openWindow({
+            url: "{:U('Setting/index')}",
+            id: 'setting'
+        });
+    });
+    mui('.mui-control-content').on('tap', '.wish-item', function() {
+        sessionStorage.setItem('leaveScrollTop', mui('#pullrefresh > .mui-scroll')[0].style.transform);
+        sessionStorage.setItem('leaveScrollBarTop', mui('.mui-scrollbar-indicator')[1].style.transform);
+        mui.openWindow({
+            url: '/App/Wish/showWish/wishid/' + this.dataset.id
+        });
+    });
+    /*点击头像跳转*/
+    mui('.wish-list').on('tap','.avatar',function(e){
+        e.stopPropagation();
+        mui.openWindow({
+            url: '/App/UserCenter/index/user/' + this.dataset.id
+        });
+    });
+    /*点击头像跳转*/
+    mui('aside').on('tap','.avatar',function(e){
+        mui.openWindow({
+            url: '/App/UserCenter/index/user/' + this.dataset.mid
+        });
+    });
+})
+/**
+ * [字符串转DOM]
+ * @param  {[string]} str [拼接好的DOm字符串]
+ * @return {[DOM]}     [HTMLDOM]
+ */
+function parseDOM(str) {
+    var tempDom = document.createElement('div');
+    tempDom.innerHTML = str;
+    return tempDom.children[0];
+}
+/**
+ * [判断微信浏览器]
+ * @return {Boolean}
+ */
+function isWeixinBrowser() {
+    var ua = navigator.userAgent.toLowerCase();
+    return (/micromessenger/.test(ua)) ? true : false;
+}
+</script>

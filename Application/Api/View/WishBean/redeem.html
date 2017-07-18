@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>选择赎回到账银行卡</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/wishBean.css" />
+</head>
+
+<body>
+    <div class="mui-content bank-card">
+        <volist name='card' id='v'>
+            <div class="bank-card-item">
+                <span class="bank-card-img bank-card-{$v.bankid}"></span>
+                <h5>{: ($v['bankname']) ? $v['bankname'] : $v['bank']}</h5>
+                <p>**** **** **** {$v.cardnum}</p>
+            </div>
+        </volist>
+        <a id="addBankCard" class="add-bank-card <if condition=" $a neq '1' ">hide<else /></if>" id="addBankCard">
+            <i class="mui-icon mui-icon-plusempty"></i>添加银行卡
+        </a>
+        <p><span id="bankCard" class="mui-pull-right manage <if condition=" $a eq '1' ">hide <else /></if>">管理卡片<i class="mui-icon mui-icon-arrowright"></i></span></p>
+        <input type="hidden" value='{$get}' id="mon">
+        <a class="btn-lg <if condition=" $a eq '1' ">hide <else /></if>" id='Redeem' data-pay="{$a}">确认赎回</a>
+    </div>
+    <div class="mui-backdrop hide">
+        <div class="pay-dialog">
+            <div class="dialog-inner">
+                <div class="dialog-title clearfix">
+                    <h5 class="mui-pull-left">请输入微心愿支付密码</h5>
+                    <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                </div>
+                <div class="dialog-content">
+                    <div class="pay-tips">
+                        <span class="mui-pull-left">赎回金额：<span class="count">{$get}</span>元</span>
+                    </div>
+                    <div class="input-warpper clearfix">
+                        <input class="mui-pull-left" type="password" id="payPassword" name="">
+                        <a class="mui-pull-right" id="pay" data-id="{$v['id']}">确定</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init();
+    document.getElementById('bankCard').addEventListener('tap', function() {
+        mui.openWindow({
+            url: '/App/WishBean/bankCard/',
+            id: 'bankCard'
+        });
+    });
+    document.getElementById('addBankCard').addEventListener('tap', function() {
+        mui.openWindow({
+            url: '/App/WishBean/addBankCard/',
+            id: 'addBankCard'
+        });
+    });
+
+    document.getElementById('Redeem').addEventListener('tap', function() {
+       var mon = document.getElementById('mon').value;
+       var pay = this.dataset.pay;
+       if(pay == 5){
+          mui.confirm('你还没设置支付密码，是否前往设置',' ',['前往','下次'],function(x){
+              if(x.index==0){
+               var jump_redeem = window.location.href
+                //设置名称为name,值为value的Cookie
+               document.cookie = "jump_redeem" + "=" + jump_redeem + ";path=/"
+              window.location.href = "{:U('/App/Setting/setPayPassword')}";
+             }
+        }) 
+        document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+        mui('.mui-backdrop')[0].classList.toggle('hide');   
+       }
+        if(mon == ''){
+                mui.alert('重新选择金额');
+              setTimeout(function() {
+                  window.location.href = "{:U('WishBean/index')}";
+            }, 2000); return flase;  
+        };
+        mui('.mui-backdrop')[0].classList.toggle('hide');
+    });
+
+
+    /*弹出框*/
+    mui('.dialog-title').on('tap', 'i', function() {
+        this.parentNode.parentNode.parentNode.parentNode.classList.toggle('hide');
+    });
+    document.getElementById('pay').addEventListener('tap', function() {
+        var password = document.getElementById('payPassword').value;
+        var mon = document.getElementById('mon').value;
+        var id = this.dataset.id;
+        mui.ajax("{:U('WishBean/redeem')}", {
+            type: 'POST',
+            dataType: 'JSON',
+            data: {
+                id: id,
+                mon: mon,
+                password: password
+            },
+            success: function(data) {
+                console.log(data);
+                if (data == 1) {
+                    mui.toast('密码错误');
+                } else if (data == 3) {
+                    mui.confirm('密码错误，支付功能已被锁定3小时。是否重置支付密码，并在3小时后解锁支付账户。', ' ', ['重置密码', '返回'], function(x) {
+                        if (x.index == 0) {
+                            window.location.href = "{:U('/App/UserCenter/modifyPay')}";
+                        }
+                    })
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+                } else if (data == 4) {
+                    mui.toast('账号未解锁');
+                } else if (data == 6) {
+                    mui.toast('提交赎回申请成功，请耐心等待审核');
+                    setTimeout(function() {
+                        window.location.href = "{:U('WishBean/index')}";
+                    }, 2000)
+                } else if (data == 8) {
+                    mui.toast('验证已过期，请重新操作赎回流程');
+                    setTimeout(function() {
+                        window.location.href = "{:U('WishBean/index')}";
+                    }, 2000)
+                } else {
+                    mui.toast('提交申请失败，请重新操作赎回流程');
+                    setTimeout(function() {
+                        window.location.href = "{:U('WishBean/index')}";
+                    }, 3000)
+                }
+            }
+        });
+    });
+    </script>
+</body>
+
+</html>

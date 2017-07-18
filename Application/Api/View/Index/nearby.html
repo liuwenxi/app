@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>微心愿 | 附近</title>
+    <link href="APP_DEFAULT_PATH/css/mui.min.css" rel="stylesheet" />
+    <link href="APP_DEFAULT_PATH/css/index.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="mui-off-canvas-wrap mui-draggable mui-slide-in">
+        <include file="Index/inc/aside" />
+        <div class="mui-inner-wrap">
+            <include file="Index/inc/indexHeader" />
+            <div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+                <div class="mui-scroll">
+                    <div class="underline-tab mui-segmented-control">
+                        <a id="index" data-nowPage="1" data-pullup-url="" class="mui-control-item">推荐</a>
+                        <a id="choice" data-nowPage="1" data-pullup-url="" class="mui-control-item">精选</a>
+                        <a id="top" class="mui-control-item">TOP</a>
+                        <a id="explore" class="mui-control-item">探索</a>
+                        <a id="nearby" class="mui-control-item mui-active">附近</a>
+                    </div>
+                    <div class="index-segmented-content">
+                        <div class="mui-control-content">
+                            <div class="wish-list">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mui-off-canvas-backdrop"></div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.min.js"></script>
+    <script src="APP_DEFAULT_PATH/js/waterfallRender.js"></script>
+    <script>
+    mui.init({
+        pullRefresh: {
+            container: '#pullrefresh',
+            up: {
+                contentrefresh: '正在加载...',
+                contentnomore:'心愿有点少 许个好不好',
+                callback: pullupRefresh
+            }
+        }
+    });
+
+    mui.ready(function() {
+        /*滚动设置*/
+        mui('.mui-scroll-wrapper').scroll({
+            deceleration: 0.0005
+        });
+
+        waterfallRender(mui('.wish-list a'))
+    });
+    /**
+     * 上拉加载具体业务实现
+     */
+    var nowPage = 2;
+
+    function pullupRefresh() {
+        setTimeout(function() {
+            mui.ajax("{:U('Index/ajax_tuijian')}", {
+                success: function(json) {
+                    var json_obj = JSON.parse(json)
+
+                    // 附近处理、推荐处理
+                    var wishList = mui('.index-segmented-content > .mui-control-content.mui-active .wish-list')[0];
+                    wishList.appendChild(refreshWishItem(json_obj.data));
+                    waterfallRender(mui('.index-segmented-content > .mui-control-content.mui-active .wish-list a'));
+                    mui('#pullrefresh').pullRefresh().endPullupToRefresh((nowPage > json_obj.page)); //参数为true代表没有更多数据了。
+                },
+                data: {
+                    p: nowPage
+                },
+                type: 'GET',
+                dataType: 'JSON'
+            });
+        }, 1500);
+    }
+    /*渲染愿望*/
+    function refreshWishItem(data) {
+        var wishItems = document.createDocumentFragment();
+        mui.each(data, function(i, wish) {
+
+            var participantItems = document.createDocumentFragment();
+            mui.each(wish.allinfo, function(i, p) {
+                var gender = p.sex == 0 ? 'male' : 'female';
+                var participantItem =
+                    '<div class="participant-item">' +
+                    '<span class="avatar" style="background-image:url(\'' + p.toupic + '\');"></span>' +
+                    '<div class="name-wrapper ' + gender + '">' +
+                    '<span class="name">' + p.nickname + '</span>' +
+                    '</div>' +
+                    '<span class="participant-bean">' + p.invo_mon + '</span>' +
+                    '</div>';
+                participantItems.appendChild(parseDOM(participantItem));
+
+            });
+            var gender = wish.sex == 0 ? 'male' : 'female';
+            var wishItem = '<a data-id="' + wish.id + '" class="mui-card wish-item">' +
+                '<div class="mui-card-header mui-card-media" style="background-image:url(\'' + wish.img + '\')">' +
+                '<div class="title-wrapper"><span class="wish-bean"><i class="iconfont icon-bean"></i><span">' + wish.have_mon + '/' + wish.set_mon + '</span></span><h4>' + wish.title + '</h4></div>' +
+                '<span>#' + wish.typename + '#</span>' +
+                '</div>' +
+                '<div class="mui-card-content">' +
+                '<div class="wisher-content clearfix">' +
+                '<span class="avatar" style="background-image:url(\'' + wish.toupic + '\');"></span>' +
+                '<div class="name-wrapper ' + gender + '">' +
+                '<span class="name">' + wish.set_user + '</span>' +
+                '</div>' +
+                '</div>' +
+                '<div class="participant-content">' +
+
+                '</div>' +
+                '</div>' +
+                '</a>';
+            var participants = parseDOM(wishItem).children[1].children[1];
+            participants.append(participantItems);
+            wishItems.append(participants.parentNode.parentNode);
+        });
+        return wishItems;
+    }
+
+    function parseDOM(str) {
+        var tempDom = document.createElement('div');
+        tempDom.innerHTML = str;
+        return tempDom.children[0];
+    }
+    </script>
+    <include file="Index/inc/redirect" />
+</body>
+
+</html>

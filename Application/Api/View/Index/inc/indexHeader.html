@@ -1,0 +1,10 @@
+<header class="mui-bar mui-bar-nav head-nav">
+    <!-- <a class="mui-icon mui-icon-contact mui-pull-left"></a> -->
+    <a class="avatar mui-pull-left" style="background-image:url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/image/peas.png' }')" href="#offCanvasSide">
+        <if condition="$unread neq 0"><span></span></if>
+    </a>
+    <a class="mui-icon mui-action-menu mui-icon-bars mui-pull-left" href="#offCanvasSide"></a>
+    <h1 class="mui-title logo"></h1>
+    <a id="search" class="mui-icon iconfont icon-search mui-pull-right"></a>
+    <a id="postWish" class="mui-icon iconfont icon-post-wish mui-pull-right"></a>
+</header>

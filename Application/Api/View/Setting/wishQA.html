@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>{$title}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/setting.css" />
+</head>
+
+<body>
+<div class="mui-content wish-qa">
+    <volist name="qa" id="vo">
+        <!-- <div class="qa">
+            <p class="question"><b>Q</b>{$vo.ques}</p>
+            <p class="answer"><b>A</b>{$vo.ans}</p>
+        </div> -->
+        <div class="session session-q">
+            <span data-id="{$v['id']}" class="avatar" style="background-image:url('{: ($v['toupic']) ? $v['toupic'] : '__APP__/img/userCenter/user1.png'}');"></span>
+            <p>{$vo.ques}</p>
+        </div>
+        <div class="session session-a">
+            <span data-id="{$v['id']}" class="avatar" style="background-image:url('{: ($v['toupic']) ? $v['toupic'] : '__APP__/img/userCenter/logo2.png'}');"></span>
+            <p>{$vo.ans}</p>
+        </div>
+    </volist>
+</div>
+<script src="APP_DEFAULT_PATH/js/mui.js"></script>
+</body>
+
+</html>

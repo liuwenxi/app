@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>我的奖券</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <link href="APP_DEFAULT_PATH/css/iconfont.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/exchange.css" />
+</head>
+
+<body>
+    <div class="mui-content mui-scroll-wrapper coupon">
+        <div class="mui-scroll">
+            <div class="voucher clearfix ">
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+                <h4>{$userAct['level']}</h4>
+                <p>{$userAct['remark']}
+                    <br><span>{$userAct['money']}</span><small>元</small></p>
+                <ul>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                </ul>
+            </div>
+            <div class="consume-code">
+                <div class="level" style="margin-top: 20px"><h4 style="font-size: 14px; color: #60ceff">{$userAct['prize']}</h4></div>
+                <h6>消费码：</h6>
+                <p>{$userAct['code']}</p>
+                <span>（有效期至：<php>echo date('Y-m-d',$userAct['ex_time'])</php>）</span>
+            </div>
+            <div class="store-info <if condition="$userAct['type'] eq 1"> hide </if>">
+                <div class="image" style="background-image:url('{: ($userAct['prize_img'])}');"></div>
+                <h5>{$userAct['store']}</h5>
+                <p>地址：{$userAct['address']}</p>
+                <p>电话：{$userAct['phone']}</p>
+                <p>详情点击：<a id="url">{$userAct['url']}</a></p>
+                <p>备注：相关消费详情以商家公布信息为准</p>
+            </div>
+            <div class="code-info  <if condition="$userAct['type'] eq 2"> hide </if> ">
+                <img src="APP_DEFAULT_PATH/image/xiaowei-code.png" width="100%">
+                <h5>领奖须知</h5>
+                <p>1.请长按上方【二维码】，添加微心愿的官方客服【小微】，或可以直接搜索小微的微信号（weixinyuankefu）
+<br>2.发送你的消费码给小微，然后就可以领取5元话费红包哦。<br>3.兑奖时间9:00-22:00</p>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js "></script>
+    <script>
+    mui.ready(function() {
+        mui.init();
+        /*滚动设置*/
+        var deceleration = mui.os.ios ? 0.003 : 0.0009;
+        mui('.mui-scroll-wrapper').scroll({
+            scrollY: true, //是否竖向滚动
+            scrollX: false, //是否横向滚动
+            indicators: true, //是否显示滚动条
+            deceleration: deceleration, //阻尼系数,系数越小滑动越灵敏
+            bounce: true, //是否启用回弹
+        });
+        document.getElementById('url').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{$userAct['url']}",
+                id: 'nameVerify'
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>

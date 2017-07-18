@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <title>微心愿 | TOP</title>
+    <link href="APP_DEFAULT_PATH/css/mui.min.css" rel="stylesheet" />
+    <link href="APP_DEFAULT_PATH/css/index.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="mui-off-canvas-wrap mui-draggable mui-slide-in">
+        <include file="Index/inc/aside" />
+        <div class="mui-inner-wrap">
+            <include file="Index/inc/indexHeader" />
+            <div class="mui-content">
+                <div class="underline-tab mui-segmented-control">
+                    <a id="index" data-nowPage="1" data-pullup-url="" class="mui-control-item">推荐</a>
+                    <a id="choice" data-nowPage="1" data-pullup-url="" class="mui-control-item">精选</a>
+                    <a id="top" class="mui-control-item mui-active">TOP</a>
+                    <a id="explore" class="mui-control-item">探索</a>
+                    <a id="complete" class="mui-control-item">达成</a>
+                </div>
+                <div class="index-segmented-content top">
+                    <div class="mui-control-content mui-active">
+                        <div id="pullrefresh" class="mui-scroll-wrapper">
+                            <div class="mui-scroll">
+                                <div class="index-mask">
+                                    <div class="mui-scroll-wrapper ">
+                                        <ul class="mui-scroll">
+                                            <li><a href="#like" style="background-image: url('APP_DEFAULT_PATH/image/top1.jpg');">最多点赞</a></li>
+                                            <li><a href="#focus" style="background-image: url('APP_DEFAULT_PATH/image/top2.jpg');">最多关注</a></li>
+                                            <!-- <li><a href="#share" style="background-image: url('APP_DEFAULT_PATH/image/top3.jpg');">最多分享</a></li> -->
+                                            <li><a href="#efficient" style="background-image: url('APP_DEFAULT_PATH/image/top4.jpg');">最高效率</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted scroll-tab">
+                                    <div class="mui-scroll">
+                                        <a data-id="1" data-request-page="1" class="mui-control-item mui-active" href="#like"><i class="iconfont icon-like"></i><span>最多点赞</span></a>
+                                        <a data-id="2" data-request-page="1" class="mui-control-item" href="#focus"><i class="iconfont icon-star"></i><span>最多关注</span></a>
+                                        <!-- <a  data-id="3" data-request-page="1" class="mui-control-item" href="#share"><i class="iconfont icon-forward"></i><span>最多分享</span></a> -->
+                                        <a data-id="4" data-request-page="1" class="mui-control-item" href="#efficient"><i class="iconfont icon-time"></i><span>最高效率</span></a>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="like" class="mui-control-content mui-active">
+                                        <div class="wish-list"></div>
+                                    </div>
+                                    <div id="focus" class="mui-control-content">
+                                        <div class="wish-list"></div>
+                                    </div>
+                                    <!-- <div id="share" class="mui-control-content">
+                                    <div class="wish-list"></div>
+                                </div> -->
+                                    <div id="efficient" class="mui-control-content">
+                                        <div class="wish-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mui-off-canvas-backdrop"></div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.min.js"></script>
+    <script src="APP_DEFAULT_PATH/js/waterfallRender.js"></script>
+    <script>
+    mui.ready(function() {
+        /**
+         * 初始化
+         */
+        mui.init({
+            pullRefresh: {
+                container: '#pullrefresh',
+                up: {
+                    contentrefresh: '正在加载...',
+                    contentnomore: '心愿有点少 许个好不好',
+                    callback: pullupRefresh
+                }
+            }
+        });
+        /*滚动设置*/
+        var deceleration = mui.os.ios ? 0.003 : 0.0009;
+        mui('.mui-scroll-wrapper').scroll({
+            bounce: false,
+            indicators: true, //是否显示滚动条
+            deceleration: deceleration
+        });
+        
+        /*遮罩层屏幕适配*/
+        var indexMaskHeight = (mui('body')[0].offsetHeight - mui('.head-nav')[0].offsetHeight - mui('.underline-tab')[0].offsetHeight) + 'px';
+        mui.each(mui('.index-mask'), function(i, e) {
+            e.style.height = indexMaskHeight;
+        });
+
+        /**
+         * 事件绑定
+         */
+        /*遮罩层点击触发效果*/
+        mui('.index-segmented-content').on('tap', '.index-mask a', function() {
+            /*遮罩层动画*/
+            var indexMaskElm = this.parentNode.parentNode.parentNode.parentNode;
+            indexMaskElm.classList.add('animate');
+            setTimeout(function() {
+                indexMaskElm.classList.add('hide');
+                indexMaskElm.classList.remove('animate');
+            }, 1000);
+            /*遮罩层到二级导航栏以及内容对应的引导*/
+            var str = this.href.split('#')[1];
+            var activeItem = mui('.mui-control-item[href$="' + str + '"]')[0];
+            mui.each(activeItem.parentNode.children, function(index, el) {
+                el.classList.remove('mui-active');
+            });
+            activeItem.classList.add('mui-active');
+            mui.each(mui('#' + str)[0].parentNode.children, function(index, el) {
+                el.classList.remove('mui-active');
+            });
+            mui('#' + str)[0].classList.add('mui-active');
+
+            /*点击遮罩层后后自动刷新数据*/
+            mui('#pullrefresh').pullRefresh().pullupLoading();
+        });
+        /*点击二级导航刷新*/
+        mui('.mui-slider-indicator').on('tap', 'a', function() {
+            mui('#pullrefresh').pullRefresh().refresh(true);
+            pullupRefresh();
+        });
+
+
+    });
+
+
+    /*渲染愿望*/
+    function refreshWishItem(data) {
+        var wishItems = document.createDocumentFragment();
+        mui.each(data, function(i, wish) {
+
+            var participantItems = document.createDocumentFragment();
+            mui.each(wish.allinfo, function(i, p) {
+                var gender = p.sex == 0 ? 'male' : 'female';
+                var participantItem =
+                    '<div class="participant-item">' +
+                    '<span class="avatar" style="background-image:url(\'' + p.toupic + '\');"></span>' +
+                    '<div class="name-wrapper ' + gender + '">' +
+                    '<span class="name">' + p.nickname + '</span>' +
+                    '</div>' +
+                    '<span class="participant-bean">' + p.invo_mon + '心愿豆</span>' +
+                    '</div>';
+                participantItems.appendChild(parseDOM(participantItem));
+
+            });
+            var gender = wish.sex == 0 ? 'male' : 'female';
+            var wishItem = '<a data-id="' + wish.id + '" class="mui-card wish-item">' +
+                '<div class="mui-card-header mui-card-media" style="background-image:url(\'' + wish.img + '\')">' +
+                '<div class="title-wrapper"><span class="wish-bean"><i class="iconfont icon-bean"></i><span>' + wish.have_mon + '/' + wish.set_mon + '</span></span><h4>' + wish.title + '</h4></div>' +
+                '<span>#' + wish.typename + '#</span>' +
+                '</div>' +
+                '<div class="mui-card-content">' +
+                '<div class="wisher-content clearfix">' +
+                '<span class="avatar" style="background-image:url(\'' + wish.toupic + '\');"></span>' +
+                '<div class="name-wrapper ' + gender + '">' +
+                '<span class="name">' + wish.set_user + '</span>' +
+                '</div>' +
+                '</div>' +
+                '<div class="participant-content">' +
+
+                '</div>' +
+                '</div>' +
+                '</a>';
+            var participants = parseDOM(wishItem).children[1].children[1];
+            participants.appendChild(participantItems);
+            wishItems.appendChild(participants.parentNode.parentNode);
+        });
+        return wishItems;
+    }
+    /**
+     * 上拉加载具体业务实现
+     */
+    function pullupRefresh() {
+        setTimeout(function() {
+            var activeItem = mui('.index-segmented-content .mui-control-item.mui-active')[0];
+            var typeId = activeItem.dataset.id;
+            // console.log(activeItem.dataset.requestPage);
+            mui.ajax("{:U('Index/ajax_top')}", {
+                success: function(json) {
+                    var json_obj = JSON.parse(json)
+                    var wishList = mui('.index-segmented-content .mui-control-content .mui-control-content.mui-active .wish-list')[0];
+                    wishList.appendChild(refreshWishItem(json_obj.data));
+                    waterfallRender(mui('.index-segmented-content .mui-control-content .mui-control-content.mui-active .wish-list a'));
+                    activeItem.dataset.requestPage = parseInt(activeItem.dataset.requestPage) + 1;
+                    mui('#pullrefresh').pullRefresh().endPullupToRefresh((activeItem.dataset.requestPage > json_obj.page));
+                },
+                data: {
+                    type: typeId,
+                    p: parseInt(activeItem.dataset.requestPage)
+
+                },
+                type: 'GET',
+                dataType: 'JSON'
+            });
+
+
+
+        }, 1500);
+    }
+    </script>
+    <include file="Index/inc/redirect" />
+</body>
+
+</html>

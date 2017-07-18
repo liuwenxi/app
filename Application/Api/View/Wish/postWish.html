@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>发布心愿</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/postWish.css" />
+</head>
+
+<body>
+    <div class="mui-content">
+        <form method="post" id="postWish" enctype="multipart/form-data">
+            <div class="list">
+                <ul class="mui-table-view">
+                    <input type="hidden" name="cityname" id="city" value="">
+                    <input type="hidden" name="province" id="province" value="">
+                    <li class="mui-table-view-cell">
+                        <label>心愿名称：</label>
+                        <input maxlength="20" required type="text" name="title" id="title" value="" placeholder="标题限20字">
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <label>心愿时限：</label>
+                        <input maxlength="20" id="wishtime" value="{$data.set_day}" name="wishtime" type="number" placeholder="请输入4~120的数字">
+                        <span class="unit">天</span>
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <label>目标金额：</label>
+                        <!-- <input type="number" min="100" value="{$data['set_mon'] / 100}" name="mon" max="4000" id="mon" placeholder="请输入目标金额100~4000（元）"> -->
+                        <input type="number" min="200" value="" name="mon" max="4000" id="mon" placeholder="谈钱不伤感情（200-4000）">
+                        <span class="unit">元</span>
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <textarea maxlength="800" id="des" name="des" placeholder="请清晰的描述你的心愿详情，并告知大家你筹集资金的用途。（限800字）">{$data.des}</textarea>
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <a id="gears" class="mui-navigate-right">设置档位：<span>请选择参与档位</span>
+                        <input type="hidden" name="monid" id="monid" value="10"><input type="hidden" name="addmid" id="addmid"></a>
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <a class="mui-navigate-right">选择大类：<select id="wishClass">
+                        <option value="0">{: $tname ? $tname : '请选择大类' }</option>
+                        <volist name="xytype" key="k" id="vo" >
+                             <option data-id="{$i}" value="{$k}" <if condition="$tid eq $i">checked<else /></if>>{$vo}</option>
+                        </volist>
+                    </select>
+                    </a>
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <a id="tag" class="mui-navigate-right">添加标签：<span>请选择心愿标签</span></a>
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <label>上传题图：</label>
+                        <div class="upload-title-image" id="titleImage">
+                            <span>+点击添加题图</span>
+                            <!-- <input id="uploadTitleImageInput" name="uploadtit" type="file"> -->
+                            <input id="uploadTitleImageInput" type="file">
+                        </div>
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <label>详情图片：</label>
+                        <div class="image-list clearfix">
+                            <div class="upload-image">
+                                <span>+</span>
+                                <input id="uploadImageInput" name="uploadtits0" type="file" multiple="multiple" accept="image/*" capture="camera">
+                            </div>
+                        </div>
+                        <p>还可以上传<span id="uploadable-count">9</span>张</p>
+                    </li>
+                    <li class="mui-table-view-cell">
+                        <a class="btn-lg" id="sumbitWish">发布心愿</a>
+                    </li>
+                </ul>
+            </div>
+        </form>
+        <div class="mui-backdrop hide">
+            <div class="select-tag-dialog">
+                <div class="dialog-inner">
+                    <div class="dialog-title clearfix">
+                        <h5 class="mui-pull-left">选择标签</h5>
+                        <i class="mui-icon mui-icon-closeempty mui-pull-right"></i>
+                    </div>
+                    <div class="dialog-common-tag">
+                        <dl class="clearfix" id="tagList">
+                            <dt>常用标签</dt>
+                        </dl>
+                    </div>
+                    <div class="selected-tag clearfix">
+                        <input type="text" name="tag" autofocus="autofocus" placeholder="点我输入你需要的标签">
+                    </div>
+                    <p>请将你的标签用中文逗号“,”隔开</p>
+                </div>
+                <div class="dialog-buttons">
+                    <span>确定</span>
+                </div>
+            </div>
+        </div>
+        <include file="public/inc/loading" />
+    </div>
+    <div class="set-gears hide">
+        <header class="mui-bar mui-bar-nav backward-nav">
+            <a class="mui-pull-left" id="cancel">
+                <i class="mui-icon mui-icon-left-nav mui-pull-left"></i>
+                <span class="mui-pull-left">取消</span>
+                <h1 class="mui-center mui-title">设置档位</h1>
+            </a>
+        </header>
+        <div class="select-gears">
+            <h5>选择你设置的档位</h5>
+            <ul class="gears-list clearfix">
+                <li data-gears="1">10心愿豆</li>
+                <li data-gears="2">20心愿豆</li>
+                <li data-gears="3">30心愿豆</li>
+                <li data-gears="4">40心愿豆</li>
+                <li data-gears="5">100心愿豆</li>
+                <li data-gears="6">200心愿豆</li>
+                <li data-gears="7">300心愿豆</li>
+                <li data-gears="8">400心愿豆</li>
+                <li data-gears="9">1000心愿豆</li>
+                <li data-gears="10">随机</li>
+            </ul>
+        </div>
+        <div class="has-gears">
+            <h5>提示：档位最多可以设置十个</h5>
+            <div class="gears-show">
+                <div class="gears-input">
+                    <input type="text" name="" placeholder="手动输入生成其他心愿豆数量（10-1000）"><a id="createGears">生成</a>
+                </div>
+                <ul class="gears-list clearfix">
+                </ul>
+                <a class="btn-lg" id="gears-sure">确定</a>
+                <ol class="tips">
+                    <li>点选“随机档位”，将为参与用户开放随机赠送功能</li>
+                    <li>手动生成的档位不可超过三个</li>
+                    <li>兑换比例：10心愿 = 1 元人民币</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script src="APP_DEFAULT_PATH/js/mui.zoom.js"></script>
+    <script src="APP_DEFAULT_PATH/js/mui.previewimage.js"></script>
+    <script src="APP_DEFAULT_PATH/js/exif.js"></script>
+    <script>
+    mui.init();
+    mui.previewImage();
+    /*表单验证*/
+    document.getElementById('wishtime').addEventListener('keyup', function() {
+        var val = parseInt(this.value);
+        if (Number.isNaN(val)) {
+            // mui.toast('请输入数字');
+            this.value = "";
+        }
+    });
+    document.getElementById('wishtime').addEventListener('change', function() {
+        var val = parseInt(this.value);
+        if (Number.isNaN(val)) {
+            // mui.toast('请输入数字');
+            this.value = "";
+        }
+    });
+    /*选择大类*/
+
+    document.getElementById('wishClass').addEventListener('change', function() {
+        var tagList = mui('#tagList')[0];
+        tagList.innerHTML = '<dt>常用标签</dt>';
+
+        mui.ajax("{:U('App/Wish/Subclass')}", {
+            success: function(json) {
+                var json_obj = JSON.parse(json);
+
+                var tagItems = document.createDocumentFragment();
+                mui.each(json_obj, function(i, t) {
+                    var tag = '<dd data-tag="' + t.id + '">' + t.name + '</dd>';
+                    tagItems.appendChild(parseDOM(tag));
+                });
+                tagList.appendChild(tagItems);
+            },
+            dataType: 'JSON',
+            type: 'POST',
+            data: {
+                clazz: this.value,
+            }
+        });
+    });
+    /*选择标签*/
+    mui('#tag')[0].addEventListener('tap', function() {
+        if (mui('#wishClass')[0].value == 0) {
+            mui.toast('请先选择心愿大类');
+            return;
+        }
+        mui('.mui-backdrop')[0].classList.toggle('hide');
+    });
+    mui('.dialog-common-tag').on('tap', 'dd', function() {
+        this.classList.toggle('active');
+        if (this.classList.contains('active')) {
+            var tagContent = this.innerHTML;
+            var tagElm = document.createElement('span');
+            tagElm.innerHTML = tagContent;
+            mui('.selected-tag')[0].insertBefore(tagElm, mui('.selected-tag')[0].children[0]);
+        } else {
+            var that = this;
+            mui('.selected-tag span').each(function(index, el) {
+                if (el.innerHTML == that.innerHTML) {
+                    el.parentNode.removeChild(el);
+                }
+            });
+        }
+    });
+
+    mui('.dialog-title i')[0].addEventListener('tap', function() {
+        setTimeout(function() {
+            mui('.mui-backdrop')[0].classList.toggle('hide');
+        }, 400);
+    });
+    mui('.dialog-buttons span')[0].addEventListener('tap', function() {
+        setTimeout(function() {
+            var tagInput = mui('.selected-tag input')[0].value;
+            if (tagInput.indexOf('，') > 0) {
+                var cnArray = [];
+                tagInput.split('，').forEach(function(e, i) {
+                    if (!(e == '')) {
+                        if (e.indexOf(',') > 0) {
+                            e.split(',').forEach(function(a, j) {
+                                if (!(a == '')) {
+                                    cnArray.push(a);
+                                }
+                            });
+                        } else {
+                            cnArray.push(e);
+                        }
+
+                    }
+                });
+                tagInput = cnArray.join(',');
+            }
+            var selectTagArray = [];
+            mui('.selected-tag span').each(function(index, el) {
+                selectTagArray.push(el.innerHTML);
+            });
+            mui('#tag span')[0].innerHTML = selectTagArray.join(',') + ',' + tagInput;
+
+            mui('.mui-backdrop')[0].classList.toggle('hide');
+        }, 400);
+    });
+
+    /*设置档位*/
+    mui('#gears')[0].addEventListener('tap', function() {
+        mui('.set-gears')[0].classList.toggle('hide');
+        mui('.list')[0].classList.toggle('hide');
+    });
+
+    mui('#cancel')[0].addEventListener('tap', function() {
+        mui('.set-gears')[0].classList.toggle('hide');
+        setTimeout(function() {
+            mui('.list')[0].classList.toggle('hide');
+        }, 10);
+    });
+
+
+    mui('#createGears')[0].addEventListener('tap', function() {
+        if (mui('.gears-show .gears-list li').length > 9) {
+            mui.toast('档位不能多于10个');
+            return;
+        }
+
+        var inputVal = this.previousSibling.value;
+        if (mui('.gears-show .gears-list li').length == 0) {
+            if (inputVal >= 10 && inputVal <= 1000) {
+                var selectGears = document.createElement('li');
+                selectGears.innerHTML = inputVal + '心愿豆<i class="mui-icon mui-icon-closeempty"></i>';
+                mui('.has-gears .gears-list')[0].appendChild(selectGears)
+            } else {
+                mui.toast('请输入10~1000的心愿豆数目');
+            }
+
+        } else {
+            var repeat = false;
+            mui('.gears-show .gears-list li').each(function(index, el) {
+                if (el.innerHTML.split('心')[0] == inputVal) {
+                    repeat = true;
+                    return;
+                }
+            });
+            if (!repeat) {
+                if (inputVal >= 10 && inputVal <= 1000) {
+                    var selectGears = document.createElement('li');
+                    selectGears.innerHTML = inputVal + '心愿豆<i class="mui-icon mui-icon-closeempty"></i>';
+                    mui('.has-gears .gears-list')[0].appendChild(selectGears)
+                } else {
+                    mui.toast('请输入10~1000的心愿豆数目');
+                }
+            } else {
+                mui.toast('已有该档位');
+            }
+        }
+    });
+
+
+    mui('.select-gears').on('tap', 'li', function() {
+        if (mui('.gears-show .gears-list li').length > 9) {
+            mui.toast('档位不能多于10个');
+            return;
+        }
+        if (mui('.gears-show .gears-list li').length == 0) {
+            this.classList.toggle('active');
+            if (this.classList.contains('active')) {
+                var selectGears = this.cloneNode();
+                selectGears.innerHTML = this.innerHTML + '<i class="mui-icon mui-icon-closeempty"></i>'
+                mui('.has-gears .gears-list')[0].appendChild(selectGears);
+            } else {
+                var that = this;
+                mui('.gears-show .gears-list li').each(function(index, el) {
+                    if (el.dataset.gears == that.dataset.gears) {
+                        el.parentNode.removeChild(el);
+                    }
+                });
+            }
+
+        } else {
+            var repeat = false;
+            var that = this;
+            mui('.gears-show .gears-list li').each(function(index, el) {
+                if (el.innerHTML.split('心')[0] == that.innerHTML.split('心')[0]) {
+                    repeat = true;
+                    return;
+                }
+            });
+            if (!repeat) {
+                this.classList.toggle('active');
+                if (this.classList.contains('active')) {
+                    var selectGears = this.cloneNode();
+                    selectGears.innerHTML = this.innerHTML + '<i class="mui-icon mui-icon-closeempty"></i>'
+                    mui('.has-gears .gears-list')[0].appendChild(selectGears);
+                } else {
+                    var that = this;
+                    mui('.gears-show .gears-list li').each(function(index, el) {
+                        if (el.dataset.gears == that.dataset.gears) {
+                            el.parentNode.removeChild(el);
+                        }
+                    });
+                }
+            } else {
+                mui.toast('已有该档位');
+            }
+        }
+
+
+    });
+
+    mui('.has-gears').on('tap', 'li i', function() {
+        mui('.has-gears .gears-list')[0].removeChild(this.parentNode);
+        var that = this;
+        mui('.select-gears .gears-list li').each(function(index, el) {
+            if (el.dataset.gears == that.parentNode.dataset.gears) {
+                el.classList.toggle('active');
+            }
+        });
+    });
+
+    mui('#gears-sure')[0].addEventListener('tap', function() {
+        var gears = [];
+        var monid = [];
+        var addmid = [];
+
+        mui('.has-gears .gears-list li').each(function(index, el) {
+            gears.push(el.innerText);
+            if (el.classList.contains('active')) {
+                monid.push(el.dataset.gears);
+            } else {
+                addmid.push(el.innerText.slice(0, el.innerText.length - 3));
+            }
+
+        });
+
+        mui('#gears span')[0].innerHTML = gears.join(',');
+        mui('#monid')[0].value = monid.join(',');
+        mui('#addmid')[0].value = addmid.join(',');
+
+        mui('.set-gears')[0].classList.toggle('hide');
+        setTimeout(function() {
+            mui('.list')[0].classList.toggle('hide');
+        }, 350);
+    });
+
+    /*题图上传预览*/
+    var titleImage;
+    document.querySelector('#uploadTitleImageInput').addEventListener('change', function() {
+
+        var file = this.files[0];
+        var orientation;
+        //EXIF js 可以读取图片的元信息  https://github.com/exif-js/exif-js
+        EXIF.getData(file, function() {
+            orientation = EXIF.getTag(this, 'Orientation');
+        });
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            getImgData(this.result, orientation, function(data) {
+                titleImage = data;
+                document.querySelector('#titleImage').style.backgroundImage = 'url("' + data + '")';
+                document.querySelector('#titleImage span').innerHTML = '点击更换题图';
+            });
+        }
+        reader.readAsDataURL(file);
+    });
+
+    // @param {string} img 图片的base64
+    // @param {int} dir exif获取的方向信息
+    // @param {function} next 回调方法，返回校正方向后的base64
+    function getImgData(img, dir, next) {
+        var image = new Image();
+        image.onload = function() {
+            var degree = 0,
+                drawWidth, drawHeight, width, height;
+            drawWidth = this.naturalWidth;
+            drawHeight = this.naturalHeight;
+            //以下改变一下图片大小
+            var maxSide = Math.max(drawWidth, drawHeight);
+            if (maxSide > 1024) {
+                var minSide = Math.min(drawWidth, drawHeight);
+                minSide = minSide / maxSide * 1024;
+                maxSide = 1024;
+                if (drawWidth > drawHeight) {
+                    drawWidth = maxSide;
+                    drawHeight = minSide;
+                } else {
+                    drawWidth = minSide;
+                    drawHeight = maxSide;
+                }
+            }
+            var canvas = document.createElement('canvas');
+            canvas.width = width = drawWidth;
+            canvas.height = height = drawHeight;
+            var context = canvas.getContext('2d');
+            //判断图片方向，重置canvas大小，确定旋转角度，iphone默认的是home键在右方的横屏拍摄方式
+            switch (dir) {
+                //iphone横屏拍摄，此时home键在左侧
+                case 3:
+                    degree = 180;
+                    drawWidth = -width;
+                    drawHeight = -height;
+                    break;
+                    //iphone竖屏拍摄，此时home键在下方(正常拿手机的方向)
+                case 6:
+                    canvas.width = height;
+                    canvas.height = width;
+                    degree = 90;
+                    drawWidth = width;
+                    drawHeight = -height;
+                    break;
+                    //iphone竖屏拍摄，此时home键在上方
+                case 8:
+                    canvas.width = height;
+                    canvas.height = width;
+                    degree = 270;
+                    drawWidth = -width;
+                    drawHeight = height;
+                    break;
+            }
+            //使用canvas旋转校正
+            context.rotate(degree * Math.PI / 180);
+            context.drawImage(this, 0, 0, drawWidth, drawHeight);
+            //返回校正图片
+            next(canvas.toDataURL("image/jpeg", .8));
+        }
+        image.src = img;
+    }
+
+    /*详细图片上传预览*/
+    var detailsImage = [],
+        imageListElm = document.querySelector('.image-list'),
+        uploadImageInput = mui('#uploadImageInput')[0];
+
+    function renderImage(uploadImageInput) {
+        var imageElms = [],
+            uploadImage = uploadImageInput.parentNode;
+
+        imagefiles = []; //清空全局数组
+
+        imageListElm.innerHTML = '';
+        imageListElm.appendChild(uploadImage);
+
+        detailsImage.forEach(function(file, i) {
+            var orientation;
+            EXIF.getData(file, function() {
+                orientation = EXIF.getTag(this, 'Orientation');
+            });
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+                getImgData(this.result, orientation, function(data) {
+                    var imageElm = ('<div data-index="' + i + '" class="image" style="background-image: url(\'' + data + '\');"><i class="mui-icon mui-icon-closeempty" ></i><img src="' + data + '" data-preview-src="" data-preview-group="1"></div>');
+                    imageListElm.insertBefore(parseDOM(imageElm), uploadImage);
+                    imagefiles.push(data);
+                });
+            }
+            reader.readAsDataURL(file);
+        });
+    }
+
+    mui('.image-list').on('change', '#uploadImageInput', function() {
+        var m = 1024 * 1024;
+        var minSize = 5;
+
+        /*计算照片数量*/
+        var uploadableCount = document.querySelector('#uploadable-count'),
+            arrUtils = [];
+        arrUtils.forEach.call(this.files, function(file, i) {
+            if (file.size < minSize * m) {
+                detailsImage.push(file);
+            } else {
+                mui.toast('图片过大');
+            }
+        });
+        var detailsImageLength = detailsImage.length;
+        uploadableCount.innerHTML = 9 - detailsImageLength;
+
+        if (detailsImageLength > 9) {
+            mui.toast('上传照片不能多于9张');
+            detailsImage.splice(0, detailsImage.length);
+            uploadableCount.innerHTML = 9;
+        } else {
+            renderImage(this);
+            if (detailsImageLength == 9)
+                document.querySelector('.upload-image').classList.add('hide');
+        }
+    });
+
+    /*多图上传*/
+    var imagefiles = [];
+    document.getElementById('sumbitWish').addEventListener('tap', function() {
+        mui('#postingMask')[0].classList.remove('hide');
+        var title = mui('#title')[0].value,
+            wishtime = mui('#wishtime')[0].value,
+            mon = mui('#mon')[0].value,
+            des = mui('#des')[0].value;
+
+        if (title.length <= 0 || title.length > 20) {
+            mui.alert("请填写不大于20字的名称", ' ', ['好的'], function() {});
+            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+            mui('#postingMask')[0].classList.add('hide');
+            return false;
+        }
+        if (wishtime < 4 || wishtime > 120) {
+            mui.alert("请填写4-120天的时限", ' ', ['好的'], function() {});
+            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+            mui('#postingMask')[0].classList.add('hide');
+            return false;
+        }
+        if (mon < 200 || mon > 4000) {
+            mui.alert("目标金额的区间为200-4000元", ' ', ['好的'], function() {});
+            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+            mui('#postingMask')[0].classList.add('hide');
+            return false;
+        }
+        if (des.length <= 0 || des.length > 800) {
+            mui.alert("请填写不超过800字的描述", ' ', ['好的'], function() {});
+            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+            mui('#postingMask')[0].classList.add('hide');
+            return false;
+        }
+
+        var fd = new FormData(document.forms['postWish']);
+        var strObj = {};
+        for (var i = 0; i < imagefiles.length; i++) {
+            strObj[i + ''] = imagefiles[i];
+        }
+
+        fd.append('uploadtits', JSON.stringify(strObj[0]?strObj:0));
+
+        /*Ajax提交的其他属性*/
+        fd.append('uploadtit', titleImage?titleImage:0);
+        fd.append('wishClass', mui('#wishClass')[0].value);
+        fd.append('tag', mui('#tag span')[0].innerHTML=="请选择心愿标签"?0:mui('#tag span')[0].innerHTML);
+
+        var xrh = new XMLHttpRequest();
+        xrh.open("POST", "{:U('App/Wish/postWish')}");
+        xrh.send(fd);
+        xrh.onload = function(e) {
+            if (xrh.status == 200) {
+                var json_obj = JSON.parse(xrh.responseText);
+                mui('#postingMask')[0].classList.add('hide');
+                if (json_obj.statu == 1) {
+                    mui.alert("发布成功", ' ', ['好的'], function() {
+                        setTimeout(function() {
+                            mui.openWindow({
+                                url: "/App/Wish/showWish/wishid/" + json_obj.id,
+                                id: 'recommend'
+                            });
+                        }, 1000);
+                    });
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                } else {
+                    mui('#postingMask')[0].classList.add('hide');
+                    mui.alert(json_obj.msg, ' ', ['好的'], null);
+                    document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                }
+            } else {
+                mui('#postingMask')[0].classList.add('hide');
+                console.log('提交失败');
+            }
+        };
+    });
+
+    /*删除多图片*/
+    mui('.image-list').on('tap', '.image i', function() {
+        var imageElmIndex = this.parentNode.dataset.index;
+        detailsImage.splice(imageElmIndex, 1);
+        imagefiles.splice(imageElmIndex, 1);
+        renderImage(uploadImageInput);
+    });
+
+    function parseDOM(str) {
+        var tempDom = document.createElement('div');
+        tempDom.innerHTML = str;
+        return tempDom.children[0];
+    }
+
+    function dataURLtoBlob(dataurl) {
+        var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {
+            type: mime
+        });
+    }
+    </script>
+</body>
+
+</html>

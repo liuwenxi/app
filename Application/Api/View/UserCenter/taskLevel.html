@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>任务与等级</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/userCenter.css" />
+</head>
+
+<body>
+    <include file="inc/header" />
+    <div class="mui-content level">
+        <div class="level-info clearfix">
+            <div class="avatar-warpper">
+                <span class="avatar" style="background-image: url('{$udd.toupic}');"></span>
+                <h5 class="mui-pull-left">{$level[$udd['level']]}</h5>
+            </div>
+            <div class="experience">
+                <h5>经验值：{$jingyan}</h5>
+                <div class="outer-experience">
+                    <div class="inner-experience" style="width:<if condition="$bl gt 100">100%;"<else/>{$bl}%;"</if> ></div>
+                </div>
+                <p><span>PS:</span>小伙伴们！快去做任务提升等级吧</p>
+            </div>
+        </div>
+        <div class="task">
+            <div class="bg-tab mui-segmented-control">
+                <a class="mui-control-item mui-active" href="#normal">每日任务</a>
+                <a class="mui-control-item" href="#choice" id="NO">精选任务</a>
+            </div>
+            <div class="level-segmented-content">
+                <div id="normal" class="mui-control-content mui-active">
+                    <ul class="task-list">
+                        <volist name="task" id="vi">
+                            <li>
+                                <div class="task-desc">
+                                    <h5>{$vi.title}</h5>
+                                    <p><span>({$vi.donum}/{$vi.tknum})<if condition="$vi['setmon'] neq ''">+{$vi.setmon}心愿豆<else /></if><if condition="$vi['jingyan'] neq ''" > <else /></if></span>+{$vi.jingyan}经验</p>
+                                </div>
+                                <if condition="$vi[status] eq '2'">
+                                    <a class="btn" data-tid="{$vi['id']}">领取</a>
+                                    <elseif condition="$vi[status] eq '1'" />
+                                    <a class="disable">已领取</a>
+                                    <else />
+                                    <a class="disable">领取</a>
+                                </if>
+                            </li>
+                        </volist>
+                    </ul>
+                </div>
+                <div id="choice" class="mui-control-content ">
+                    <ul class="task-list">
+<!--                        <volist name="spctask" id="vi">
+                            <li data-tkid="{$vi.id}">
+                                <div class="task-desc">
+                                    <h5>{$vi.title}</h5>
+                                    <p><span>({$vi.donum}/{$vi.tknum})<if condition="$vi['setmon'] neq ''">+{$vi.setmon}心元<else /></if><if condition="$vi['jingyan'] neq ''" > <else /></if></span>+{$vi.jingyan}经验</p>
+                                </div>
+                                <if condition="$vi[status] eq '2'">
+                                    <a class="btn" data-tid="{$vi['id']}">领取</a>
+                                    <elseif condition="$vi[status] eq '1'" />
+                                    <a class="btn disable">已领取</a>
+                                    <else />
+                                    <a class="disable">领取</a>
+                                </if>
+                            </li>
+                        </volist>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.init();
+    mui.ready(function() {
+        mui('.mui-bar').on('tap', '.logo', function() {
+            mui.openWindow({
+                url: "{:U('Index/index')}",
+                id: 'recommend'
+            });
+        });
+        document.getElementById('NO').addEventListener('tap', function() {
+           mui.alert('精选任务暂未开放！尽情期待',' ',['好的']); 
+           document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/smile.png')";
+           return flase;
+        });
+        
+        mui('.mui-control-content').on('tap', '.btn', function() {
+                var tkid = this.dataset.tid;
+
+                mui.ajax("{:U('UserCenter/taskLevel')}", {
+                    type: 'POST',
+                    dataType: 'JSON',
+                    data: {
+                        tkid: tkid
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        if (data == 1) {
+                            mui.alert('领取成功', ' ', ['好的'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/blink.png')";
+                            setTimeout(function() {
+                                window.location.reload();
+                            }, 1000)
+                        } else {
+                            mui.alert('领取失败', ' ', ['返回'], null);
+                            document.querySelector('.mui-popup-title').style.backgroundImage = "url('APP_DEFAULT_PATH/image/tears.png')";
+                        }
+                    },
+                })
+        });
+    });
+    </script>
+</body>
+
+</html>

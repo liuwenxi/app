@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>个人中心</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="email=no"/>
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/userCenter.css" />
+</head>
+
+<body>
+    <include file="Public/inc/header" />
+    <div class="mui-content mui-scroll-wrapper">
+        <div class="mui-scroll">
+            <div class="user-info">
+                <div class="top clearfix">
+                    <switch name="user.login_type">
+                        <case value="1">
+                            <span class="avatar" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                        </case>
+                        <case value="2">
+                            <span class="avatar" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                        </case>
+                        <case value="3"></case>
+                        <default />
+                        <span class="avatar" style="background-image: url('{: ($user['toupic']) ? $user['toupic'] : '__PUBLIC__App/img/userCenter/user2.png' }');"></span>
+                    </switch>
+                    <div class="name-wrapper <if condition=" $user[ 'sex'] eq '1' "> female <else /> male </if> "><span class="name">{$user.nickname}</span></div>
+                    <div class="outer-star">
+                        <div class="inner-star" style="width: <if condition="$user['is_auth'] eq 3 or $user['is_auth'] eq 0 or $user['is_auth'] eq 4">0% "<else/>{$star * 20}%;"</if>"></div>
+                    </div>
+                    <div class="shortcut">
+                        <i id="postWish" class="mui-icon iconfont icon-post-wish"></i>
+                        <i id="search" class="mui-icon iconfont icon-search"></i>
+                    </div>
+                </div>
+                <div class="mid clearfix">
+                    <div class="outer-experience">
+                        <div class="inner-experience" style="width: {$bl}%;"></div>
+                    </div>
+                    <span class="level-name">{$level[$user['level']]}</span>
+                    <ul class="tag-list">
+                        <volist name="hobbyarr" id="v" empty="暂无标签">
+                            <li>{$v}</li>
+                        </volist>
+                    </ul>
+                </div>
+                <div class="bottom clearfix">
+                    <p>{$user.psn_sgntre}</p>
+                     <if condition="$uid neq $user['id']"> <span id="editInfo"></span><else/>
+                    <span id="editInfo"><i class="iconfont icon-compose"></i>编辑</span>
+                     </if>
+                </div>
+            </div>
+            <div class="underline-tab mui-segmented-control">
+                 <if condition="$uid neq $user['id']"><a class="mui-control-item mui-active" href="#myWish"><if condition="$user['sex'] eq '1'">她<else />他</if>的心愿</a><else/>
+                <a class="mui-control-item mui-active" href="#myWish">我的心愿</a>
+                <a class="mui-control-item" href="#participate">我的参与</a>
+                <a class="mui-control-item" href="#focus">我的关注</a>
+                 </if>
+            </div>
+            <div class="userCenter-segmented-content">
+                <div id="myWish" class="mui-control-content mui-active">
+                    <div class="wish-list clearfix">
+                        <volist name="list[1]" id="vo" key="k" empty="$empty[1]">
+                            <a class="wish-item mui-card" id="wishDetails" data-id="{$vo['id']}">
+                                <div class="mui-card-header mui-card-media" style="background-image: url('{: ($vo['img']) ? $vo['img'] : 'APP_DEFAULT_PATH/image/pic.jpg'}');">
+                                    <span class="status">
+                                        <switch name="vo.chk_status">
+                                            <case value="0">审核中</case>
+                                            <case value="1">
+                                                <if condition="$vo['status'] eq '1'">已达成
+                                                    <elseif condition="$vo['status'] eq '2'" />未达成
+                                                    <elseif condition="$vo['status'] eq '4'" />已完结
+                                                    <elseif condition="$vo['status'] eq '5'" />未完结
+                                                    <else />进行中
+                                                </if>
+                                            </case>
+                                            <case value="2">未通过</case>
+                                            <default />未知状态
+                                        </switch>
+                                    </span>
+                                    <div class="progress-outer">
+                                        <php>
+                                            $bili = ((int)(($vo['have_mon'] / $vo['set_mon']) * 100 * 100))/100; $bili .= "%";
+                                        </php>
+                                        <div class="progress-inner" style="width: {$bili};">{$bili}</div>
+                                        <div class="bean" style="left: 0%;"></div>
+                                    </div>
+                                </div>
+                                <div class="mui-card-content">
+                                    <h4>{$vo.title}</h4>
+                                    <span class="tag">{$vo.type}</span>
+                                </div>
+                            </a>
+                        </volist>
+                    </div>
+                </div>
+                <div id="participate" class="mui-control-content ">
+                    <div class="wish-list clearfix">
+                        <volist name="list[2]" id="vo" key="k" empty="$empty[2]">
+                            <a class="wish-item mui-card" data-id="{$vo['id']}">
+
+                                <div class="mui-card-header mui-card-media" style="background-image: url('{: ($vo['img']) ? $vo['img'] : 'APP_DEFAULT_PATH/image/pic.jpg'}');">
+                                        <span class="status">
+
+                                            <switch name="vo.chk_status">
+                                                <case value="0">审核中</case>
+                                                <case value="1">
+                                                    <if condition="$vo['status'] eq '1'">已达成
+                                                        <elseif condition="$vo['status'] eq '2'" />未达成
+                                                        <elseif condition="$vo['status'] eq '4'" />已完结
+                                                        <else />进行中
+                                                    </if>
+                                                </case>
+                                                <case value="2">未通过</case>
+                                                <default />未知状态
+                                            </switch>
+                                        </span>
+                                    <div class="progress-outer">
+                                        <php>
+                                            $bili = ((int)(($vo['have_mon'] / $vo['set_mon']) * 100 * 100))/100; $bili .= "%";
+                                        </php>
+                                        <div class="progress-inner" style="width: {$bili};">{$bili}</div>
+                                        <div class="bean" style="left: 0%;"></div>
+                                    </div>
+                                </div>
+                                <div class="mui-card-content">
+                                    <h4>{$vo.title}</h4>
+                                    <div class="name-wrapper <if condition="$vo['sex'] eq '1'"> female <else /> male </if> "><span class="name">{$vo.nickname}</span></div>
+                                    <span class="tag">{$vo.type}</span>
+                                </div>
+                            </a>
+                        </volist>
+                    </div>
+                </div>
+                <div id="focus" class="mui-control-content ">
+                    <div class="wish-list clearfix">
+                        <volist name="list[3]" id="vo" key="k" empty="$empty[3]">
+                            <a class="wish-item mui-card" data-id="{$vo['id']}">
+
+                                <div class="mui-card-header mui-card-media" style="background-image: url('{: ($vo['img']) ? $vo['img'] : 'APP_DEFAULT_PATH/image/pic.jpg'}');">
+                                        <span class="status">
+
+                                            <switch name="vo.chk_status">
+                                                <case value="0">审核中</case>
+                                                <case value="1">
+                                                    <if condition="$vo['status'] eq '1'">已达成
+                                                        <elseif condition="$vo['status'] eq '2'" />未达成
+                                                        <elseif condition="$vo['status'] eq '4'" />已完结
+                                                        <else />进行中
+                                                    </if>
+                                                </case>
+                                                <case value="2">未通过</case>
+                                                <default />未知状态
+                                            </switch>
+                                        </span>
+                                    <div class="progress-outer">
+                                        <php>
+                                            $bili = ((int)(($vo['have_mon'] / $vo['set_mon']) * 100 * 100))/100; $bili .= "%";
+                                        </php>
+                                        <div class="progress-inner" style="width: {$bili};">{$bili}</div>
+                                        <div class="bean" style="left: 0%;"></div>
+                                    </div>
+                                </div>
+                                <div class="mui-card-content">
+                                    <h4>{$vo.title}</h4>
+                                    <div class="name-wrapper <if condition="$vo['sex'] eq '1'"> female <else /> male </if> "><span class="name">{$vo.nickname}</span></div>
+                                    <span class="tag">{$vo.type}</span>
+                                </div>
+                            </a>
+                        </volist>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js"></script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui.init();
+        mui('.mui-scroll-wrapper').scroll({
+            deceleration: 0.0005
+        });
+
+        mui('.mui-bar').on('tap', '.logo', function() {
+            mui.openWindow({
+                url: "{:U('Index/index')}"
+            });
+        });
+
+        document.getElementById('editInfo').addEventListener('tap', function() {
+            setTimeout(function() {
+                mui.openWindow({
+                    url: "{:U('UserCenter/editInfo')}",
+                    id: 'editInfo'
+                });
+            }, 300);
+        });
+
+        mui('.mui-control-content').on('tap', '.wish-item', function() {
+            mui.openWindow({
+                url: '/App/Wish/showWish/wishid/' + this.dataset.id
+            });
+        });
+
+        document.getElementById('search').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Wish/searchWish')}",
+                id: 'search'
+            });
+        });
+
+        document.getElementById('postWish').addEventListener('tap', function() {
+            mui.ajax("{:U('Public/chk_auth')}", {
+                type: 'GET',
+                dataType: 'JSON',
+                data: {
+                    auth: 1
+                },
+                success: function(data) {
+                    if (data == 1) {
+                        window.location.href = "{:U('Wish/postWish')}";
+                    } else if (data == 2) {
+                        mui.confirm('你还没登录呢，快去登录吧！', ' ', ['我再看看', '马上登录'], function(v) {
+                            if (v.index == 1) {
+                                mui.openWindow({
+                                    url: "{:U('Public/login ')}",
+                                    id: 'login'
+                                });
+                            }
+                        });
+                        return false;
+                    } else if (data == 3) {
+                        mui.confirm('您还没有实名认证！请先完善资料！', ' ', ['我再看看', '马上完善'], function(v) {
+                            if (v.index == 1) {
+                                mui.openWindow({
+                                    url: "{:U('UserCenter/nameVerify')}",
+                                    id: 'nameVerify'
+                                });
+                            }
+                        });
+                        return false;
+                    } else if (data == 4) {
+                        mui.alert("您的实名认证已在审核中，再耐心等等吧，先看看其他心愿吧~", ' ', ['好的'], null);
+                        return false;
+                    }
+                },
+                error: function() {
+
+                }
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>

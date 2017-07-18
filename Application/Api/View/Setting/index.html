@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>设置</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="APP_DEFAULT_PATH/css/setting.css" />
+</head>
+
+<body>
+    <include file="../inc/header.html" />
+    <div class="mui-content userset">
+        <div class="list">
+            <ul class="mui-table-view">
+                <li class="mui-table-view-cell list-head">
+                    用户设置
+                </li>
+                <li class="mui-table-view-cell <if condition="$uid eq '0'"> hide</if>">
+                    <a id="accountSecurity" class="mui-navigate-right">账号与安全</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="help" class="mui-navigate-right">帮助与反馈</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="about" class="mui-navigate-right">关于微心愿</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="terms" class="mui-navigate-right">服务条款</a>
+                </li>
+                <li class="mui-table-view-cell">
+                    <a id="contact" class="mui-navigate-right">联系我们</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="APP_DEFAULT_PATH/js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript">
+    mui.ready(function() {
+        mui('.mui-bar').on('tap', '.logo', function() {
+            mui.openWindow({
+                url: "{:U('Index/index')}",
+                id: 'recommend'
+            });
+        });
+        mui.init();
+        document.getElementById('accountSecurity').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/accountSecurity')}",
+                id: 'accountSecurity'
+            });
+        });
+        document.getElementById('help').addEventListener('tap', function() {
+            setTimeout(function() {
+                mui.openWindow({
+                    url: "{:U('Setting/feedback')}",
+                    id: 'help'
+                });
+            }, 300);
+        });
+        document.getElementById('about').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/about')}",
+                id: 'about'
+            });
+        });
+        document.getElementById('terms').addEventListener('tap', function() {
+
+            mui.openWindow({
+                url: "{:U('Setting/terms')}",
+                id: 'terms'
+            });
+
+
+        });
+        document.getElementById('contact').addEventListener('tap', function() {
+            mui.openWindow({
+                url: "{:U('Setting/contact')}",
+                id: 'contact'
+            });
+        });
+    });
+    </script>
+</body>
+
+</html>
