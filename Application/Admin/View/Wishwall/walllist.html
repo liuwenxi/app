@@ -1,0 +1,101 @@
+<!-- main -->
+<div class="container-fluid">
+    <h2>心愿列表</h2>
+</div>
+<div id="mainbody">
+
+    <div class="panel">
+        <div class="navbar navbar-default">
+
+            <small class="padding-left"><a href="{:U('Wishwall/addwish')}" class="button bg-main icon-pencil-square"
+                                           style="float:left;margin-top: 10px;"> 添加心愿</a></small>
+
+            <form action=""  id="search-form2" class="navbar-form form-inline" method="post" onsubmit="return false">
+              <!--  <div class="form-group">
+                    <select name="cycle" id="cat_id" onchange="get_keyname(this.value,'cat_id_2','0');" class="form-control">
+                        <option value="">所有周期</option>
+                        <foreach name="WishwallCycle" item="v" key="k">
+                            <option value="{$v['id']}"> {$v['cycle']}</option>
+                        </foreach>
+                    </select>
+                </div>-->
+                <div class="form-group">
+                    <select name="kid" id="cat_id_2" class="form-control">
+                        <option value="">请选择关键字</option>
+                        <volist name="keywords" id="vo">
+                            <option value="{$vo.id}">{$vo.keyword}</option>
+                        </volist>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="sort" class="form-control">
+                        <option value="0">不限排序方式</option>
+                        <option value="1">按时间正序</option>
+                        <option value="2">按时间倒序</option>
+                        <option value="3">按点亮数正序</option>
+                        <option value="4">按点亮数倒序</option>
+                    </select>
+                </div>
+                <button type="submit"  onclick="ajax_get_table('search-form2',1)" class="btn btn-primary"><i class="fa fa-search"></i> 筛选</button>
+            </form>
+
+            <form action="" method="GET" style="float:right;">
+                <div class="form-group">
+                    <div class="input-group">
+                        <b style="padding-left: 160px;">文章查询：</b>
+                        <input type="text" name="keyword" value="" placeholder="文章查询" class="input-sm">
+                        <button type="submit" class="btn btn-success" style="margin-left:10px;">查询</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="ajax_return"> </div>
+
+    </div>
+</div>
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        ajax_get_table('search-form2',1);
+
+    });
+
+    function ajax_get_table(form,page){
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type : "GET",
+            url:"/Admin/Wishwall/ajaxlist?p="+page,//+tab,
+            data : $('#'+form).serialize(),// 你的formid
+
+            success: function(data){
+
+                $("#ajax_return").html('');
+                $("#ajax_return").append(data);
+            }
+        });
+    }
+
+    function get_keyname(id, next, select_id) {
+        var url = '/Admin/Wishwall/get_keyname?cycle=' + id;
+        $.ajax({
+            type: "GET",
+            url: url,
+            error: function (request) {
+                alert("服务器繁忙, 请联系管理员!");
+                return;
+            },
+            success: function (v) {
+                v = "<option value='0'>请选择关键字</option>" + v;
+                $('#' + next).empty().html(v);
+                (select_id > 0) && $('#' + next).val(select_id);//默认选中
+            }
+        });
+    }
+</script>
+
+
+</body>
+</html>

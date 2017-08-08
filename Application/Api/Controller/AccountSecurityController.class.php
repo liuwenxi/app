@@ -16,72 +16,48 @@ class AccountSecurityController extends BaseController
         header("Access-Control-Allow-Origin: *");
     }
 
-    public function queryBindingInfo()
-    {
-        $User = M('User');
-        $UserOpen = M('UserOpen');
-        $uid = I('post.uid');
-
-        $is_user = $User->find($uid);
-        if (!$is_user) {
-            $results['status'] = 1;
-            $results['errcode'] = 1;
-            $results['msg'] = '没有该用户';
-            dexit($results);
-        }
-        $field = 'id,nickname,avatar,login_type,reg_time';
-        $userOpen = $UserOpen->where(array('uid' => $uid))->select();
-        if(!empty($userOpen)){
-            $weChat = null;
-            $QQ = null;
-            $weiBo = null;
-            foreach ($userOpen as $key => $val){
-                if($val['login_type']==1){
-                    $weChat=$val;
-                }elseif($val['login_type']==2){
-                    $QQ=$val;
-                }elseif($val['login_type']==3){
-                    $weiBo=$val;
-                }
-            }
-        }
-        $data['weChat']=$weChat;
-        $data['QQ']=$QQ ;
-        $data['weiBo']=$weiBo;
-        $data['loginPassword'] = !$is_user['password'] ? false : true;
-        $data['payPassword'] = !$is_user['pay_pwd'] ? false : true;
-
-        $results['status'] = 0;
-        $results['data'] = $data;
-        dexit($results);
-
-    }
-
     public function removeBinding()
     {
         $User = M('User');
-        $UserOpen = M('UserOpen');
-        $uid = I('post.uid');
-        $type = I('post.type');
+        $uid = I('get.uid');
+        $type = I('get.type');
 
-        $is_userOpen = $UserOpen->where(array('uid' => $uid, 'login_type' => $type))->find();
-        if (!$is_userOpen) {
-            $results['status'] = 1;
-            $results['errcode'] = 1;
-            $results['msg'] = '非法操作';
-            dexit($results);
-        } else {
-            $use = $UserOpen->where(array('uid' => $uid, 'login_type' => $type))->data(array('is_use' => 2))->save();
-            if ($use) {
-                $results['status'] = 0;
-                $results['msg'] = '解除成功';
-                dexit($results);
+        $is_user = $User->where(array('id' => $uid))->find();
+        $flag=false;
+
+        if ($is_user){
+            if ($type==1) {
+                $flag = $User->where(array('uid' => $uid))->data(array('wechat_openid' => '', 'wechat_nickname' => ''))->save();
+            } elseif ($type==2) {
+                $flag = $User->where(array('uid' => $uid))->data(array('qq_openid' => '', 'qq_nickname' => ''))->save();
+            } elseif ($type==3) {
+                $flag = $User->where(array('uid' => $uid))->data(array('weibo_openid' => '', 'weibo_nickname' => ''))->save();
             }
-            $results['status'] = 1;
-            $results['errcode'] = 2;
-            $results['msg'] = '解除失败';
-            dexit($results);
         }
+        $userInfo = $User->where(array('id' => $uid))->find();
+        $user=array();
+        $user['uid'] =(int)$userInfo['id'];
+        $user['nickName'] =$userInfo['nickname'];
+        $user['avatar'] =$userInfo['avatar'];
+        $user['gender'] =(int)$userInfo['gender'];
+        $user['credit'] =(int)$userInfo['credit'];
+        $user['totalMon'] =(int)$userInfo['totalmon'];
+        $user['regTime'] =(int)$userInfo['reg_time'];
+        $user['isAuth'] =!$userInfo['is_auth']?false:true;
+        $user['phone'] =$userInfo['phone']?$userInfo['phone']:null;
+        $user['signature'] =$userInfo['signature'];
+        $user['payPwd'] = !$userInfo['pay_pwd']?false:true;
+        $user['wechatOpenid'] = !$userInfo['wechat_openid']?false:$userInfo['wechat_openid'];
+        $user['wechatNickname'] = !$userInfo['wechat_nickname']?null:$userInfo['wechat_nickname'];
+        $user['qqOpenid'] = !$userInfo['qq_openid']?false:$userInfo['qq_openid'];
+        $user['weiboOpenid'] = !$userInfo['weibo_openid']?false:$userInfo['weibo_openid'];
+        $user['bindFlag'] = !$userInfo['bind_flag']?false:true;
+        $user['isRegister'] = true;
+        if ($flag) {
+            Json(0,'user',$user,'解除成功');
+        }
+        Json(1,'errcode',2,'解除失败');
+
 
     }
 
@@ -172,7 +148,8 @@ class AccountSecurityController extends BaseController
         $a = M('Setting');
         $b = $a->find();
         $c = $b['tk_des'];
-        echo json_encode($c);exit;
+        $data['html']=htmlspecialchars_decode($c);
+        echo json_encode($data);exit;
     }
 
 

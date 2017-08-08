@@ -1,0 +1,80 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+        <div class="panel">
+        	<div class="panel-head">心愿管理<!-- <small class="padding-left"><a href="{:U('Cms/addart')}" class="button bg-main icon-pencil-square"> 添加周刊</a></small> --></div>
+            <div class="panel-body">
+              <table class="table">
+                    <tr>
+                        <th>编号</th>
+                        <th>标题</th>
+                        <th>发布者</th>
+                        <th>设置金额</th>
+                        <th>创建时间</th>
+                        <th>达成时间</th>
+                        <th>心愿类别</th>
+                        <th>心愿状态</th>
+                        <th>审核状态</th>
+                        <th>审核管理员</th>
+                        <th>审核时间</th>
+                        <th style="padding-left:20px;">操作</th>
+                    </tr>
+                     <volist name="data" id="vo">   
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td><a href="{:U('Xinyuan/edit?id='.$vo['id'])}">{$vo.title}</a></td>
+                        <td>{$vo.set_user}</td>
+                        <td>{$vo.set_mon}</td>
+                        <td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+                        <td><if condition="$vo.finishtime neq ''">{$vo.finishtime|date="Y-m-d H:i:s",###}<else /><span style="color:red;">---</span></if></td>
+                        <td>{$vo.tid}</td>
+                        <td><if condition="$vo.status eq 0">进行中<elseif condition="$vo.status eq 1" /><span style="color:blue;">已达成</span><else /><span style="color:red;">未达成</span></if></td>
+						<td><if condition="$vo.is_check eq 0"><span style="color:red">未审核</span><else/>已审核</if></td>
+						<td>{$vo.chk_admin}</td>
+						<td><if condition="$vo.chk_time neq ''">{$vo.chk_time|date="Y-m-d H:i:s",###}<else /><span style="color:red;">---</span></if></td>
+                        <td>
+                        	<a href="{:U('Xinyuan/edit?id='.$vo['id'])}" class="bg-sub tag margin-right">查看</a>
+							<a href="{:U('Xinyuan/del?id='.$vo['id'])}" onclick="if(confirm('确定删除?')==false)return false;" class="bg-dot tag margin-right">删除</a>
+							
+						</td>
+                    </tr>
+                     </volist>
+                </table>
+            </div>
+			<div class="panel-foot">
+				{$page}
+			</div>
+        </div>
+    </div>
+    <!-- js -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+	<script>
+	 $(".del").click(function(){
+                var delid = $(this).parent().attr('data-id');
+                layer.confirm('您确定要删除该数据吗？', {
+                    btn: ['是的','按错'] //按钮
+                }, function(){
+                    //选择 是的
+                    $.ajax({
+                        type:'post',
+                        url:'{:U("Goods/del")}',
+                        data:{id:delid},
+                        dataType:'json',
+                        success:function(data) {  
+                            if(data === 1 ){  
+                                layer.msg('删除成功', {shift: 6});
+                                window.location.reload();  //刷新当前页
+                            }else{  
+                                layer.msg('删除失败'); 
+                            }  
+                        }
+                    });
+                }, function(){
+                    //选择 按错 不执行
+                });
+            });
+	</script>
+  </body>
+</html>

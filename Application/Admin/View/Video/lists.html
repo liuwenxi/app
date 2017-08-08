@@ -1,0 +1,85 @@
+<include file="Public:indexheader"/>
+<style>
+.result-tab tr th{text-align:center;}
+.result-tab tbody tr td{text-align:center;}
+</style>
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="index.html">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="/jscss/admin/design/">视频管理</a><span class="crumb-step">&gt;</span><span>视频列表</span></div>
+        </div>
+        <div class="search-wrap">
+
+        </div>
+        <div class="result-wrap">
+            <form name="myform" id="myform" method="post" action="{:U('Video/del')}">
+                <div class="result-title">
+                    <div class="result-list">
+                        <a href="{:U('Video/add')}"><i class="icon-font"></i>新增</a>
+                        <a style="margin-right:1px;" href="javascript:del();"><i class="icon-font"></i>批量删除</a>
+                        
+                    </div>
+                </div>
+                <div class="result-content">
+                    <table class="result-tab" width="100%">
+                        <tr>
+                            <th class="tc" width="5%"><input class="allChoose" name="" type="checkbox" value=""></th>
+                            <th>ID</th>
+                            <th style="width:100px;">视频标题</th>                          
+                            <th>视频封面缩略图</th>
+                            <th>提交时间</th>
+                            <th>提交管理员</th>
+                            <th>视频类型</th>
+                            <!-- <th>是否免费观看</th> -->
+                            <th style="width:100px;">操作</th>
+                        </tr>
+                        <tbody id="databox">
+                            <volist name="list" id="val">
+                            <tr <if condition="($val['id'] % 2) eq '0'">style="background:#cccccc;"<else />style="background:#ffffff;"</if> >
+                                <label><td class="tc"><input class="ids" name="id[]" value="{$val.id}" type="checkbox"></td></label>
+                                <td>{$val.id}</td>
+                                <td title="">{$val.title}</td>
+                                <td><img src="{$val.img_url}" alt="" width="100"></img></td>
+                                <td>{$val.posttime}</td>
+                                <td>{$val.aid}</td>
+                                <td>{$val.type}</td>
+                                <!-- <td>{$val.type}</td> -->
+                                <td>
+                                    <a class="link-update" href="{:U('edit?id='.$val['id'])}">修改</a>
+                                    <a class="link-del" href="{:U('del?id='.$val['id'])}">删除</a>
+                                </td>
+                            </tr>
+                            </volist>
+                        </tbody>
+                    </table>
+                    <div id="pagebox" class="list-page"><?php echo $page ?></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+
+<script>
+
+   
+
+
+</script>
+
+<script type="text/javascript">
+$(function(){
+
+    //全选框选择
+    $(".allChoose").click(function(){
+        $(".ids").prop("checked", this.checked);
+    });
+    
+});
+
+function del(){
+	$("#myform").submit();
+}
+</script>

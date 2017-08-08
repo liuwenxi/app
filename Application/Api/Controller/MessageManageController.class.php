@@ -18,9 +18,9 @@ class MessageManageController extends BaseController {
         $User = M('User');
         $uid = I('post.uid','','int');
 
-        $type[1] = $Message->where(array('uid'=>$uid,'is_read'=>0,'type'=>1))->count();
-        $type[2] = $Message->where(array('uid'=>$uid,'is_read'=>0,'type'=>2))->count();
-        $type[3] = $Message->where(array('uid'=>$uid,'is_read'=>0,'type'=>3))->count();
+        $type[1] = $Message->where(array('uid'=>$uid,'is_read'=>0,'nid'=>1))->count();
+        $type[2] = $Message->where(array('uid'=>$uid,'is_read'=>0,'nid'=>2))->count();
+        $type[3] = $Message->where(array('uid'=>$uid,'is_read'=>0,'nid'=>3))->count();
         $notice = array('name'=>'通知信息','count'=>$type[1],'id'=>1);
         $wish = array('name'=>'心愿信息','count'=>$type[2],'id'=>2);
         $wishBean = array('name'=>'心愿豆信息','count'=>$type[3],'id'=>3);
@@ -46,13 +46,13 @@ class MessageManageController extends BaseController {
                 dexit($results);
                 exit;
             }
-            $where = array('uid'=>$uid,'hide'=>0,'type'=>$mtype);
+            $where = array('uid'=>$uid,'hide'=>0,'nid'=>$mtype);
             $count = $Message->where($where)->count();
             $countPage=ceil($count/5);
             $fields = 'id,xid,nid,type,wish_type,keyword,title,content,img,posttime';
             $messages = $Message->where($where)->page($page,5)->order('posttime desc')->select();
             if(empty($messages)){
-                $navyInfo = $navy->where(array('state'=>1))->find();
+                $navyInfo = $navy->where(array('id'=>$mtype))->find();
                 $message['timestamp'] = time();
                 $message['style'] = 0;
                 $message['banner'] = array('img'=>'','title'=>'','actionName'=>'');
@@ -78,6 +78,9 @@ class MessageManageController extends BaseController {
                 $message[$kk]['content'] = array('main'=>$vv['content'],'keyword'=>$vv['keyword']);
                 $message[$kk]['banner'] = array('img'=>$vv['img'],'title'=>$vv['title'],'actionName'=>'');
                 $message[$kk]['user'] = array('username'=>$username,'id'=>$vv['nid'],'avatar'=>$userImg);
+                if($vv['wish_type'] == 4){
+                    $message[$kk]['content']['wishId'] = $vv['xid'];
+                }
                 unset($vv['xid'],$vv['nid'],$vv['wish_type'],$vv['keyword'],$vv['title'],$vv['posttime'],$vv['img']);
             }
             $results['status'] = 0;

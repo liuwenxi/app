@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>后台登陆</title>
+    <link href="__Admin_CSS__admin_login.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__Admin_JS__jquery-1.3.2.min.js"></script>
+</head>
+<body style="background-color:black;">
+<div class="admin_login_wrap">
+    <h1 style="color:white;">后台登录</h1>
+    <div class="adming_login_border">
+        <div class="admin_input">
+            <form action="{:U('User/login')}" method="post">
+                <ul class="admin_items">
+                    <li>
+                        <label for="user">用户名：</label>
+                        <input type="text" name="username" value="{$_COOKIE['username']?$_COOKIE['username']:''}" id="user" size="40" class="admin_input_style" />
+                    </li>
+                    <li>
+                        <label for="pwd">密码：</label>
+                        <input type="password" name="password" value="{$_COOKIE['password']?$_COOKIE['password']:''}" id="pwd" size="40" class="admin_input_style" />
+                    </li>
+					<!--生成验证码位置 start-->
+					<li>
+						<label for="verifycode">验证码：</label>
+						<input class="admin_input_style" type="text" name="verifycode" value="" size="40" />
+						
+						<img src="{:U('Verify/auto')}" id="vfcode">
+					</li>
+					<!--生成验证码位置   end-->
+                    <li>
+                        <input type="checkbox" name="remember" value="1" {$_COOKIE['remember']?$_COOKIE['remember']:''}/>记住我
+                    </li>
+                    <li>
+                        <input type="submit" tabindex="3" value="提交" class="btn btn-primary" />
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+    <p class="admin_copyright"><a tabindex="5" href="{:U('Index/index')}" target="_blank">返回首页</a>
+</div>
+</body>
+</html>
+
+<script>
+    
+$(function(){
+
+    $('#vfcode').live('click',function(){
+
+        //点击更新验证码图片
+        var url = '{:U('Verify/auto')}';
+        url += '#';
+        url += Math.ceil(Math.random()*100);
+        $(this).attr('src',url);
+    });
+});
+</script>

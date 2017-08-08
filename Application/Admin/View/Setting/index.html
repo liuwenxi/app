@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>系统配置</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+	.form-control{width:350px;}
+	</style>
+  </head>
+  <body>
+    <div class="container-fluid">
+        <div class="panel panel-primary" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title">基本信息设置</h3>
+            </div>
+            <div class="panel-body">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                      <li role="presentation" class="active"><a href="#tiaokuan" aria-controls="tiaokuan" role="tab" data-toggle="tab">服务条款</a></li>
+					  <li role="presentation"><a href="#about" aria-controls="about" role="tab" data-toggle="tab">关于微心愿</a></li>
+                      <li role="presentation"><a href="#connect" aria-controls="connect" role="tab" data-toggle="tab">联系我们</a></li>
+                      <!-- <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">用户</a></li>
+                      <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">微信</a></li> -->
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content" style="padding-top:15px">
+                        <div role="tabpanel" class="tab-pane active" id="tiaokuan">
+                            <form action="{:U('Setting/edit?id=1')}" method="post">
+                            	<input type="hidden" value="{$data.id}">
+                                <div class="form-group">
+									<div class="label">
+										<label for="readme">栏目内容：</label>
+									</div>
+
+                                    <div class="field">
+                                    <script id="tk_des" name="tk_des" type="text/plain">{$data.tk_des|htmlspecialchars_decode}</script>
+                                </div>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                            </form>
+                        </div>
+						<div role="tabpanel" class="tab-pane" id="about">
+							<form action="{:U('Setting/edit?id=2')}" method="post">
+								<input type="hidden" value="{$data.id}">
+                                <div class="form-group">
+									<div class="label">
+										<label for="readme">栏目内容：</label>
+									</div>
+									<div class="field">
+										<script id="about_des" name="about_des" type="text/plain">{$data.about_des|htmlspecialchars_decode}</script>
+                                    </div>
+                                </div>
+                               
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                            </form>
+						</div>
+                      <div role="tabpanel" class="tab-pane" id="connect">
+						<form action="{:U('Setting/edit?id=3')}" method="post">
+							<input type="hidden" value="{$data.id}">
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">邮箱：</label>
+                                            <input type="text" class="form-control" style="width:350px;" name="email" value="{$data['email']}">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">QQ：</label>
+                                            <input type="text" class="form-control" style="width:350px;" name="qq" value="{$data['qq']}">
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">品牌合作：</label>
+                                            <input type="text" class="form-control" style="width:350px;" name="coop_email" value="{$data['coop_email']}">											
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">媒体合作：</label>
+                                            <input type="text" class="form-control" style="width:350px;" name="coop_qq" value="{$data['coop_qq']}">							
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">渠道推广：</label>
+                                            <input type="text" class="form-control" style="width:350px;" name="tg_email" value="{$data['tg_email']}">
+                                    </div>
+                                </div>
+								
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                            </form>
+					  </div>
+                      
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+	<script charset="utf-8" src="__PUBLIC__/edit/kindeditor-min.js"></script>
+	<script charset="utf-8" src="__PUBLIC__/edit/lang/zh_CN.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <script src="__PUBLIC__/Admin/Js/ueditor/ueditor.config.js"></script>
+    <script src="__PUBLIC__/Admin/Js/ueditor/ueditor.all.min.js"></script>
+    <script>
+        var ue = UE.getEditor('about_des');
+        var ue = UE.getEditor('tk_des');
+    </script>
+
+	<script>
+	var editor
+		KindEditor.ready(function(K) {
+					editor = K.create('textarea[class="content"]', {
+			                allowFileManager : true
+			        });
+                    //var editor = K.editor('textarea[name="content"]', {
+                    //        allowFileManager : true
+                    //});
+                    K('#configlogo').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#logoimg').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#logoimg').val(url);
+                                                    K('#configlogo').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+        });
+		
+		$(function(){
+			//测试邮箱发送：
+			$('.testsend').click(function(){
+				var testemail = $('#testemail').val();
+				$.ajax({
+				url:'{:U("webconfig/testSendEmail")}',
+				data:{toemail:testemail},
+				type:'post',
+				dataType:'json',
+				success:function(data){
+					if(data==1){
+						alert('发送成功');
+					}else{
+					alert('发送错误');
+					}
+				},
+				error:function(){
+				
+				}
+				});
+			});
+		});
+		
+	</script>
+  </body>
+</html>

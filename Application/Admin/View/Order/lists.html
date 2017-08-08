@@ -1,0 +1,125 @@
+<include file="Public:indexheader"/>
+<style>
+.result-tab tr th{text-align:center;}
+.result-tab tbody tr td{text-align:center;}
+</style>
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="index.html">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="/jscss/admin/design/">订单管理</a><span class="crumb-step">&gt;</span><span>订单列表</span></div>
+        </div>
+        <div class="search-wrap">
+
+        </div>
+        <div class="result-wrap">
+            <form name="myform" id="myform" method="post" action="{:U('News/del')}">
+                <div class="result-title">
+                    <div class="result-list">
+                        <!-- <a href="{:U('News/add')}"><i class="icon-font"></i>新增资讯</a> -->
+                        <a style="margin-right:1px;" href="javascript:void(0)"><i class="icon-font"></i>批量删除</a>
+                        
+                    </div>
+                </div>
+                <div class="result-content">
+                    <table class="result-tab" width="100%">
+                        <tr>
+                            <th class="tc" width="5%"><input class="allChoose" name="" type="checkbox" value=""></th>
+                            <th>ID</th>
+                            <th>订单编号ID</th>
+                            <th style="width:100px;">付款人</th>                          
+                            <th>支付类型</th>
+                            <th>订单金额</th>
+                            <th>支付金额</th>
+                            <th>订单提交时间</th>
+                            <th>订单支付时间</th>
+                            <th style="width:300px;">产品名称</th>
+                            <th style="width:200px;">操作</th>
+                        </tr>
+                        <tbody id="databox">
+                            <volist name="list" id="val">
+                            <tr <if condition="($val['id'] % 2) eq '0'">style="background:#cccccc;"<else />style="background:#ffffff;"</if> >
+                                <td class="tc"><input class="ids" name="id[]" value="{$val.id}" type="checkbox"></td>
+                                <td>{$val.id}</td>
+                                <td>{$val.order_no}</td>
+                                <td title="">{$val.pay_phone}</td>
+                                <td style="color:blue;">{$val['order_type']}</td>
+                                <td style="color:red;">{$val.price}</td>
+                                <td style="color:red;">{$val.pay_price}</td>
+                                <td>{$val.post_time}</td>
+                                <td>{$val.pay_time}</td>
+                                <td>{$val.order_name}</td>
+                                <td>
+                                    <a class="link-update" href="{:U('edit?id='.$val['id'])}">查看详情</a>
+                                    <a class="link-del" href="{:U('del?id='.$val['id'])}">删除</a>
+                                </td>
+                            </tr>
+                            </volist>
+                        </tbody>
+                    </table>
+                    <div id="pagebox" class="list-page"><?php echo $page ?></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+
+<script>
+$(function(){
+    
+    $(document).on('click', '#pagebox div a', function(){
+        var gourl = $(this).attr('href'); 
+        $.ajax({
+        	url:gourl,
+        	type:'GET',
+        	dataType:'JSON',
+        	success:function(data){
+        		console.log(data);
+        		var dbox = '';
+        		for(var i=0; i<data.list.length; i++){
+        			dbox += '<tr '+ (data.list[i].id % 2 == 0) ? +'style=\"background:#cccccc;\"'+ : +'style=\"background:#ffffff;\"' +'>';
+        				dbox += '<td class=\"tc\"><input class=\"ids\" name=\"id[]\" value=\"'+ data.list[i].id +'\" type=\"checkbox\"></td>';
+        				dbox += '<td>'+ data.list[i].id +'</td>';
+        				dbox += '<td>'+ data.list[i].order_no +'</td>';
+        				dbox += '<td>'+ data.list[i].pay_phone +'</td>';
+        				dbox += '<td style=\"color:blue;\">'+ data.list[i].order_type +'</td>';
+        				dbox += '<td style=\"color:red;\">'+ data.list[i].price +'</td>';
+        				dbox += '<td style=\"color:red;\">'+ data.list[i].pay_price +'</td>';
+        				dbox += '<td>'+ data.list[i].post_time +'</td>';
+        				dbox += '<td>'+ data.list[i].pay_time +'</td>';
+        				dbox += '<td>'+ data.list[i].order_name +'</td>';
+        				dbox += '<td>';
+        				var uu = "{:U('edit', array('id' => 'iddd'))}";
+        				uu = uu.replace('iddd', data.list[i].id);
+        				var duu = "{:U('del', array('id' => 'iddddd'))}";
+        				duu = duu.replace('iddddd', data.list[i].id);
+        					dbox += '<a class=\"link-update\" href=\"'+ uu +'\">修改</a>';
+        					dbox += '<a class=\"link-del\" href=\"'+ duu +'\">删除</a>';
+        				dbox += '</td>';
+        			dbox += '</tr>';
+        		}
+        		
+        		$('#pagebox').html(data.page);
+        		$('#databox').html(dbox);
+        	}
+        });
+
+        return false;
+    });
+
+});    
+
+
+</script>
+
+<script type="text/javascript">
+$(function(){
+
+    //全选框选择
+    $(".allChoose").click(function(){
+        $(".ids").prop("checked", this.checked);
+    });
+});
+</script>

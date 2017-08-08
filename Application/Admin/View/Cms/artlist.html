@@ -1,0 +1,157 @@
+<include file="Public/header" />
+	<!-- main -->
+<style>
+	.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+	.ml-20{margin-left:20px;}
+	.tag{font-size: 75%;border-radius: 0.25em;background: #999;padding: 0.1em 0.5em 0.2em;color: #fff;}
+	.bg-sub{background-color: #0ae;}
+	.bg-dot{background-color: #e33;}
+	a{text-decoration:none;}
+	a:hover{color:#fff;text-decoration:none;}
+</style>
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head" style="height: 73px;">
+				  <small class="padding-left"><a href="{:U('Cms/addart')}" class="button bg-main icon-pencil-square" style="float:left;"> 添加文章</a></small>
+				
+						<form action="{:U('Cms/artlist')}"  method="GET" style="float:left;">
+						<div class="form-group" style="float:left;">
+							<div class="input-group">
+							   <b style="padding-left: 61px;">发布日期：</b>
+							   <input type="text" name="add_time"  placeholder="日期查询"  id="add_time" class="input-sm">
+							   <button type="submit" class="btn btn-success" style="margin-left:10px;">查询</button>
+							</div>
+						</div>
+						</form>
+						
+						<form action="{:U('Cms/artlist')}" method="GET" style="float:left;">
+						<div class="form-group" style="float:left;">
+							<div class="input-group">
+							   <b style="padding-left: 160px;">文章查询：</b>
+							   <input type="text" name="keyword" value="{$title}" placeholder="文章查询" class="input-sm">
+							   <button type="submit" class="btn btn-success" style="margin-left:10px;">查询</button>
+							</div>
+						</div>
+						</form>
+				
+				</div> 
+				
+
+				
+				<div class="panel-body"  style="margin-top:20px;">
+						<table class="table">
+							<tr>
+								<th>#</th><th>标题</th>
+								<th>封面图</th>
+								<th>阅读人数</th>
+								<th>发布时间</th>
+								<th>作者</th>
+								<th style="text-align:right;padding-right:60px;">操作</th>
+							</tr>
+							<volist name="artlist" id="vo">
+							<tr>
+								<td>{$vo.id}</td>
+								<td>{$vo.title}</td>
+								<td><img src="/.{$vo.touimg}" alt="" style="width: 20px;height: 20px" class="img-rounded brandico-mini"></td>
+								<td>{$vo.readnum} 人次</td>
+								<td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+								<td>{$vo.author}</td>
+								<td>
+									<a href="{:U('Cms/delart?id='.$vo['id'])}" onclick="if(confirm('确定删除?')==false)return false;" class="bg-dot tag margin-right float-right">删除</a>
+									<a href="{:U('Cms/editart?id='.$vo['id'])}" class="bg-sub tag margin-right float-right">编辑</a>
+								</td>
+							</tr>
+							</volist>
+						</table>
+					
+				</div>
+				<div class="panel-foot" id="page">
+					{$page}
+				</div>
+		</div>
+	</div>
+   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/css/div.css">
+	<link href="__PUBLIC__/Admin/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+
+<!-- js -->
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/Admin/layer/layer.js"></script>
+
+<link href="__PUBLIC__/Admin/Js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+<script src="__PUBLIC__/Admin/Js/daterangepicker/moment.min.js" ></script>
+<script src="__PUBLIC__/Admin/Js/daterangepicker/daterangepicker.js"></script>
+<script>
+    $(document).ready(function(){
+        ajax_get_table('search-form2',1);
+        $('#add_time').daterangepicker({
+            format:"YYYY/MM/DD",
+            singleDatePicker: false,
+            showDropdowns: true,
+            minDate:'2017/01/01',
+            maxDate:'2030/01/01',
+            startDate:'2017/01/01',
+            locale : {
+                applyLabel : '确定',
+                cancelLabel : '取消',
+                fromLabel : '起始时间',
+                toLabel : '结束时间',
+                customRangeLabel : '自定义',
+                daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                firstDay : 1
+            }
+        });
+    });
+
+    $(document).ready(function(){
+        ajax_get_table('search-form2',1);
+        $('#active_time').daterangepicker({
+            format:"YYYY/MM/DD",
+            singleDatePicker: false,
+            showDropdowns: true,
+            minDate:'2017/01/01',
+            maxDate:'2030/01/01',
+            startDate:'2017/01/01',
+            locale : {
+                applyLabel : '确定',
+                cancelLabel : '取消',
+                fromLabel : '起始时间',
+                toLabel : '结束时间',
+                customRangeLabel : '自定义',
+                daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                firstDay : 1
+            }
+        });
+    });
+
+    // ajax 抓取页面
+    function ajax_get_table(tab,page){
+        cur_page = page; //当前页面 保存为全局变量
+        $.ajax({
+            type : "POST",
+            url:"/index.php/Admin/withdrawals/ajaxindex/p/"+page,//+tab,
+            data : $('#'+tab).serialize(),// 你的formid
+            success: function(data){
+                $("#ajax_return").html('');
+                $("#ajax_return").append(data);
+            }
+        });
+    }
+
+    // 点击排序
+    function sort(field)
+    {
+        $("input[name='order_by']").val(field);
+        var v = $("input[name='sort']").val() == 'desc' ? 'asc' : 'desc';
+        $("input[name='sort']").val(v);
+        ajax_get_table('search-form2',cur_page);
+    }
+</script>
+
+	
+</body>
+</html>

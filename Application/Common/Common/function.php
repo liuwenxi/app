@@ -79,6 +79,28 @@ function dexit($data = '') {
 }
 
 /**
+ * 接口返回json规范
+ * @param int $status   //状态码 0成功 1失败
+ * @param string $value  //数据别名
+ * @param array $data   //数据
+ * @param string $msg   //中文提示
+ * @User Karl
+ * @Time 2017-07-31 11:55:26
+ */
+function Json($status=0,$value='data',$data = array(),$msg='') {
+
+    $datas['status']=$status;
+    $datas[$value]=is_array($data)?$data:(int)$data;
+    if(!empty($msg)){
+        $datas['msg']=$msg;
+    }
+    echo json_encode($datas);
+    exit();
+
+}
+
+
+/**
  * 生存随机数 by karl
  */
 function random($length, $chars = '0123456789') {
@@ -118,7 +140,7 @@ function oss_upload($path){
         // 上传到oss
         $oss->uploadFile($bucket,$oss_path,$path);
         // 如需上传到oss后 自动删除本地的文件 则删除下面的注释
-         //@unlink($path);
+         @unlink($path);
         return true;
     }
     return false;
@@ -196,7 +218,7 @@ function getSignJsapiTicketSign($jsapi){
 }
 
 //无极分类 显示
-function get_category($datas, $pid = 0, $level=0){ 
+function get_category($datas, $pid = 0, $level=0){
     $list = M('Cate')->where("pid=".$pid)->order('pid')->select();
     $temp = '<font color="red">';
     for($i=0; $i<$level;$i++){
@@ -204,7 +226,7 @@ function get_category($datas, $pid = 0, $level=0){
     }
     $temp .= "</font>";
     if($list){
-        foreach($list as $k=>$v){  
+        foreach($list as $k=>$v){
             $v['name'] = $temp.$v['name'];
             $datas[] = $v;   // 装载数据
             $datas = get_category($datas, $v['id'], $level+1);  //递归调用
@@ -226,17 +248,17 @@ function get_category($datas, $pid = 0, $level=0){
 function msubstr($str, $start=0, $length, $charset="utf-8", $suffix=true){
 
     if (function_exists("mb_substr")) {
-        if ($suffix) 
+        if ($suffix)
             return mb_substr($str, $start, $length, $charset)."...";
         else
             return mb_substr($str, $start, $length, $charset);
-        
+
     }elseif (function_exists("iconv_substr")) {
         if ($suffix)
             return iconv_substr($str, $start, $length, $charset)."...";
         else
             return iconv_substr($str, $start, $length, $charset);
-        
+
     }else {
         $re['utf-8'] = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/";
         $re['gbk2312'] = "/[\x01-\x7f]|[\xb0-\xf7][\xa0-\xfe]/";
@@ -283,4 +305,38 @@ function mult2arr($arr){
         }
     }
     return $result_arr;
+}
+
+/**
+* 添加用户心愿行为记录
+* @params $uid  用户id
+* @params $type  1心愿墙，2心愿帮
+* @params $wish_id  心愿id
+* @params $class  1发布，2参与，3报名，4帮助，5取消报名，6取消帮助，7审核，8精选，9热门，10完成
+* by karl 2017-04-06 11:10:08
+**/
+function addUseDynamic($uid,$type,$wish_id,$class){
+    $userDynamic=M('userDynamic');
+    $data['uid']=$uid;
+    $data['type']=$type;
+    $data['wish_id']=$wish_id;
+    $data['class']=$class;
+    $data['add_time']=time();
+    return $userDynamic->add($data);
+}
+
+/*
+$arr：数组
+$group_count：分成几组
+$group_num：每组多少个
+*/
+function array_group($arr,$group_count,$group_num){
+    for($i=0;$i<$group_count;$i++){
+        if($i == $group_count-1){
+            $arrT[] = array_slice($arr, $i * $group_num );
+        }else{
+            $arrT[] = array_slice($arr, $i * $group_num ,$group_num);
+        }
+    }
+    return $arrT;
 }

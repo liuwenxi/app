@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>菜单列表</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__Admin_CSS__menu.css">
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+      <load href="__PUBLIC__Admin/Ueditor/ueditor.config.js" />
+      <load href="__PUBLIC__Admin/Ueditor/ueditor.all.min.js" />
+  </head>
+  <body>
+
+  <div class="mainbox">
+
+      <div id="nav" class="mainnav_title">
+
+          <ul>
+
+              <a href="{:U('Wechat/material_list')}">图片素材列表</a>|
+
+              <a href="{:U('Wechat/material_add')}" class="on">添加图片素材</a>
+
+          </ul>
+
+      </div>
+
+      <form method="post" action="" refresh="true" enctype="multipart/form-data" >
+
+          <table cellpadding="0" cellspacing="0" class="table_form" width="100%">
+
+              <tr>
+
+                  <th width="80">名称</th>
+
+                  <td><input type="text" class="input-text" name="name" size="20" placeholder="名称" validate="maxlength:20,required:true" value=""/></td>
+
+              </tr>
+
+              <tr class="pic">
+
+                  <th width="80">回复图片</th>
+
+                  <td>
+
+                      <input type="file" class="input-text" name="pic" id="pic" value=""/>
+
+                  </td>
+
+              </tr>
+
+          </table>
+
+          <div class="btn">
+
+              <input type="submit"  name="dosubmit" value="提交" class="button" />
+
+              <input type="reset"  value="取消" class="button" />
+
+          </div>
+
+      </form>
+
+  </div>
+
+  </body>
+</html>

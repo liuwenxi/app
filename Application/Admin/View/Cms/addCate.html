@@ -1,0 +1,50 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">添加周期<small class="padding-left"></small></div> 
+				<div class="panel-body">
+					<form method="post" class="form-x" action="">
+											
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">已有周期：</label>
+								</div>
+								<div class="field">
+									<select name="parent" style="width: 240px; height: 30px; ">
+										<option value="0">查看已有周期</option>
+										<foreach name='cate' item='cat'>
+											<option value="{$cat.id}">{$cat.number}</option>
+										</foreach>
+									</select>
+								</div>
+						</div>
+					
+					
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">添加周期：</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="30" name="number" placeholder="请填写周期数" data-validate="required:请填写周期数">
+								</div>
+						</div>
+
+
+
+						
+						
+							<div class="field">
+							<input type="submit" class="button bg-main" value="添加期数" name="" style="padding-left: 15px; border-left-width: 1px; margin-left: 228px; margin-top:35px">
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="panel-foot" id="page">
+					{$page}
+				</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -3,16 +3,21 @@ namespace Lib\Api\Weixinapi;
 class WeiXin {
     private $appId;
     private $appSecret;
+    private $url;
 
-    public function __construct($appId, $appSecret) {
+    public function __construct($url) {
         $aConfig = C('WEICHAT');
         $this->appId = $aConfig['APPID'];
         $this->appSecret = $aConfig['APPSECRET'];
+        $this->url = $url;
     }
 
     public function getSignPackage() {
         $jsapiTicket = $this->getJsApiTicket();
-        $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+//        $url = "http://m.17wxy.com$_SERVER[REQUEST_URI]";
+//        $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+//        $url = $this->url;
+        $url="http://m.17wxy.com/";
         $timestamp = time();
         $nonceStr = $this->createNonceStr();
 

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>评价列表</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<style>
+	.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+	.bg-dot {background-color: #e33;}
+	.bg-sub{background-color: #0ae;}
+	.bg-warn{background-color: #8FD6A1;}
+	.tag {font-size: 75%;border-radius: 0.25em;padding: 0.1em 0.5em 0.2em;color: #fff;}
+	a {text-decoration: none;}
+	a:hover{text-decoration: none;}
+	</style>
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container-fluid">
+          <h2>评价管理</h2>
+    </div>
+    <div class="container-fluid">
+        <a class="btn btn-default"><span class="glyphicon glyphicon-list"></span>&nbsp;评价列表</a>
+    </div>
+    <div class="container-fluid">
+        <div class="panel" style="margin-top:20px;">
+            <div class="panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>心愿名</th>
+							<th>评论</th>
+							<th>评论者</th>
+							<th>是否被举报</th>
+							<th>举报次数</th>
+                            <!-- <th>状态</th> -->
+                            <th>评论时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="data" id="vo">
+                        <tr>
+                            <td>{$i}</td>
+                            <td><a href="javascript:;">{$vo.xyname|mb_substr=###,0,15,'utf-8'}</a></td>
+							<td>{$vo.pub_des|mb_substr=###,0,15,'utf-8'}</td>
+							<td>{$vo.uname}</td>
+							<td>{: ($vo['is_warn'] == 1) ? '<span style="color:red">是</span>' : '否' }</td>
+							<td>{: ($vo['warn_num'] == 0) ? 0 : '<span style="color:red">'.$vo["warn_num"].'</span>' }</td>
+                            <!-- <td>{$vo.show}</td> -->
+                            <td>{$vo.pub_time|date="Y-m-d H:i",###}</td>
+                            <td data-id="{$vo.id}">
+                            	<a href="{:U('Comment/chkJB',array('id' => $vo['id']))}" class="bg-warn tag margin-right">举报详情</a>
+                            	<a href="javascript:;" class="bg-sub tag margin-right edit" data-toggle="modal" data-target="#editModal">查看</a>
+                            	<a href="javascript:;" class="bg-dot del tag margin-right">删除</a>
+                            </td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                 {$page}
+            </div>
+        </div>
+    </div>
+    
+    <!-- 编辑分类 -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">评论详情</h4>
+            </div>
+            <div class="modal-body">
+                <form action="javascript:;" method="post">
+                
+                <div class="form-group">
+                  <label for="edit-name" class="control-label">心愿名称：</label>
+                  <!-- <span class="btn btn-success pid" id="edit-pname">顶级分类</span> -->
+                  <input type="text" value="" class="form-control" id="edit-name" name="typename" value="">
+                </div>
+				<!-- <div class="form-group">
+                  <label for="add-pid" class="control-label">分类图标：</label>
+                  <input type="hidden" id="edit-cico" name="cico" value="">
+				  <img src="__PUBLIC__/admin/images/bico.png" class="img-thumbnail brandico" id="editcico">
+                </div> -->
+                <div class="form-group">
+                  <label for="message-order" class="control-label">评论内容：</label>
+                  <textarea class="form-control" name="ans" id="edit-des" cols="20" rows="5" placeholder=""></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="message-order" class="control-label">评论人：</label>
+                  <input type="text" value="" class="form-control" id="edit-user" name="corder" value="0">
+                </div>
+                    <input name="tpid" id="edit-id" type="hidden" value="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <!-- <button type="submit" class="btn btn-primary tijiao">修改</button> -->
+              </form>
+            </div>
+            <div class="modal-footer">
+              
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+	<script>
+	 $(".del").click(function(){
+                var delid = $(this).parent().attr('data-id');
+                layer.confirm('您确定要删除该数据吗？', {
+                    btn: ['是的','按错'] //按钮
+                }, function(){
+                    //选择 是的
+                    $.ajax({
+                        type:'post',
+                        url:'{:U("Comment/del")}',
+                        data:{id:delid},
+                        dataType:'json',
+                        success:function(data) {  
+                            if(data === 1 ){  
+                                layer.msg('删除成功', {shift: 6});
+                                setTimeout(function(){
+                                	window.location.reload();  //刷新当前页
+                                },2000);
+                                
+                            }else{  
+                                layer.msg('删除失败'); 
+                            }  
+                        }
+                    });
+                }, function(){
+                    //选择 按错 不执行
+                });
+            });
+	 
+		//编辑
+	    $('body').on('click','.edit',function(){
+	        var id = $(this).parent().attr('data-id');
+	        var edittype = $(this).parent().parent().parent().parent().parent().children('.form-group').children('select[name="type"]').find('option:selected').val();
+	        $("#edit-etype").val(edittype);
+	        
+	        $.ajax({
+	            url:'{:U("Comment/edit")}',
+	            data:{id:id,ajax:1},
+	            type:'post',
+	            dataType:'json',
+	            success:function(data){
+	                if(data['status'] === 1){
+	                    $('#edit-des').val(data['pub_des']);
+	                    $('#edit-name').val(data['xyname']);
+						$('#edit-user').val(data['pub_user']);
+	                    console.log(data);
+	                }
+	            },
+	            error:function(){
+	                
+	            }
+	        });
+	    });
+	</script>
+  </body>
+</html>

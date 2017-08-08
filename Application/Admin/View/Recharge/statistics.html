@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--<link href="__PUBLIC__/Admin/Css/style.css" rel="stylesheet">-->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+        .ml-20{margin-left:20px;}
+        th{text-align: center}
+        td{text-align: center}
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="container-fluid">
+        <h2><span class="glyphicon"></span></h2>
+    </div>
+
+    <div class="col-md-10">
+        <form action="" method="post">
+            <div class="col-xs-3">
+                <!--<a class="btn btn-primary margin" href="{:U('Recharge/statistics',array('gap'=>7))}">最近7天</a>-->
+                <!--<a class="btn btn-default margin" href="{:U('Recharge/statistics',array('gap'=>30))}">最近30天</a>-->
+            </div>
+            <div class="col-xs-5">
+                <div class="input-group margin">
+                    <div class="input-group-addon">
+                        选择时间  <i class="fa fa-calendar"></i>
+                    </div>
+                    <input type="text" class="form-control pull-right" name="timegap" value="{$timegap}" id="start_time">
+                </div>
+            </div>
+            <div class="col-xs-1"><input class="btn btn-block btn-info margin" type="submit" value="确定"></div>
+        </form>
+    </div>
+
+    <div class="box-body" style="margin-top: 100px">
+        <div class="row">
+            <ul>
+                <li>
+                    <span class="info-box-text">今日充值总额:</span>
+                    <span class="info-box-number"> ￥<if condition="$today.today_amount neq 0">{$today.today_amount}<else/>0 </if></span>
+                </li>
+                <li><span class="info-box-text">今日订单数:</span>
+                    <span class="info-box-number">{$today.today_order}单</span>
+                </li>
+                <li><span class="info-box-text">今日取消订单:</span>
+                    <span class="info-box-number">{$today.cancel_order}单</span>
+                </li>
+                <li><span class="info-box-text">今日未支付:</span>
+                    <span class="info-box-number">{$today.unpaid_order}单</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h2 class="box-title">充值走势</h2>
+                    <div class="box-tools"></div>
+                    <div class="box-tools pull-right">
+                        <!--<button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>-->
+                        <!--<button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>-->
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="chart">
+                        <div id="statistics" style="height: 400px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <ul>
+                <li>
+                    <span class="info-box-text">充值总额:</span>
+                    <span class="info-box-number">￥{$today['all_price_order']}</span>
+                </li>
+                <li><span class="info-box-text">成功订单总数:</span>
+                    <span class="info-box-number">{$today['all_ssuccess_order']}单</span>
+                </li>
+                <li><span class="info-box-text">平均每单充值数:</span>
+                    <span class="info-box-number">￥{$today['all_price_order']/$today['all_ssuccess_order']}</span>
+                </li>
+                <li><span class="info-box-text">取消订单总数:</span>
+                    <span class="info-box-number">{$today['all_cancel_order']}单</span>
+                </li>
+            </ul>
+        </div>
+        <style>
+            li{width:300px;height:100px; font-size: 20px; text-align:center ;float: left;margin-left: 100px;list-style-type:none; background-color: #1CAF9A}
+            .info-box-text{display: block;float:left; width:150px;height:100px;text-align:center; line-height: 100px; background-color: #a2b4ee}
+            .info-box-number{line-height: 100px;}
+        </style>
+
+        <div class="container-fluid" style="margin-top:100px;text-align: center">
+            <div class="container-fluid">
+                <h2>支付渠道百分比</h2>
+            </div>
+        </div>
+        <div  class="row">
+            <div id="container" style="width: 800px; height: 400px; float:left;"></div>
+            <div id="container-right" style="width: 800px; height: 400px; float:right; margin-right: 50px;"></div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="container-fluid">
+                <h2>挡位充值百分比</h2>
+            </div>
+
+        <div class="panel-body" style="margin-bottom: 100px;">
+            <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>心愿豆数量</th>
+                    <th>金额</th>
+                    <th>充值单数</th>
+                    <th>充值成功</th>
+                    <th>充值失败</th>
+                    <th>所占百分比</th>
+                </tr>
+                </thead>
+
+                <form action="" method="POST" style="float: right;margin-right: 50px">
+                    <input type="text" name="gear" value="" placeholder="输入金额" class="input-sm">
+                    <button type="submit" class="btn btn-success" style="margin-left:10px;">搜索</button>
+                </form>
+                <tbody>
+                    <tr>
+                        <td>{$today['gear'] *10} 心愿豆</td>
+                        <td><a>￥{$today.gear}</a></td>
+                        <td><a>{$today['gear_all_order']}单</a></td>
+                        <td><a>{$today['gear_ssuccess_order']}单</a></td>
+                        <td><a>{$today['gear_fail_order']}单</a></td>
+                        <td><a>{$today['gear_ssuccess_order']}/{$today['gear_all_order']}</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <script src="__PUBLIC__Admin/Js/daterangepicker/echarts.min.js" type="text/javascript"></script>
+        <script src="__PUBLIC__Admin/Js/daterangepicker/macarons.js"></script>
+        <script src="__PUBLIC__Admin/Js/daterangepicker/china.js"></script>
+        <script src="__PUBLIC__Admin/Js/daterangepicker/app.js" type="text/javascript"></script>
+
+        <!-- js -->
+        <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+        <script src="__PUBLIC__Admin/layer/layer.js"></script>
+        <link href="__PUBLIC__Admin/Js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+        <script src="__PUBLIC__Admin/Js/daterangepicker/moment.min.js" ></script>
+        <script src="__PUBLIC__Admin/Js/daterangepicker/daterangepicker.js"></script>
+
+        <script type="text/javascript">
+            var res = {$result};
+            var myChart = echarts.init(document.getElementById('statistics'),'macarons');
+            option = {
+                tooltip : {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        mark : {show: true},
+                        dataView : {show: true, readOnly: false},
+                        magicType: {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                calculable : true,
+                legend: {
+                    data:['充值金额','订单数',]
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : res.time
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        name : '金额',
+                        axisLabel : {
+                            formatter: '{value} ￥'
+                        }
+                    },
+
+                ],
+                series : [
+                    {
+                        name:'充值金额',
+                        type:'bar',
+                        data:res.amount
+                    },
+                    {
+                        name:'订单数',
+                        type:'bar',
+                        data:res.order
+                    },
+
+                ]
+            };
+            myChart.setOption(option);
+
+            $(document).ready(function() {
+                $('#start_time').daterangepicker({
+                    format:"YYYY-MM-DD",
+                    singleDatePicker: false,
+                    showDropdowns: true,
+                    minDate:'2016-01-01',
+                    maxDate:'2030-01-01',
+                    startDate:'2016-01-01',
+                    locale : {
+                        applyLabel : '确定',
+                        cancelLabel : '取消',
+                        fromLabel : '起始时间',
+                        toLabel : '结束时间',
+                        customRangeLabel : '自定义',
+                        daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                        monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                        firstDay : 1
+                    }
+                });
+
+
+            });
+        </script>
+
+            <script  src="__PUBLIC__Admin/Js/highcharts.js"></script>
+
+            <!-- 1a) Optional: the exporting module -->
+            <script src="__PUBLIC__Admin/Js/modules/exporting.js"></script>
+            <script type="text/javascript">
+
+                var chart;
+                $(document).ready(function() {
+                    chart = new Highcharts.Chart({
+                        chart: {
+                            renderTo: 'container',
+                            margin: [50, 200, 60, 170]
+                        },
+                        title: {
+                            text: '支付成功'
+                        },
+                        plotArea: {
+                            shadow: null,
+                            borderWidth: null,
+                            backgroundColor: null
+                        },
+                        tooltip: {
+                            formatter: function() {
+                                return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    formatter: function() {
+                                        if (this.y > 5) return this.point.name;
+                                    },
+                                    color: 'white',
+                                    style: {
+                                        font: '13px Trebuchet MS, Verdana, sans-serif'
+                                    }
+                                }
+                            }
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            style: {
+                                left: 'auto',
+                                bottom: 'auto',
+                                right: '50px',
+                                top: '100px'
+                            }
+                        },
+                        series: [{
+                            type: 'pie',
+                            name: 'Browser share',
+                            data: [
+                                ['支付宝{$alipay_ssuccess}单', {$alipay_ssuccess} ],
+                                ['微信{$wechat_ssuccess}单' ,   {$wechat_ssuccess}],
+                                /**	['Opera',     6.2],
+                                 ['Others',   0.7]**/
+                            ]
+                        }]
+                    });
+                });
+
+            </script>
+
+            <script type="text/javascript">
+
+                var chart;
+                $(document).ready(function() {
+                    chart = new Highcharts.Chart({
+                        chart: {
+                            renderTo: 'container-right',
+                            margin: [50, 200, 60, 170]
+                        },
+                        title: {
+                            text: '取消订单'
+                        },
+                        plotArea: {
+                            shadow: null,
+                            borderWidth: null,
+                            backgroundColor: null
+                        },
+                        tooltip: {
+                            formatter: function() {
+                                return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: true,
+                                    formatter: function() {
+                                        if (this.y > 5) return this.point.name;
+                                    },
+                                    color: 'white',
+                                    style: {
+                                        font: '13px Trebuchet MS, Verdana, sans-serif'
+                                    }
+                                }
+                            }
+                        },
+                        legend: {
+                            layout: 'vertical',
+                            style: {
+                                left: 'auto',
+                                bottom: 'auto',
+                                right: '50px',
+                                top: '100px'
+                            }
+                        },
+                        series: [{
+                            type: 'pie',
+                            name: 'Browser share',
+                            data: [
+                                ['支付宝{$alipay_cancel}单',   {$alipay_cancel}],
+                                ['微信 {$wechat_cancel}单' ,  {$wechat_cancel}],
+                                /**	['Opera',     6.2],
+                                 ['Others',   0.7]**/
+                            ]
+                        }]
+                    });
+                });
+
+            </script>
+
+</body>
+</html>

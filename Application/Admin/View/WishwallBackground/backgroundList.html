@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QA列表</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__Admin_CSS__div.css">
+	<link rel="stylesheet" href="__PUBLIC__Admin/edit/themes/default/default.css" />
+    
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>.layui-layer{top:50px !important;}</style>
+  </head>
+  <body>
+    <div class="container-fluid">
+        <div class="panel panel-default" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title">背景图片列表 <span class="glyphicon glyphicon-plus padd-20 pointers"  data-toggle="modal" data-target="#myModal">添加</span></h3>
+            </div>
+            <div class="panel-body">
+            	<table class="table table-hover">
+	                <thead>
+	                  <tr>
+	                    <th>#</th>
+	                    <th>颜色</th>
+	                    <th>背景大图</th>
+	                    <th>背景小图</th>
+	                    <th>状态</th>
+	                    <th>排序</th>
+	                    <th>操作</th>
+	                  </tr>
+	                </thead>
+	                <tbody>
+	                  <volist name="data" id="vo">
+	                  <tr>
+	                    <th scope="row">{$i}</th>
+	                    <td>{$vo.font_color}</td>
+	                    <td><img width="50px" src="{$vo.large_img}" alt=""></td>
+	                    <td><img width="30px" src="{$vo.small_img}" alt=""></td>
+                        <td>{$vo['is_show'] ? '显示' : '隐藏' }</td>
+                          <td>{$vo.sort}</td>
+	                    <td data-id="{$vo.id}">
+	                        <span class="glyphicon glyphicon-minus pointers padd-20 del"></span>
+	                        <span class="glyphicon glyphicon-edit pointers padd-20 edit" data-toggle="modal" data-target="#editModal"></span>
+	                    </td>
+	                  </tr>
+	                  </volist>
+	                </tbody>
+	           </table>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+    <!-- 添加分类 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">添加背景</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('WishwallBackground/add')}" method="post">
+                    <div class="form-group">
+                        <label for="edit-des" class="control-label">颜色：</label>
+                        <input type="text" class="form-control" name="font_color" value="" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="large_img" value="" id="add_large_img">
+                        <label for="edit-des" class="control-label">大图：</label>
+                        <img src="" class="img-thumbnail brandico" id="img1">
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="small_img" value="" id="add_small_img">
+                        <label for="edit-des" class="control-label">小图：</label>
+                        <img src="" class="img-thumbnail brandico" id="img2">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-des" class="control-label">排序：</label>
+                        <input type="text" class="form-control" id="sort" name="sort" value="0" placeholder="请输入数字，字数越大显示越靠前">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-inline">
+                            <label for="add-pid" class="control-label">是否显示：</label>
+                            <input name="is_show" type="radio" value="0" id="is_no0">隐藏
+                            <input name="is_show" type="radio" value="1" id="is_no1" checked="checked">显示
+                        </div>
+                    </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+              <button type="button" class="btn btn-primary tijiao">添加</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- end 添加分类 -->
+    <!-- 编辑分类 -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">编辑背景信息</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('WishwallBackground/edit')}" method="post">
+                    <div class="form-group">
+                        <label for="edit-des" class="control-label">颜色：</label>
+                        <input type="text" class="form-control" id="edit-font_color" name="font_color" value="" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="large_img" value="" id="edit-large_img">
+                        <label for="edit-des" class="control-label">大图：</label>
+                        <img src="" class="img-thumbnail brandico" id="image1">
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" name="small_img" value="" id="edit-small_img">
+                        <label for="edit-des" class="control-label">小图：</label>
+                        <img src="" class="img-thumbnail brandico" id="image2">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-des" class="control-label">排序：</label>
+                        <input type="text" class="form-control" id="edit-sort" name="sort" value="0" placeholder="请输入数字，字数越大显示越靠前">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-inline">
+                            <label for="add-pid" class="control-label">是否显示：</label>
+                            <input name="is_show" type="radio" value="0" id="edit-is_no0">隐藏
+                            <input name="is_show" type="radio" value="1" id="edit-is_no1">显示
+                        </div>
+                    </div>
+                    <input name="id" id="edit-id" type="hidden" value="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <button type="submit" class="btn btn-primary tijiao">修改</button>
+              	</form>
+            </div>
+            <div class="modal-footer">
+              
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- end 编辑分类 -->
+    <!-- js -->
+	<script charset="utf-8" src="__PUBLIC__Admin/edit/kindeditor-min.js"></script>
+    <script charset="utf-8" src="__PUBLIC__Admin/edit/lang/zh_CN.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__Admin/layer/layer.js"></script>
+	
+    <script>
+
+        var editor
+        KindEditor.ready(function(K) {
+            editor = K.editor({
+                allowFileManager : true
+            });
+            K('#img1').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        showRemote : false,
+                        imageUrl : K('#add_large_img').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            K('#add_large_img').val(url);
+                            K('#img1').attr("src",url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+            K('#img2').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        showRemote : false,
+                        imageUrl : K('#add_small_img').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            K('#add_small_img').val(url);
+                            K('#img2').attr("src",url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+
+            K('#image1').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        showRemote : false,
+                        imageUrl : K('#edit-large_img').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            K('#edit-large_img').val(url);
+                            K('#image1').attr("src",url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+            K('#image2').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        showRemote : false,
+                        imageUrl : K('#edit-small_img').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            K('#edit-small_img').val(url);
+                            K('#image2').attr("src",url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+        });
+	
+        $(".tijiao").click(function(){
+               $(this).parent().siblings(".modal-body").eq(0).children('form').eq(0).submit();
+        });
+        //警告框
+        $('body').on('click','.del',function(){
+            var delid = $(this).parent().attr('data-id');
+            layer.confirm('您确定要删除该数据吗？', {
+                btn: ['是的','按错'] //按钮
+            }, function(){
+                //选择 是的
+                $.ajax({
+                    type:'post',
+                    url:'{:U("WishwallBackground/del")}',
+                    data:{id:delid},
+                    dataType:'json',
+                    success:function(data) {  
+                        if(data === 1 ){  
+                            layer.msg('删除成功', {shift: 6});
+                            window.location.reload();  //刷新当前页
+                        }else{  
+                            layer.msg('删除失败'); 
+                        }  
+                    }
+                });
+            }, function(){
+                //选择 按错 不执行
+            });
+        });
+        //编辑
+        $('body').on('click','.edit',function(){
+            var id = $(this).parent().attr('data-id');
+            
+            $.ajax({
+                url:'{:U("WishwallBackground/edit")}',
+                data:{id:id,ajax:1},
+                type:'post',
+                dataType:'json',
+                success:function(data){
+                    if(data['status'] === 1){
+                    	var class_id = data['class_id'];
+                        $('#edit-id').val(data['id']);
+                        $('#edit-sort').val(data['sort']);
+                        $('#edit-font_color').val(data['font_color']);
+                        $('#image1').attr("src",data['large_img']);
+                        $('#edit-large_img').val(data['large_img']);
+                        $('#image2').attr("src",data['small_img']);
+                        $('#edit-small_img').val(data['small_img']);
+                        var newstatus = '#edit-is_no'+data.is_show;
+                        $(newstatus).attr('checked','checked');
+                        console.log(data);
+                    }
+                },
+                error:function(){
+                    
+                }
+            });
+        });
+
+    </script>
+  </body>
+</html>

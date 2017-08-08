@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="__Admin_CSS__common.css"/>
+    <link rel="stylesheet" type="text/css" href="__Admin_CSS__main.css"/>
+
+    <script type="text/javascript" src="__Admin_JS__libs/modernizr.min.js"></script>
+    <script type="text/javascript" src="__Admin_JS__jquery-1.10.2.min.js"></script>
+    <style>
+	.insert-tab tr th{width:30%;}
+	</style>	
+</head>
+<body>
+<div class="topbar-wrap white">
+    <div class="topbar-inner clearfix">
+        <div class="topbar-logo-wrap clearfix">
+            <h1 class="topbar-logo none"><a href="index.html" class="navbar-brand">后台管理</a></h1>
+            <ul class="navbar-list clearfix">
+                <li><a href="{:U('Index/index')}">首页</a></li>
+                <!-- <li><a href="http://www.xinyi.cc/Home/Index/index" target="_blank">网站首页</a></li> -->
+                <volist name="cate" id="vo">
+                	<li><a href="{$vo.rule_url}">{$vo.rname}</a></li>
+                </volist>
+                <!-- <li><a href="{:U('Video/lists')}">视频管理</a></li>
+                <li><a href="{:U('Banner/lists')}">广告图管理</a></li>
+                <li><a href="{:U('Order/lists')}">订单管理</a></li>
+                <li><a href="{:U('Vip/lists')}">会员管理</a></li>
+                <li><a href="{:U('Manager/lists')}">管理员管理</a></li> -->
+            </ul>
+        </div>
+        <div class="top-info-wrap">
+            <ul class="top-info-list clearfix">
+                <li><span>欢迎您：{:session('uname')}</span></li>
+                <li><a href="{:U('User/chgPwd')}">修改密码</a></li>
+                <li><a href="{:U('User/logout')}">退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container clearfix">
+
+    <div class="main-wrap" style="margin-left:0;">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="/jscss/admin/design/">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="/jscss/admin/design/">视频管理</a><span class="crumb-step">&gt;</span><span>视频添加</span></div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form action="{:U('User/chgPwd')}" method="post" id="myform" name="myform" enctype="multipart/form-data">
+                    <table class="insert-tab" width="100%">
+                        <tbody>
+                            
+                            <tr>
+                                <th><i class="require-red">*</i>输入原密码：</th>
+                                <td>
+                                    <input class="common-text required" id="old_pwd" name="oldpwd" size="50" value="" type="password">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>再次输入原密码：</th>
+                                <td>
+                                    <input class="common-text required" id="re_pwd" size="50" value="" type="password">
+                                    <span id="tigs" style="color:red;"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>输入新密码：</th>
+                                <td>
+                                    <input class="common-text required" id="new_pwd" name="newpwd" size="50" value="" type="password">
+                                    <span id="tig" style="color:red;"></span>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <input class="btn btn-primary btn6 mr10" value="提交" type="submit">
+                                    <input class="btn btn6" onclick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+<script type="text/javascript" src="__Admin_JS__ajaxupload.js"></script>
+<script type="text/javascript">
+$(function(){
+	
+	$(".btn-primary").click(function(){
+		var opwd = $("#old_pwd").val();
+		var rpwd = $("#re_pwd").val();
+		var npwd = $("#new_pwd").val();
+		
+		if(opwd != rpwd){
+			$("#tig").text("");
+			$("#tigs").text("两次输入的密码不一致，请重新输入");
+			return false;
+		}else if(npwd == ''){
+			$("#tigs").text("");
+			$("#tig").text("新密码不能为空，请重新输入");
+			return false;
+		}else{
+			$("#tigs").text("");
+			$("#tig").text("");
+			$("#myform").submit();
+		}
+	});
+	
+})
+</script>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>订单列表</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/admin/css/div.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+	.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+	.ml-20{margin-left:20px;}
+	</style>
+  </head>
+  <body>
+        <div class="container-fluid">
+            <div class="container-fluid">
+              <h2>订单管理</h2>
+        </div>
+        <div class="container-fluid">
+            <span class="glyphicon glyphicon-list btn btn-default">&nbsp;订单列表</span>
+            <a href="{:U('order/index', array('otype' => 2, 'chk' => 0))}" class="btn btn-danger" style="margin-left:20px">未审核</a>
+            <a href="{:U('order/index', array('otype' => 2, 'chk' => 1, 'pass' => 0))}" class="btn btn-warning">已审核未通过</a>
+            <a href="{:U('order/index', array('otype' => 2, 'pass' => 1))}" class="btn btn-primary">已通过</a>
+            <a href="{:U('order/index', array('otype' => 2))}" class="btn btn-success">提现订单</a>
+            <a href="{:U('order/index', array('otype' => 1))}" class="btn btn-info">充值订单</a>
+            <!-- <a href="{:U('order/index?status=4')}" class="btn btn-warning">待评价</a> -->
+        </div>
+        <div class="panel panel-default" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title">订单列表</h3>
+            </div>
+            <div class="panel-body">
+              <table class="table table-bordered table-striped table-condensed">
+              <if condition="$order_type eq '1'">     <!-- 充值 -->
+                    <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>订单编号</th>
+                        <td>标题</td>
+                        <th class="numeric">用户</th>
+                        <th class="numeric">充值金额</th>
+                        <th class="numeric">支付金额</th>
+                        <th class="numeric">下单时间</th>
+                        <th class="numeric">支付时间</th>
+                        <th class="numeric">状态</th>
+                        <th class="numeric">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <volist name="data" id="vo">   
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td><a href="{:U('Order/edit?id='.$vo['id'])}">{$vo.out_trade_no}</a></td>
+                            <td><span style="color:blue">充值</span></td>
+                            <td class="numeric">{$vo.pay_user}</td>
+                            <td>￥{$vo.total_price}</td>
+                            <td>￥{$vo.pay_price}</td>
+                            <td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+                            <td>{$vo.paytime|date="Y-m-d H:i:s",###}</td>
+                            <td class="numeric">{: ($vo['is_pay'] == 1) ? '<span style="color:blue">已支付</span>' : '<span style="color:red">未支付</span>' }</td>
+                            <td class="numeric" data-id="{$vo.id}"><span class="glyphicon glyphicon-minus pointers padd-20 del">删</span></td>
+                        </tr>
+                     </volist>
+                    </tbody>
+                <elseif condition="$order_type eq '2'" />   <!-- 提现 -->
+                	<thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>订单编号</th>
+                        <td>标题</td>
+                        <th class="numeric">用户</th>
+                        <th class="numeric">提现金额</th>
+                        <th class="numeric">下单时间</th>
+                        <th class="numeric">审核状态</th>
+                        <th class="numeric">是否通过</th>
+                        <th class="numeric">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <volist name="data" id="vo">   
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td><a href="{:U('Order/edit?id='.$vo['id'])}">{$vo.out_trade_no}</a></td>
+                            <td><span style="color:blue">提现</span></td>
+                            <td class="numeric">{$vo.tx_user}</td>
+                            <td>￥{$vo.tx_price}</td>
+                            <td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+                            <td class="numeric">{: ($vo['is_check'] == 1) ? '<span style="color:blue">已审核</span>' : '<span style="color:red">未审核</span>' }</td>
+                            <td class="numeric">{: ($vo['is_do'] == 1) ? '<span style="color:blue">已通过</span>' : '<span style="color:red">未通过</span>' }</td>
+                            <td class="numeric" data-id="{$vo.id}"><span class="glyphicon glyphicon-minus pointers padd-20 del">删</span></td>
+                        </tr>
+                     </volist>
+                    </tbody>
+                <else />
+                
+                </if>
+                </table>
+            </div>
+			<div class="panel-footer">
+				{$page}
+			</div>
+        </div>
+    </div>
+    <!-- js -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+	<script>
+	 $(".del").click(function(){
+                var delid = $(this).parent().attr('data-id');
+                layer.confirm('您确定要删除该数据吗？', {
+                    btn: ['是的','按错'] //按钮
+                }, function(){
+                    //选择 是的
+                    $.ajax({
+                        type:'post',
+                        url:'{:U("Goods/del")}',
+                        data:{id:delid},
+                        dataType:'json',
+                        success:function(data) {  
+                            if(data === 1 ){  
+                                layer.msg('删除成功', {shift: 6});
+                                window.location.reload();  //刷新当前页
+                            }else{  
+                                layer.msg('删除失败'); 
+                            }  
+                        }
+                    });
+                }, function(){
+                    //选择 按错 不执行
+                });
+            });
+	</script>
+  </body>
+</html>

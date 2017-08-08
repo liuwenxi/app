@@ -1,0 +1,41 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">周刊管理<small class="padding-left"><a href="{:U('Cms/addart')}" class="button bg-main icon-pencil-square"> 添加周刊</a></small></div> 
+				<div class="panel-body">
+					<if condition="$pid gt 0">
+						<table class="table">
+							<tr>
+								<th>#</th><th>标题</th><th>发布时间</th><th>作者</th><th>操作</th>
+							</tr>
+							<volist name="artlist" id="vo">
+							<tr>
+								<td>{$vo.id}</td>
+								<td>{$vo.title}</td>
+								<td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+								<td>{$vo.author}</td>
+								<td>
+								<a href="{:U('Cms/delart?id='.$vo['id'])}" onclick="if(confirm('确定删除?')==false)return false;" class="bg-dot tag margin-right float-right">删除</a>
+								<a href="{:U('Cms/editart?id='.$vo['id'])}" class="bg-sub tag margin-right float-right">编辑</a>
+								</td>
+							</tr>
+							</volist>
+						</table>
+					<else />
+						<ul class="list-group margin-left margin-top">
+							<volist name="cate" id="vo">
+							<li data-id="{$vo.id}">{$vo.des}<a href="{:U('cms/artlist?id='.$vo['id'])}">{$vo.name}</a><span class="badge margin-left bg-main">{$vo.artnum}</span></li>
+							</volist>
+						</ul>
+					</if>
+					
+				</div>
+				<div class="panel-foot" id="page">
+					{$page}
+				</div>
+		</div>
+	</div>
+</body>
+</html>

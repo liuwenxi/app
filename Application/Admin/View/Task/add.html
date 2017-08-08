@@ -1,0 +1,139 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">任务管理<small class="padding-left">增加任务</small></div> 
+				<div class="panel-body">
+					<form method="post" class="form-x" action="">
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">标题：</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="60" name="title" placeholder="任务标题" data-validate="required:请填写任务标题">
+									<!-- <input class="input input-auto" size="35" name="subtitle" placeholder="任务小标题，可选"> -->
+								</div>
+						</div>
+						<!-- <div class="form-group">
+								<div class="label">
+									<label for="readme">文章分类</label>
+								</div>
+								<div class="field">
+									<select name="class_id" class="input">
+										<option value="0" selected="selected">顶级分类</option>
+										<volist name="cate" id="vo">
+										<option value="{$vo.id}">{$vo.html}{$vo.name}</option>
+										</volist>
+									</select>
+								</div>
+						</div> -->
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">任务描述：</label>
+								</div>
+								<div class="field">
+									<textarea class="input" name="des" rows="3" cols="50" placeholder="任务描述，填写描述更有利于用户了解操作"></textarea>
+								</div>
+						</div>
+						<div class="form-group">                                    
+							<div class="label">
+								<label for="readme">任务需要完成数目：</label>
+							</div>
+							<div class="field">
+								<input class="input input-auto" size="40" value="1" name="num" placeholder="最少1次">
+								<small class="text-muted">任务完成次数最少1次</small>	
+							</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">任务可得经验值：</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="40" value="100" name="jingyan" placeholder="默认100经验值">
+									<small class="text-muted">任务可得经验值，默认100经验值</small>
+								</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">任务可得心元：</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="40" value="5" name="xinmon" placeholder="默认5心元">
+									<small class="text-muted">任务可得心元，默认5心元</small>
+								</div>
+                                                                
+						</div>
+						<!-- <div class="form-group">
+								<div class="label">
+									<label for="readme">任务类别：</label>
+								</div>
+								<div class="field">
+									<textarea class="input" name="des" rows="3" cols="50" placeholder="任务类别"></textarea>
+								</div>
+						</div> -->
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">任务实现方式：</label>
+								</div>
+								<div class="field">
+									<select name="tpid" class="input" style="width:35%;">
+										<option value="0" selected="selected">请选择实现方式</option>
+										<volist name="task" id="vo">
+											<option value="{$i}">{$vo}</option>
+										</volist>
+									</select>
+								</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="sequence">任务类型：</label>
+								</div>
+								<div class="field">
+									<div class="button-group radio">
+										<label class="button active">
+											<input name="is_special" value="0" checked="checked" type="radio"><span class="icon icon-check text-green"></span>
+											普通任务
+										</label>
+										<label class="button">
+											<input name="is_special" value="1" type="radio"><span class="icon icon-heart text-dot"></span>
+											特殊任务
+										</label>
+									</div>
+								</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="label">
+							<label for="readme"></label>
+							</div>
+							<div class="field">
+							<input type="submit" class="button bg-main" value="添加任务" name="">
+							</div>
+						</div>
+					</form>
+				</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+                var editor;
+                KindEditor.ready(function(K) {
+                        editor = K.create('textarea[name="content"]', {
+                                allowFileManager : true
+                        });
+                K('#listimg').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#listimg').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#list_img').val(url);
+                                                    K('#listimg').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+                });
+        </script>
+</body>
+</html>

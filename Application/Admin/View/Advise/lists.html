@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+	.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+	.ml-20{margin-left:20px;}
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+          <div class="container-fluid">
+              <h2><span class="glyphicon glyphicon-envelope">意见反馈</span></h2>
+    </div>
+    <div class="container-fluid">
+          <span class="glyphicon glyphicon-list btn btn-default">&nbsp;反馈列表</span>
+    </div>
+    <div class="panel panel-default" style="margin-top:20px;">
+        <div class="panel-heading">反馈列表</div>
+        <div class="panel-body">
+            <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>意见标题</th>
+                    <th class="numeric">创建时间</th>
+                    <th class="numeric">状态</th>
+                    <th class="numeric">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                 <volist name="data" id="vo">   
+                <tr>
+                    <td>{$vo.id}</td>
+                    <td><a href="{:U('Advise/edit?id='.$vo['id'])}">{$vo.content}</a></td>
+                    <td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+                    <td class="numeric"><if condition="$vo.status eq 1">已读<else/>未读</if></td>
+                    <td class="numeric" data-id="{$vo.id}"><span class="glyphicon glyphicon-minus pointers padd-20 del">删</span></td>
+                </tr>
+                 </volist>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer">{$page}</div>
+    </div>
+
+   <!-- js -->
+   <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+   <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+   <script src="__PUBLIC__/layer/layer.js"></script>
+    <script>
+     $(".del").click(function(){
+            var delid = $(this).parent().attr('data-id');
+            layer.confirm('您确定要删除该数据吗？', {
+                btn: ['是的','按错'] //按钮
+            }, function(){
+                //选择 是的
+                $.ajax({
+                    type:'post',
+                    url:'{:U("Advise/del")}',
+                    data:{id:delid},
+                    dataType:'json',
+                    success:function(data) {  
+                        if(data === 1 ){  
+                            layer.msg('删除成功', {shift: 6});
+                            window.location.reload();  //刷新当前页
+                        }else{  
+                            layer.msg('删除失败'); 
+                        }  
+                    }
+                });
+            }, function(){
+                //选择 按错 不执行
+            });
+        });
+    </script>
+  </body>
+</html>

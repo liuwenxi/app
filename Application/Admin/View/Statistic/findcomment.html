@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>应用概况</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+
+    <script type="text/javascript" src="/Public/Admin/Statistics/jQuery.js"></script>
+    <script type="text/javascript" src="/Public/Admin/Statistics/jqplot.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('#reg_time').daterangepicker({
+                format:"YYYY/MM/DD",
+                singleDatePicker: false,
+                showDropdowns: true,
+                minDate:'2017/01/01',
+                maxDate:'2030/01/01',
+                startDate:'2017/01/01',
+                locale : {
+                    applyLabel : '确定',
+                    cancelLabel : '取消',
+                    fromLabel : '起始时间',
+                    toLabel : '结束时间',
+                    customRangeLabel : '自定义',
+                    daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                    monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                    firstDay : 1
+                }
+            });
+
+
+        });
+    </script>
+
+    <style>
+        th{text-align: center}
+        td{text-align: center}
+    </style>
+</head>
+<body>
+<form action="findcomment"  method="GET" style="float:left;">
+    <div class="form-group" style="float:left;">
+        <div class="input-group">
+            <b>按创建时间：</b>
+            <input type="text" name="reg_time"  placeholder="创建时间段"  id="reg_time" class="input-sm" value="">
+            <button type="submit" class="btn btn-success" style="margin-left:10px;">查询</button>
+        </div>
+    </div>
+</form>
+
+<h2>近日概况</h2>
+
+
+<style>
+    li{width:10%;height:100px; font-size: 20px; text-align:center ;float: left;margin-left: 4%;list-style-type:none; background-color:#a2b4ee;}
+    .info-box-text{display: block;text-align:center; line-height: 50px; font-size: 18px;}
+    .info-box-number{line-height: 50px; color: white}
+</style>
+<div class="box-body" style="margin-top: 50px">
+    <div class="row">
+        <ul>
+            <li>
+                <span class="info-box-text">评论总数</span>
+                <span class="info-box-number">次数：{$count}</span>
+            </li>
+
+            <li><span class="info-box-text">男用户评论数</span>
+                <span class="info-box-number">{$man}人</span>
+            </li>
+            <li><span class="info-box-text">今天女用户评论数</span>
+                <span class="info-box-number">{$woman}人</span>
+            </li>
+
+        </ul>
+    </div>
+</div>
+
+<div id="chart1" style="margin-top: 50px"></div>
+<!--<div id="chart2"></div>-->
+
+</body>
+<link href="__PUBLIC__/Admin/Js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+<script src="__PUBLIC__/Admin/Js/daterangepicker/moment.min.js" ></script>
+<script src="__PUBLIC__/Admin/Js/daterangepicker/daterangepicker.js"></script>
+<script src="__PUBLIC__/Admin/Css/bootstrap.min.css"></script>
+</html>
+

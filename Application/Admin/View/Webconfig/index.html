@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>系统配置</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container-fluid">
+        <div class="panel panel-primary" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title">系统配置</h3>
+            </div>
+            <div class="panel-body">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                      <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">系统</a></li>
+					  <li role="presentation"><a href="#fenxiao" aria-controls="fenxiao" role="tab" data-toggle="tab">分销</a></li>
+                      <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">第三方接口</a></li>
+                      <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">用户</a></li>
+                      <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">微信</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content" style="padding-top:15px">
+                        <div role="tabpanel" class="tab-pane active" id="home">
+                            <form action="{:U('Webconfig/edit?id=1')}" method="post">
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">站点开关：</label>
+                                            <if condition="$data['WEB_SITE_CLOSE'] eq 1 ">
+                                                <input name="WEB_SITE_CLOSE" type="radio" value="1" checked="checked" >关闭
+                                                <input name="WEB_SITE_CLOSE" type="radio" value="0">开启
+                                            <else />
+                                                <input name="WEB_SITE_CLOSE" type="radio" value="1" >关闭
+                                                <input name="WEB_SITE_CLOSE" type="radio" value="0" checked="checked">开启
+                                            </if>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">用户注册：</label>
+                                            <if condition="$data['USER_ALLOW_REGISTER'] eq 1 ">
+                                                <input name="USER_ALLOW_REGISTER" type="radio" value="0">关闭
+                                                <input name="USER_ALLOW_REGISTER" type="radio" value="1" checked="checked">开启
+                                            <else />
+                                                <input name="USER_ALLOW_REGISTER" type="radio" value="0" checked="checked">关闭
+                                                <input name="USER_ALLOW_REGISTER" type="radio" value="1">开启
+                                            </if>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">系统域名：</label>
+                                            <input type="text" class="form-control"  name="WEB_DONAME" value="{$data['WEB_DONAME']}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                          <label for="add-pid" class="control-label">系统标题：</label>
+                                          <input type="text" class="form-control" name="WEB_TITLE" value="{$data['WEB_TITLE']}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                          <label for="add-pid" class="control-label">系统副标题：</label>
+                                          <input type="text" class="form-control" name="WEB_MINI_TITLE" value="{$data['WEB_MINI_TITLE']}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                          <label for="add-pid" class="control-label">系统描述：</label>
+                                          <textarea class="form-control" name="WEB_DESCRIPTION" cols="80">{$data['WEB_DESCRIPTION']}</textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                          <label for="add-pid" class="control-label">系统关键词：</label>
+                                          <input type="text" class="form-control" name="WEB_KEYWORD" value="{$data['WEB_KEYWORD']}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                          <label for="add-pid" class="control-label">欢迎语：</label>
+                                          <input type="text" class="form-control" name="WEB_WEL_COME" value="{$data['WEB_WEL_COME']}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                          <label for="add-pid" class="control-label">网站LOGO：</label>
+										  <span><img src="{$data['WEB_LOGO']|default='__PUBLIC__/default_logo.png'}" id="configlogo" height="50px"></span>
+                                          <input type="hidden" id="logoimg" name="WEB_LOGO" class="form-control" value="{$data['WEB_LOGO']}">
+										  <link rel="stylesheet" href="__PUBLIC__/edit/themes/default/default.css" />
+											<script charset="utf-8" src="__PUBLIC__/edit/kindeditor-min.js"></script>
+											<script charset="utf-8" src="__PUBLIC__/edit/lang/zh_CN.js"></script>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                            </form>
+                        </div>
+						<div role="tabpanel" class="tab-pane" id="fenxiao">
+							<form action="{:U('Webconfig/edit?id=2')}" method="post">
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">一级邀请者获利：</label>
+                                            <input type="text" class="form-control"  name="GOODS_INCOME_PROP1" value="{$data['GOODS_INCOME_PROP1']}">
+											<small class="text-muted">填写所占百分比的整数</small>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">二级邀请者获利：</label>
+                                            <input type="text" class="form-control"  name="GOODS_INCOME_PROP2" value="{$data['GOODS_INCOME_PROP2']}">
+											<small class="text-muted">填写所占百分比的整数</small>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">三级邀请者获利：</label>
+                                            <input type="text" class="form-control"  name="GOODS_INCOME_PROP3" value="{$data['GOODS_INCOME_PROP3']}">
+											<small class="text-muted">填写所占百分比的整数</small>
+                                    </div>
+                                </div>
+                               
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                            </form>
+						</div>
+                      <div role="tabpanel" class="tab-pane" id="profile">
+						<form action="{:U('Webconfig/edit?id=3')}" method="post">
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">快递100接口key：</label>
+                                            <input type="text" class="form-control"  name="KUAIDI_KEY" value="{$data['KUAIDI_KEY']}">
+											<small class="text-muted">免费向<a href="http://www.kuaidi100.com/openapi/applyapi.shtml">快递100申请</a></small>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">SMTP服务器：</label>
+                                            <input type="text" class="form-control"  name="SMTP_HOST" value="{$data['SMTP_HOST']}">
+											<small class="text-muted">SMTP服务器（smtp.163.com或者smtp.qq.com）</a></small>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">SMTP服务器端口：</label>
+                                            <input type="text" class="form-control"  name="SMTP_PORT" value="{$data['SMTP_PORT']}">
+											<small class="text-muted">SMTP服务器端口（465）</a></small>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">服务邮箱账号：</label>
+                                            <input type="text" class="form-control"  name="SERVER_EMAIL_NAME" value="{$data['SERVER_EMAIL_NAME']}">
+											<small class="text-muted">该邮箱用配置发送服务</a></small>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">服务邮箱密码：</label>
+                                            <input type="password" class="form-control"  name="SERVER_EMAIL_PASSWD" value="{$data['SERVER_EMAIL_PASSWD']}">
+											<small class="text-muted"></small>
+                                    </div>
+                                </div>
+								<!--
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">服务邮箱二次密码：</label>
+                                            <input type="text" class="form-control"  name="SERVER_EMAIL_PASSWD2" value="{$data['SERVER_EMAIL_PASSWD2']}">
+											<small class="text-muted">部分邮箱已经开启了二次密码认证的才需要填，否则不用填</small>
+                                    </div>
+                                </div>
+								--->
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">官方邮箱昵称：</label>
+                                            <input type="text" class="form-control"  name="SERVER_EMAIL_NICK" value="{$data['SERVER_EMAIL_NICK']}">
+											<small class="text-muted">收件方看到来信人（例如：捷狮科技）</small>
+                                    </div>
+                                </div>
+								
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">管理员邮箱一：</label>
+                                            <input type="text" class="form-control"  name="ADMIN_EMAL_NAME" value="{$data['ADMIN_EMAL_NAME']}">
+											<small class="text-muted"></small>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">管理员邮箱二：</label>
+                                            <input type="text" class="form-control"  name="ADMIN_EMAL_NAME2" value="{$data['ADMIN_EMAL_NAME2']}">
+											<small class="text-muted"></small>
+                                    </div>
+                                </div>
+								<div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">测试邮箱发送：</label>
+											<input type="text" class="form-control" id="testemail" name="TESTEMAIL" value="{$data['TESTEMAIL']}">
+                                            <a href="javascript:void(0);" class="btn btn-default testsend">发送测试邮箱</a><small class="text-muted">测试邮箱发送是否通，必须先保存配置再来测试，否则不起作用</small>
+                                    </div>
+                                </div>
+								
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                            </form>
+					  </div>
+                      <div role="tabpanel" class="tab-pane" id="messages">
+						<form action="{:U('Webconfig/edit?id=4')}" method="post">
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">是否开启注册：</label>
+											<if condition="$data.USER_ALLOW_REGISTER eq 1">
+											<label class="radio-inline">
+											  <input type="radio" name="USER_ALLOW_REGISTER" id="USER_ALLOW_REGISTER1" checked="checked" value="1"> 开启
+											</label>
+											<label class="radio-inline">
+											  <input type="radio" name="USER_ALLOW_REGISTER" id="USER_ALLOW_REGISTER2" value="0"> 关闭
+											</label>
+											<else/>
+											<label class="radio-inline">
+											  <input type="radio" name="USER_ALLOW_REGISTER" id="USER_ALLOW_REGISTER1" checked="checked" value="1"> 开启
+											</label>
+											<label class="radio-inline">
+											  <input type="radio" name="USER_ALLOW_REGISTER" id="USER_ALLOW_REGISTER2" checked="checked" value="0"> 关闭
+											</label>
+											</if>
+											<small class="text-muted"></small>
+                                    </div>
+                                </div>
+                               
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                        </form>
+					  </div>
+                      <div role="tabpanel" class="tab-pane" id="settings">
+						<form action="{:U('Webconfig/edit?id=5')}" method="post">
+                                <div class="form-group">
+                                    <div class="form-inline">
+                                            <label for="add-pid" class="control-label">微信APPIN：</label>
+                                            <input type="text" class="form-control"  name="" value="">
+											<small class="text-muted"></small>
+                                    </div>
+                                </div>
+                               
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                        </form>
+					  </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script>
+		KindEditor.ready(function(K) {
+                    var editor = K.editor({
+                            allowFileManager : true
+                    });
+                    K('#configlogo').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#logoimg').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#logoimg').val(url);
+                                                    K('#configlogo').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+        });
+		
+		$(function(){
+			//测试邮箱发送：
+			$('.testsend').click(function(){
+				var testemail = $('#testemail').val();
+				$.ajax({
+				url:'{:U("webconfig/testSendEmail")}',
+				data:{toemail:testemail},
+				type:'post',
+				dataType:'json',
+				success:function(data){
+					if(data==1){
+						alert('发送成功');
+					}else{
+					alert('发送错误');
+					}
+				},
+				error:function(){
+				
+				}
+				});
+			});
+		});
+		
+	</script>
+  </body>
+</html>

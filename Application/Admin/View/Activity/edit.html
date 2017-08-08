@@ -1,0 +1,168 @@
+<include file="Public/header" />
+<!-- main -->
+<style>
+    .button{cursor:pointer}
+</style>
+<div id="mainbody">
+
+    <div class="panel"> 
+        <div class="panel-head">心愿管理<small class="padding-left">查看心愿</small></div> 
+        <div class="panel-body">
+            <form method="post" class="form-x" action="{:U(Admin/Activity/edit)}"  enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">活动期数：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="60" value="{$data.rank}" name='rank'>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">兑奖码：</label>
+                    </div>
+                    <div class="field">
+                       {$data.cdkey}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">消费码：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="60" value="{$data.code}" name='code' placeholder="消费码">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">奖品：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="60" name='prize' value="{$data.prize}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">商家名称：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="60"  name="store"   value="{$data.store}">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">商家电话：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="60" name="phone" value="{$data.phone}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">奖品类型：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="40" name="remark" value="{$data.remark}" placeholder="代金券">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">价值：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="40" name="money" value="{$data.money}" placeholder="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">赠送的心愿豆：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="40" name="totalmon" value="{$data.totalmon}" placeholder="100">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">地址：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="60" name="address" value="{$data.address}">
+                    </div>
+                </div>
+               
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">有效期至：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="40" name="ex_time" value="{$data.ex_time|date='Y-m-d',###}" placeholder="1987-01-01">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">奖品地址：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="40" name="url" value="{$data.url}" placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">题图：</label>
+                    </div>
+                    <div class="field">
+                        <div class="media">
+                          <if condition="$data['prize_img'] neq ''"><img src="/.{$data.prize_img}" id="listimg" width="100px" height="60px" class="radius" alt="..."></if>
+                          <input  id="form-field-images" type="file" id="form-field-images" name="prize_img"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme"></label>
+                    </div>
+                    <div class="field">
+                        <input type="hidden" name="id" value="{$data.id}">
+                        <input type="button" class="button" onclick="history.go(-1)" value="返回">
+                        <input type="submit" class="button bg-main" value="添加">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var editor;
+    KindEditor.ready(function (K) {
+        editor = K.create('textarea[class="input"]', {
+            allowFileManager: true
+        });
+        K('#list').click(function () {
+            editor.loadPlugin('image', function () {
+                editor.plugin.imageDialog({
+                    imageUrl: K('#listimg').val(),
+                    clickFn: function (url, title, width, height, border, align) {
+                        K('#list_img').val(url);
+                        K('#listimg').attr("src", url);
+                        editor.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
+
+</body>
+</html>

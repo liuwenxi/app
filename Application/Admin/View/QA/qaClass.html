@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>广告管理</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/css/div.css">
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>.layui-layer{top:50px !important;}</style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="panel panel-default" style="margin-top:20px;">
+        <div class="panel-heading">
+            <h3 class="panel-title">幻灯片管理<span class="glyphicon glyphicon-plus padd-20 pointers"  data-toggle="modal" data-target="#myModal">添加</span></h3>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>名称</th>
+                    <th>状态</th>
+                    <th>排序</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <volist name="data" id="vo">
+                    <tr>
+                        <th scope="row">{$i}</th>
+                        <td>&nbsp;&nbsp;{$vo.class_name}</td>
+                        <td>{$vo['is_show'] ? '显示' : '隐藏' }</td>
+                        <td>{$vo.sort}</td>
+                        <td data-id="{$vo.id}">
+                            <span class="glyphicon glyphicon-minus pointers padd-20 del"></span>
+                            <span class="glyphicon glyphicon-edit pointers padd-20 edit" data-toggle="modal" data-target="#editModal"></span>
+                        </td>
+                    </tr>
+                </volist>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- 添加幻灯片 -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">添加分类</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('QA/classAdd')}" method="post">
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">分类名称：</label>
+                        <input type="text" class="form-control" id="recipient-name" name="class_name">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-inline">
+                            <label for="add-pid" class="control-label">是否显示：</label>
+                            <input name="is_show" type="radio" value="0">隐藏
+                            <input name="is_show" type="radio" value="1" checked="checked" >显示
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message-order" class="control-label">排序：</label>
+                        <input type="text" class="form-control" id="recipient-order" name="sort" value="0">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <button type="button" class="btn btn-primary tijiao">添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end 添加幻灯片 -->
+
+<!-- 编辑 -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">编辑分类</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('QA/classEdit')}" method="post">
+                    <div class="form-group">
+                        <label for="edit-title" class="control-label">分类名称：</label>
+                        <input type="text" class="form-control" id="edit-title" name="class_name" value="">
+                    </div>
+                    <div class="form-group">
+                        <div class="form-inline">
+                            <label for="add-pid" class="control-label">是否显示：</label>
+                            <input name="is_show" type="radio" value="0" id="edit-is_no0">隐藏
+                            <input name="is_show" type="radio" value="1" id="edit-is_no1">显示
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-order" class="control-label">排序：</label>
+                        <input type="text" class="form-control" id="edit-order" name="sort" value="">
+                    </div>
+                    <input type="hidden" name="id" id="edit-id" value="">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <button type="button" class="btn btn-primary tijiao">修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end 编辑 -->
+
+<!-- js -->
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__Admin/layer/layer.js"></script>
+<script>
+
+    //提交
+    $(".tijiao").click(function(){
+        $(this).parent().siblings(".modal-body").eq(0).children('form').eq(0).submit();
+    });
+
+    //编辑
+    $('.edit').click(function(){
+        var id = $(this).parent().attr('data-id');
+        $.ajax({
+            url:'{:U("QA/classEdit")}',
+            data:{id:id,ajax:1},
+            type:'post',
+            dataType:'json',
+            success:function(data){
+                if(data.status == 1){
+                    $('#edit-id').val(data.id);
+                    $('#edit-title').val(data.class_name);
+                    $('#edit-order').val(data.sort);
+                    //$("#edit-type").find("option[value="+data['type']+"]").attr("selected",true);
+                    var newstatus = '#edit-is_no'+data.is_show;
+                    $(newstatus).attr('checked','checked');
+                }
+            },
+            error:function(){
+
+            }
+        });
+    });
+
+    //警告框
+    $(".del").click(function(){
+        var delid = $(this).parent().attr('data-id');
+        layer.confirm('您确定要删除该数据吗？', {
+            btn: ['是的','按错'] //按钮
+        }, function(){
+            //选择 是的
+            $.ajax({
+                type:'post',
+                url:'{:U("QA/classDel")}',
+                data:{id:delid},
+                dataType:'json',
+                success:function(data) {
+                    if(data === 1 ){
+                        layer.msg('删除成功', {shift: 6});
+                        window.location.reload();  //刷新当前页
+                    }else{
+                        layer.msg('删除失败');
+                    }
+                }
+            });
+        }, function(){
+            //选择 按错 不执行
+        });
+    });
+
+</script>
+</body>
+</html>

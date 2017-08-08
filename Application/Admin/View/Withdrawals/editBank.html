@@ -1,0 +1,42 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head"><small class="padding-left">增加银行</small></div>
+				<div class="panel-body">
+					<form method="post" class="form-x" action="" enctype="multipart/form-data">
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">银行名称：</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="60" value="{$data.bankname}"  name="bankname" placeholder="银行名称">
+								</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">银行icon：</label>
+								</div>
+								<div class="field">
+									<div class="media">
+										<img src="{$data.img}" class="radius" alt="...">
+									</div>
+									<input type="file" size="40"  name="img" value="">
+								</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+							<label for="readme"></label>
+							</div>
+							<div class="field">
+								<input type="hidden" name="id" value="{$data.id}">
+							   <input type="submit" class="button bg-main" value="添加" name="">
+							</div>
+						</div>
+					</form>
+				</div>
+		</div>
+	</div>
+</body>
+</html>

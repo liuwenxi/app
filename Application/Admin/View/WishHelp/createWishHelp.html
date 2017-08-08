@@ -1,0 +1,125 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">心愿帮管理<small class="padding-left">增加心愿</small></div>
+				<div class="panel-body">
+					<form method="post" class="form-x" action="" enctype="multipart/form-data">
+
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">发布者用户组1：</label>
+							</div>
+							<div class="field">
+								<select name="post_uid1" style="width: 240px; height: 30px; ">
+									<option value="0">选择用户</option>
+									<foreach name='userlist1' item='user'>
+										<option value="{$user.id}">{$user.id} - {$user.nickname}</option>
+									</foreach>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">发布者用户组2：</label>
+							</div>
+							<div class="field">
+								<select name="post_uid2" style="width: 240px; height: 30px; ">
+									<option value="0">选择用户</option>
+									<foreach name='userlist2' item='user'>
+										<option value="{$user.id}">{$user.id} - {$user.nickname}</option>
+									</foreach>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">发布者用户组3：</label>
+							</div>
+							<div class="field">
+								<select name="post_uid3" style="width: 240px; height: 30px; ">
+									<option value="0">选择用户</option>
+									<foreach name='userlist3' item='user'>
+										<option value="{$user.id}">{$user.id} - {$user.nickname}</option>
+									</foreach>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">发布者用户组4：</label>
+							</div>
+							<div class="field">
+								<select name="post_uid4" style="width: 240px; height: 30px; ">
+									<option value="0">选择用户</option>
+									<foreach name='userlist4' item='user'>
+										<option value="{$user.id}">{$user.id} - {$user.nickname}</option>
+									</foreach>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">内容：</label>
+								</div>
+								<div class="field">
+									<textarea class="input" name="content" rows="3" cols="50" ></textarea>
+								</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">封面图：</label>
+							</div>
+							<div class="field">
+								<div class="media">
+									<img src="__PUBLIC__/admin/images/defaultimg.png" id="listimg" width="100px" height="60px" class="radius" alt="...">
+								</div>
+								<input type="file" size="40" id="list_img" name="img" value="">
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">报名名单：</label>
+							</div>
+							<div class="field">
+								<foreach name='userlist' item='info' key="k">
+									<input  type="checkbox" value="{$info.id}" name="join_id[]">({$info.id}){$info.nickname}
+									<if condition="($k+1) % 10 ==0"><br/></if>
+								</foreach>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+							<label for="readme"></label>
+							</div>
+							<div class="field">
+							<input type="submit" class="button bg-main" value="添加" name="">
+							</div>
+						</div>
+					</form>
+				</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+                var editor;
+                KindEditor.ready(function(K) {
+                        editor = K.create('textarea[name="content"]', {
+                                allowFileManager : true
+                        });
+                K('#listimg').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#listimg').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#list_img').val(url);
+                                                    K('#listimg').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+                });
+        </script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<include file="Public:addheader"/>
+<style>
+#selector{
+    background:#006dcc;
+    display:block;
+    width:100px;
+    height:50px;
+    border:1px solid #006dcc;
+    border-radius:8px;
+    cursor:pointer;
+    color:#FFF;
+    font-size:16px;
+	float:left;
+	margin:15px 25px 45px 20px;
+}
+#selmin{
+    background:#006dcc;
+    display:block;
+    width:100px;
+    height:50px;
+    border:1px solid #006dcc;
+    border-radius:8px;
+    cursor:pointer;
+    color:#FFF;
+    font-size:16px;
+	float:left;
+	margin:15px 25px 45px 20px;
+}
+#selmid{
+    background:#006dcc;
+    display:block;
+    width:100px;
+    height:50px;
+    border:1px solid #006dcc;
+    border-radius:8px;
+    cursor:pointer;
+    color:#FFF;
+    font-size:16px;
+	float:left;
+	margin:15px 25px 45px 20px;
+}
+#selvideo{
+	background:#006dcc;
+    display:block;
+    width:100px;
+    height:50px;
+    border:1px solid #006dcc;
+    border-radius:8px;
+    cursor:pointer;
+    color:#FFF;
+    font-size:16px;
+	float:left;
+	margin:25px 25px 35px 20px;
+}
+#typeid{
+	background-color: #ffffff;
+    border: 1px solid #cccccc;
+    width: 150px;
+    height: 30px;
+    border-radius: 5px;
+}
+.tigs{
+	position: absolute;
+    font-size: 10px;
+    color: #cd0000;
+    line-height: 15px;
+    bottom: 5px;
+    height: 30px;
+    width: 200px;
+    left: 5px;
+}
+.insert-tab tbody tr:nth-child(3) td{
+	position:relative;
+	padding-top:5px;
+}
+</style>
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="/jscss/admin/design/">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="/jscss/admin/design/">视频管理</a><span class="crumb-step">&gt;</span><span>视频添加</span></div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form action="{:U('Video/edit')}" method="post" id="myform" name="myform" enctype="multipart/form-data">
+                	<input type="hidden" value="{$vid}" name="vid">
+                    <table class="insert-tab" width="100%">
+                        <tbody>
+                            <tr>
+                                <th width="120"><i class="require-red">*</i>视频分类：</th>
+                                <td colspan="3">
+                                    <select name="search" id="typeid" class="required">
+                                        <option value="">请选择</option>
+                                        <volist name="type" id="val">
+                                        	<option value="{$val.id}" <if condition="$vdata['type'] eq $val['id']">selected="selected"<else /></if> >{$val.aname}</option>
+                                        </volist>
+                                       <!--  <option value="新闻">新闻</option>
+                                        <option value="公告">公告</option> -->
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>标题：</th>
+                                <td colspan="3">
+                                    <input class="common-text required" id="title" name="title" size="50" value="{$vdata.title}" type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="120px"><i class="require-red">*</i>封面图</th>
+                                <td style="">
+                                    <input type="button" id="selector" style="" value="选取图片">
+                                    <dd class="tigs">请上传300*300的jpg，jpeg，png格式的图片，以便界面更美观</dd>
+	                        		<input type="hidden" id="norpath" name="filepath1" value="{$vdata.img}" readonly="readonly">
+	                        		<!-- <input type="text" id="" value="" width="150px"> -->
+	                        		<img src="{$vdata.nor_img}" width=100 height=100 class="norview" style="float:left;display:inline-block;border:1px solid;margin-left:60px;margin-right:10px;">
+	                        		<span id="nstatus"></span>
+                                </td>
+                                <td>
+                                	<input type="button" id="selmin" style="" value="选取图片">
+                                	<dd class="tigs">请上传300*200的jpg，jpeg，png格式的图片，以便界面更美观</dd>
+	                        		<input type="hidden" id="midpath" name="filepath2" value="{$vdata.img}" readonly="readonly">
+	                        		<!-- <input type="text" id="" value="" width="150px"> -->
+	                        		<img src="{$vdata.mid_img}" width=150 height=100 class="midview" style="float:left;display:inline-block;border:1px solid;margin-left:60px;margin-right:10px;">
+	                        		<span id="mdstatus"></span>
+                                </td>
+                                <td>
+                                	<input type="button" id="selmid" style="" value="选取图片">
+                                	<dd class="tigs">请上传320*400的jpg，jpeg，png格式的图片，以便界面更美观</dd>
+	                        		<input type="hidden" id="minpath" name="filepath3" value="{$vdata.img}" readonly="readonly">
+	                        		<!-- <input type="text" id="" value="" width="150px"> -->
+	                        		<img src="{$vdata.min_img}" width=80 height=100 class="minview" style="float:left;display:inline-block;border:1px solid;margin-left:60px;margin-right:10px;">
+	                        		<span id="mnstatus"></span>
+                                </td>
+                            </tr>
+                            <script>
+	                        $(function ()
+                            {
+                                // 创建一个上传参数
+                                var uploadOption =
+                                {
+                                    // 提交目标
+                                    action: "{:U('Video/uploadPic')}",
+                				    // 服务端接收的名称
+                				    name: "pic",
+                                    // 自动提交
+                                    autoSubmit: true,
+                                    // 选择文件之后…
+                                    onChange: function (file, extension) {
+                                        //if (new RegExp(/(jpg)|(jpeg)|(bmp)|(gif)|(png)/i).test(extension)) {
+                                        	var _btn = $(this._button);
+                                    	var sel = $(_btn.context).attr('id');
+                                        	console.log(sel);
+                                        if(extension){
+                                        	$("#"+sel).parent().children('input[type=hidden]').val(file);
+                                            //$("#filepath").val(file);
+                                        } else {
+                                            alert("只限上传jpg格式的图片文件，请重新选择！");
+                                            return false;
+                                        }
+                                    },
+                                    // 开始上传文件
+                                    onSubmit: function (file, extension) {
+                                    	var _btn = $(this._button);
+                                    	var sel = $(_btn.context).attr('id');
+                                    	var value = $("#"+sel).parent().children('img').attr('width');
+                                    	this.setData({picsize:value});
+                                    	console.log(sel);
+                                    	$("#"+sel).parent().children('span').text("正在上传" + file + "..");
+                                        $("#"+sel).parent().children('img').css('display','inline-block');
+                                        $("#"+sel).parent().children('img').attr('src','__Admin_IMAGES__loading.gif');
+                                    },
+                                    // 上传完成之后
+                                    onComplete: function (file, response) {                                    
+                                        if (response) {
+                                        	var obj = JSON.parse(response);
+                                        	console.log(obj.status);
+                                        	if(obj.status == 1){
+                                        		
+                    							//alert(response);
+                    							//var obj = eval('(' + response + ')');
+                                                var url = obj.pic;
+                                                console.log(obj.size);
+                                                if(obj.size == 1){
+                                                	$("#nstatus").text("上传完成！");
+                                                	$("#norpath").val(obj.pic);
+                        							$("#ext").val(obj.ext);
+                                                    $("img.norview").attr('src',url);
+                                                }else if(obj.size == 2){
+                                                	$("#mdstatus").text("上传完成！");
+                                                	$("#midpath").val(obj.pic);
+                        							$("#ext").val(obj.ext);
+                                                    $("img.midview").attr('src',url);
+                                                }else{
+                                                	$("#mnstatus").text("上传完成！");
+                                                	$("#minpath").val(obj.pic);
+                        							$("#ext").val(obj.ext);
+                                                    $("img.minview").attr('src',url);
+                                                }
+                    							
+                    							//$("img.preview").attr('src','__Admin_IMAGES__success1.jpg');
+                                        	}else if(obj.status == 2){
+                                        		$("#status").text("超过可上传的限制大小！");
+                                        	}else if(obj.status == 4){
+                                        		var _btn = $(this._button);
+                                            	var sel = $(_btn.context).attr('id');
+                                            	$("#"+sel).parent().children('span').text('上传文件尺寸不对');
+                                            	$("#"+sel).parent().children('img').css('display','none');
+                                                $("#"+sel).parent().children('img').attr('src','');
+                                        	}
+                                        }else{
+                                            $("#status").text("上传失败");
+                                            $("img.preview").attr('src','');
+                                        }
+                                    }
+                                }
+
+                                // 初始化图片上传框
+                                var oAjaxUpload = new AjaxUpload('#selector', uploadOption);
+                                var mAjaxUpload = new AjaxUpload('#selmin', uploadOption);
+                                var ooAjaxUpload = new AjaxUpload('#selmid', uploadOption);
+
+                                // 给上传按钮增加上传动作
+                                $("#up").click(function ()
+                                {
+                                    oAjaxUpload.submit();
+                                });
+
+                            });
+	                        </script>
+                            <tr>
+                                <th width="120px"><i class="require-red">*</i>视频</th>
+                                <td style="padding-top:5px;" colspan="3">
+                                    <input type="button" id="selvideo" style="" value="选取视频">
+                                    <input type="hidden" name="MAX_FILE_SIZE" value="1048576">
+                                    <input type="hidden" id="videopath" name="videopath" value="{$vdata.video_url}" readonly="readonly">
+                                    <!-- <input type="text" id="vstatus" value="" width="150px"> -->
+                                    <img src="{$vdata.video_url}" width=100 height=100 class="view" style="display:inline-block;border:1px solid;margin-right:10px;">
+                                    <span id="vstatus"></span>
+                                </td>
+                            </tr>
+                            <script type="text/javascript">
+                            $(function ()
+                                    {
+                                        // 创建一个上传参数
+                                        var uploadOption =
+                                        {
+                                            // 提交目标
+                                            action: "{:U('Video/uploadVideo')}",
+                        				    // 服务端接收的名称
+                        				    name: "mp4",
+                                            // 自动提交
+                                            autoSubmit: true,
+                                            // 选择文件之后…
+                                            onChange: function (file, extension) {
+                                                if (new RegExp(/(flv)|(mp4)/i).test(extension)) {
+                                                //if(extension){
+                                                    $("#videopath").val(file);
+                                                } else {
+                                                    alert("只限上传flv,mp4格式的视频文件，请重新选择！");
+                                                    return false;
+                                                }
+                                            },
+                                            // 开始上传文件
+                                            onSubmit: function (file, extension) {                                            
+                                                $("#vstatus").text("正在上传" + file + "..");
+                                                $("img.view").css('display','inline-block');
+                                                $("img.view").attr('src','__Admin_IMAGES__loading.gif');
+                                            },
+                                            // 上传完成之后
+                                            onComplete: function (file, response) {  
+                                            	console.log(response);
+                                            
+                                                if (response) {
+                                                	var obj = JSON.parse(response);
+                                                	if(obj.status == 1){
+                                                		$("#vstatus").text("上传完成！");
+                            							//alert(response);
+                            							//var obj = eval('(' + response + ')');
+                                                        var url = obj.video;
+                            							$("#videopath").val(obj.video);
+                                                        $("img.view").attr('src',url);
+                            							//$("img.preview").attr('src','__Admin_IMAGES__success1.jpg');
+                                                	}else if(obj.status == 2){
+                                                		$("#vstatus").text("超过可上传的限制大小！");
+                                                	}
+                                                }else{
+                                                    $("#vstatus").text("上传失败");
+                                                    $("img.view").attr('src','');
+                                                }
+                                            }
+                                        }
+
+                                        // 初始化图片上传框
+                                        var oAjaxUpload = new AjaxUpload('#selvideo', uploadOption);
+
+                                        // 给上传按钮增加上传动作
+                                        $("#up").click(function ()
+                                        {
+                                            oAjaxUpload.submit();
+                                        });
+
+                                    });
+                            </script>
+                            <tr>
+                                <th>最新视频：</th>
+                                <td colspan="3">
+                                    <input class="common-text required" id="newsort" name="newsort" size="20" value="{$vdata.newsort}" type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>最热视频：</th>
+                                <td colspan="3">
+                                    <input class="common-text required" id="hotsort" name="hotsort" size="20" value="{$vdata.hotsort}" type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td colspan="3">
+                                    <input  class="btn btn-primary btn6 mr10" value="提交" type="submit">
+                                    <input class="btn btn6" onclick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+<script type="text/javascript" src="__Admin_JS__ajaxupload.js"></script>
+<script type="text/javascript">
+    UE.getEditor('editor');
+
+    function getContent() {
+        var arr = [];
+        arr.push("使用editor.getContent()方法可以获得编辑器的内容");
+        arr.push("内容为：");
+        arr.push(UE.getEditor('editor').getContent());
+        //alert(arr.join("\n"));
+    }
+</script>

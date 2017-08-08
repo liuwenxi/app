@@ -25,7 +25,8 @@ class WishBeanController extends BaseController
 
     public function getWishBean(){
         $User = M('User');
-        $info=$User->field('totalmon')->find($_GET['uid']);
+        $uid=$_POST['uid'];
+        $info=$User->field('totalmon')->find($uid);
         $results['status'] = 0;
         $results['wishBean'] = $info['totalmon'];
         dexit($results);exit;
@@ -495,6 +496,12 @@ class WishBeanController extends BaseController
                 case "1";
                     $bill[$k]['operator'] = 0;
                     break;
+                case "9":
+                    $bill[$k]['operator'] = 1;
+                    break;
+                case "10":
+                    $bill[$k]['operator'] = 1;
+                    break;
                 case "8";
                     if($v['wishType'] == 3){
                         $help = $Wishhelp->where(array('id' =>$v['xid']))->find();
@@ -535,6 +542,7 @@ class WishBeanController extends BaseController
                     $bill[$k]['title'] = $task['title'];
                     $bill[$k]['operator'] = 1;
                     break;
+
             }
         }
         $results['status'] = 0;

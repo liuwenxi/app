@@ -1,0 +1,88 @@
+<include file="Public/header"/>
+<!-- main -->
+<div class="container-fluid">
+    <h2>评论管理</h2>
+    <small class="padding-left"><a href="{:U('Wishwall/addcomment',array('id'=>$id))}" class="button bg-main icon-pencil-square"
+                                   style="float:left;margin-top: 10px;"> 添加评论</a></small>
+</div>
+
+
+        <div class="panel-body" style="margin-top:20px;">
+            <table class="table">
+                <tr>
+                    <th>id</th>
+                    <th>评论人</th>
+                    <th>评论内容</th>
+                    <th>是否被举报</th>
+                    <th>举报次数</th>
+                    <th>评论时间</th>
+                    <th style="text-align:right;padding-right:60px;">操作</th>
+                </tr>
+                <volist name="data" id="vo">
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.nickname}</td>
+                        <td>{$vo.pub_des}</td>
+                        <if condition="$vo.is_warn eq 0">
+                            <td>否</td>
+                            <else />
+                            <td>是</td>
+                        </if>
+                        <td>{$vo.warn_num}</td>
+                        <td>{$vo.pub_time|date="Y-m-d H:i:s",###}</td>
+                        <td>
+                            <a href="{:U('Wishwall/delcomment?id='.$vo['id'])}" onclick="if (confirm('确定删除?') == false) return false;" class="bg-dot tag margin-right float-right">删除</a>
+                            <if condition="$vo.type eq 0">
+                                <a class="bg-dot tag margin-right float-right hid"    data-id="{$vo.id}" value="1">隐藏</a>
+                                <else />
+                                <a class="bg-sub tag margin-right float-right hid"    data-id="{$vo.id}" value="0">显示</a>
+                            </if>
+                        </td>
+                    </tr>
+
+                </volist>
+            </table>
+
+        </div>
+        <div class="panel-foot" id="page">
+            {$page}
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="__PUBLIC__/admin/css/div.css">
+<link href="__PUBLIC__/admin/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+<script src="__PUBLIC__/admin/js/daterangepicker/moment.min.js"></script>
+<script src="__PUBLIC__/admin/js/daterangepicker/daterangepicker.js"></script>
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+    // ajax修改显示或隐藏
+    $(".hid").click(function(){
+        id=$(this).attr('data-id');
+
+        type=$(this).attr('value');
+        $.ajax({
+            type:'GET',
+            data:{id:id,type:type},
+            url:"/Admin/Wishwall/show_hidden",
+            success:function(data){
+                if(data == "1"){
+                    alert('修改成功');
+                    location.reload()
+                }else{
+                    alert('修改失败')}
+            }
+
+        })
+    })
+
+
+
+</script>
+
+<script>
+
+</script>
+</body>
+</html>

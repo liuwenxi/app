@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>已驳回</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/admin/css/div.css">
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="__PUBLIC__/js/pintuer.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+	.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+	.ml-20{margin-left:20px;}
+	.tag{font-size: 75%;border-radius: 0.25em;background: #999;padding: 0.1em 0.5em 0.2em;color: #fff;}
+	.bg-sub{background-color: #0ae;}
+	.bg-dot{background-color: #e33;}
+	a{text-decoration:none;}
+	a:hover{color:#fff;text-decoration:none;}
+	</style>
+  </head>
+  <body>
+        <div class="container-fluid">
+            <div class="container-fluid">
+              <h2>已驳回管理</h2>
+        </div>
+        <div class="container-fluid">
+            <span class="glyphicon glyphicon-list btn btn-default" style="float:left;">&nbsp;已驳回列表</span>
+         <!--   <a href="{:U('Xinyuan/lists', array('chk_status' => 0))}" class="btn btn-danger" style="margin-left:20px">待审核</a>
+            <a href="{:U('Xinyuan/lists', array('chk_status' => 1))}" class="btn btn-success">已审核</a>
+            <a href="{:U('Xinyuan/lists', array('status' => 0))}" class="btn btn-info">进行中</a>
+            <a href="{:U('Xinyuan/lists', array('status' => 2))}" class="btn btn-warning">未达成</a>
+            <a href="{:U('order/index', array('otype' => 2))}" class="btn btn-success">提现订单</a>
+            <a href="{:U('order/index', array('otype' => 1))}" class="btn btn-info">充值订单</a> -->
+			
+	    <form action="{:U('Withdrawals/rqcx',array('status' => 4,'html'=> reject))}"  method="GET">
+		<div class="form-group" style="float:left; margin-left:100px;">
+            <div class="input-group">
+			   <b>日期查询：</b>
+               <input type="text" name="chk_time" value="{$chk_time}" placeholder="日期查询"  id="add_time" class="input-sm">
+			   <button type="submit" class="btn btn-success" style="margin-left:10px;">查询</button>
+			<!--    <a  href="{:U('Withdrawals/lists', array('chk_time' => 1475219120))}" class="btn btn-success" style="margin-left:10px;">查询</a>  -->
+			</div>
+        </div>
+		</form>
+		
+		<form action="{:U('Withdrawals/zhcx',array('status' => 4 ,'html'=> reject))}" method="GET">
+		<div class="form-group" style="float:right; margin-right:100px;">
+            <div class="input-group">
+			   <b>账号查询：</b>
+               <input type="text" name="card" value="{$card}" placeholder="账号查询" class="input-sm">
+			   <button type="submit" class="btn btn-success" style="margin-left:10px;">查询</button>
+			</div>
+        </div>
+		</form>	
+			
+			
+        </div>
+        <div class="panel panel-default" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title"></h3>
+            </div>
+            <div class="panel-body">
+              <table class="table table-bordered table-striped table-condensed">
+                 <thead>
+                    <tr>
+                    	<th>用户昵称</th>
+                        <th>真实姓名</th>
+                        <th>提现金额</th>
+                        <th>所需心愿豆</th>
+                        <th>提现银行|卡号</th>
+                        <th>申请时间</th>
+                        <th>状态</th>
+                        <th>处理时间</th>
+                        <th style="padding-left:20px;min-width:100px">操作</th>
+                        
+                        <!-- <th>编号</th>
+                        <th>订单编号</th>
+                        <td>标题</td>
+                        <th class="numeric">用户</th>
+                        <th class="numeric">充值金额</th>
+                        <th class="numeric">支付金额</th>
+                        <th class="numeric">下单时间</th>
+                        <th class="numeric">支付时间</th>
+                        <th class="numeric">状态</th>
+                        <th class="numeric">操作</th> -->
+                    </tr>
+                  </thead>
+                    <tbody>
+                     <volist name="data" id="vo"> 
+                         <php>
+                            $f =10.5 ;
+                            $dou =$vo['mon'] * $f;
+                          </php>
+                        <tr>
+                            <td>{$vo.nickname}</td>
+	                        <td><a href="{:U('Withdrawals/traeditsf?id='.$vo['id'])}">{$vo.name}</a></td>
+	                        <td>{$vo.mon}</td>
+	                        <td>{$dou}</td>
+	                        <td>{$vo.bank}|{$vo.card}</td>
+	                        <td>{$vo.app_time|date="Y-m-d H:i:s",###}</td>
+							<td><if condition="$vo.status eq 0"><span style="color:blue">待审核</span>
+							<elseif condition="$vo.status eq 1" /><span style="color:blue;">待转账</span>
+							<elseif condition="$vo.status eq 2" /><span style="color:green;">转账成功</span>
+							<elseif condition="$vo.status eq 3" /><span style="color:red;">转账失败</span>
+							<elseif condition="$vo.status eq 4" /><span style="color:red;">已驳回</span>
+							</if></td>
+							<td><if condition="$vo.chk_time neq ''">{$vo.chk_time|date="Y-m-d H:i",###}<else /><span style="color:red;">---</span></if></td>
+	                        <td data-id="{$vo.id}">
+	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('Withdrawals/traeditsf?id='.$vo['id'])}" class="bg-sub tag margin-right">查看详情</a>
+							<!--	<a href="javascript:;" class="bg-dot del tag margin-right">删除</a>  -->
+								
+							</td>
+                        </tr>
+                     </volist>
+                    </tbody>
+
+                	<!-- <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>订单编号</th>
+                        <td>标题</td>
+                        <th class="numeric">用户</th>
+                        <th class="numeric">提现金额</th>
+                        <th class="numeric">下单时间</th>
+                        <th class="numeric">审核状态</th>
+                        <th class="numeric">是否通过</th>
+                        <th class="numeric">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                     <volist name="data" id="vo">   
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td><a href="{:U('Order/edit?id='.$vo['id'])}">{$vo.out_trade_no}</a></td>
+                            <td><span style="color:blue">提现</span></td>
+                            <td class="numeric">{$vo.tx_user}</td>
+                            <td>￥{$vo.tx_price}</td>
+                            <td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+                            <td class="numeric">{: ($vo['is_check'] == 1) ? '<span style="color:blue">已审核</span>' : '<span style="color:red">未审核</span>' }</td>
+                            <td class="numeric">{: ($vo['is_do'] == 1) ? '<span style="color:blue">已通过</span>' : '<span style="color:red">未通过</span>' }</td>
+                            <td class="numeric" data-id="{$vo.id}"><span class="glyphicon glyphicon-minus pointers padd-20 del">删</span></td>
+                        </tr>
+                     </volist>
+                    </tbody> -->
+
+                </table>
+            </div>
+			<div class="panel-footer">
+				{$page}
+			</div>
+        </div>
+    </div>
+    <!-- js -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+	<script>
+	 $(".del").click(function(){
+                var delid = $(this).parent().attr('data-id');
+                layer.confirm('您确定要删除该数据吗？', {
+                    btn: ['是的','按错'] //按钮
+                }, function(){
+                    //选择 是的
+                    $.ajax({
+                        type:'post',
+                        url:'{:U("Xinyuan/del")}',
+                        data:{id:delid},
+                        dataType:'json',
+                        success:function(data) {  
+                            if(data === 1 ){  
+                                layer.msg('删除成功', {shift: 6});
+                                setTimeout(function(){
+                                	window.location.reload();  //刷新当前页
+                                },2000);
+                                
+                            }else{  
+                                layer.msg('删除失败'); 
+                            }  
+                        }
+                    });
+                }, function(){
+                    //选择 按错 不执行
+                });
+            });
+	</script>
+
+        <link href="__PUBLIC__/Admin/Js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+        <script src="__PUBLIC__/Admin/Js/daterangepicker/moment.min.js" ></script>
+        <script src="__PUBLIC__/Admin/Js/daterangepicker/daterangepicker.js"></script>
+<script>
+    $(document).ready(function(){
+        ajax_get_table('search-form2',1);
+        
+		$('#add_time').daterangepicker({
+			format:"YYYY/MM/DD",
+			singleDatePicker: false,
+			showDropdowns: true,
+			minDate:'2016/01/01',
+			maxDate:'2030/01/01',
+			startDate:'2016/01/01',
+		    locale : {
+	            applyLabel : '确定',
+	            cancelLabel : '取消',
+	            fromLabel : '起始时间',
+	            toLabel : '结束时间',
+	            customRangeLabel : '自定义',
+	            daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+	            monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+	            firstDay : 1
+	        }
+		});
+    });
+    
+    // ajax 抓取页面
+    function ajax_get_table(tab,page){
+        cur_page = page; //当前页面 保存为全局变量
+            $.ajax({
+                type : "POST",
+                url:"/index.php/Admin/order/ajaxindex/p/"+page,//+tab,
+                data : $('#'+tab).serialize(),// 你的formid
+                success: function(data){
+                    $("#ajax_return").html('');
+                    $("#ajax_return").append(data);
+                }
+            });
+    }
+
+    // 点击排序
+    function sort(field)
+    {
+        $("input[name='order_by']").val(field);
+        var v = $("input[name='sort']").val() == 'desc' ? 'asc' : 'desc';
+        $("input[name='sort']").val(v);
+        ajax_get_table('search-form2',cur_page);
+    }
+</script>
+	
+  </body>
+</html>

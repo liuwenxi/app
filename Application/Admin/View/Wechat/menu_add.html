@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>菜单列表</title>
+    <link rel="stylesheet" href="__Admin_CSS__menu.css">
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+    <style>.layui-layer{top:50px !important;}</style>
+  </head>
+  <body>
+  <form id="myform" method="post" action="{:U('Wechat/menu_add')}" enctype="multipart/form-data" frame="true" refresh="true">
+
+      <table cellpadding="0" cellspacing="0" class="frame_form" width="100%">
+
+          <tr>
+
+              <th width="80">菜单名称</th>
+
+              <td>
+
+                  <input type="text" class="input fl" name="title" size="20" placeholder="主菜单名称" validate="maxlength:20,required:true" value="{$show.title}"/>
+
+                  <input type="hidden" name="id" value="{$show.id}"/>
+
+              </td>
+
+          </tr>
+
+          <tr>
+
+              <th width="80">父级菜单</th>
+
+              <td>
+
+                  <div class="mr15 l">
+
+                      <select name="pid" id="pid">
+
+                          <option selected="selected" value="0">请选择父菜单</option>
+
+                          <volist id="class" name="class">
+
+                              <option value="{$class.id}" <if condition="$show['pid'] eq $class['id']">selected</if>>{$class.title}</option>
+
+                          </volist>
+
+                      </select>
+
+                      <em class="notice_tips" tips="二级菜单需要选择父菜单"></em>
+
+                  </div>
+
+              </td>
+
+          </tr>
+
+          <tr>
+
+              <th width="80">菜单类型</th>
+
+              <td>
+
+                  <div class="mr15 l">
+
+                      <select name="menu_type" class="menu_type">
+
+                          <option value="1" <if condition="$type eq 1">selected</if>>关键词回复菜单</option>
+
+                          <option value="2" <if condition="$type eq 2">selected</if>>url链接菜单</option>
+
+                      </select>
+
+                  </div>
+
+              </td>
+
+          </tr>
+
+          <tr class="keyword">
+
+              <th width="80">关联关键词</th>
+
+              <td><input type="text" class="input fl" name="keyword" style="width:200px;" placeholder="关联关键词" value="{$show.keyword}"/></td>
+
+          </tr>
+
+          <tr <if condition="$show['menu_type'] neq 2">style="display:none;"</if> class="url">
+
+          <th width="80">外链接url</th>
+
+          <td>
+
+              <input type="text" class="input fl" name="url" id="url" style="width:200px;" placeholder="外链接url" value="{$show.url}"/>
+
+          </td>
+
+          </tr>
+
+          <tr>
+
+              <th width="80">排序：</th>
+
+              <td>
+
+                  <div class="mr15 l">
+
+                      <input id="sortid" class="input fl" name="sort" title="排序"  value="{$show.sort}" type="text"></div>
+
+                  <div class="system l"></div>
+
+              </td>
+
+          </tr>
+
+
+
+      </table>
+
+      <div class="btn">
+
+          <input type="submit" name="dosubmit" id="dosubmit" value="提交" class="button" />
+
+          <input type="reset" value="取消" class="button" />
+
+      </div>
+
+  </form>
+
+
+  <script>
+
+      $(function(){
+
+          $('.menu_type').change(function(){
+
+              var val 	= $(this).val();
+
+              if(val == 1){
+
+                  $('.keyword').css('display','');
+
+                  $('.url').css('display','none');
+
+              }else if(val == 2){
+
+                  $('.keyword').css('display','none');
+
+                  $('.url').css('display','');
+
+              }
+
+          });
+
+      });
+
+
+  </script>
+  </body>
+</html>

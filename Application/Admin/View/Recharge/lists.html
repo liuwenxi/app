@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap 101 Template</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+	.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+	.ml-20{margin-left:20px;}
+    th{text-align: center}
+    td{text-align: center}
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+          <div class="container-fluid">
+              <h2><span class="glyphicon glyphicon-user"></span>用户管理</h2>
+    </div>
+
+        <div class="navbar navbar-default" >
+            <form action=""  class="navbar-form form-inline" method="get" style="float: left">
+                <div class="form-group">
+                    <select name="is_pay" class="form-control">
+                        <option value="">所有状态</option>
+                        <option value="1">已支付</option>
+                        <option value="2">已取消</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="pay_type" class="form-control">
+                        <option value="">所有渠道</option>
+                        <option value="2">支付宝</option>
+                        <option value="1">微信</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="paytime" class="form-control">
+                        <option value="">不限排序方式</option>
+                        <option value="1">按支付时间正序</option>
+                        <option value="2">按支付时间倒序</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="total_price" class="form-control">
+                        <option value="">不限金额排序</option>
+                        <option value="1">按充值金额正序</option>
+                        <option value="2">按充值金额倒序</option>
+                    </select>
+                </div>
+                <button type="submit"  class="btn btn-primary"><i class="fa fa-search"></i> 筛选</button>
+            </form>
+
+            <form action="" method="get" style="float: right;margin-right: 50px">
+                <input type="text" name="keyword" value="" placeholder="用户名称或者ID" class="input-sm">
+                <button type="submit" class="btn btn-success" style="margin-left:10px;">搜索</button>
+            </form>
+
+            <form action=""  method="get" style="float:left; margin-left: 50px;>
+                <div class="form-group" >
+                    <div class="input-group">
+                        <b>按充值时间：</b>
+                        <input type="text" name="posttime"  placeholder="充值时间段"  id="paytime" class="input-sm">
+                        <button type="submit" class="btn btn-success" style="margin-left:10px;">查询</button>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+        <div class="panel-body">
+            <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>头像</th>
+                    <th>用户名</th>
+                    <th>充值金额</th>
+                    <th>心愿豆数量</th>
+                    <th>支付渠道</th>
+                    <th>状态</th>
+                    <th class="numeric">创建时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <volist name="list" id="vo">   
+                <tr>
+                    <td style="text-align: center">{$vo.oid}</td>
+                    <td><img width="50px" src="{$vo.toupic}"></td>
+                    <td><a>{$vo.nickname}</a></td>
+                    <td>￥{$vo.total_price}</td>
+                    <td>{$vo['total_price'] * 10} </td>
+                    <td><if condition="$vo.pay_type eq 1">微信<else/>支付宝</if></td>
+                    <td><if condition="$vo.is_pay eq 0">未支付
+                        <elseif condition="$vo.is_pay eq 1 "/>已支付
+                        <else/>已取消</if></td>
+                    <td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+                </tr>
+                 </volist>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer">{$page}</div>
+    </div>
+
+   <!-- js -->
+   <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+   <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+   <script src="__PUBLIC__/Admin/layer/layer.js"></script>
+    <link href="__PUBLIC__/Admin/Js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <script src="__PUBLIC__/Admin/Js/daterangepicker/moment.min.js" ></script>
+    <script src="__PUBLIC__/Admin/Js/daterangepicker/daterangepicker.js"></script>
+    <script>
+        $(document).ready(function(){
+            ajax_get_table('search-form2',1);
+            $('#paytime').daterangepicker({
+                format:"YYYY/MM/DD",
+                singleDatePicker: false,
+                showDropdowns: true,
+                minDate:'2016/01/01',
+                maxDate:'2030/01/01',
+                startDate:'2016/01/01',
+                locale : {
+                    applyLabel : '确定',
+                    cancelLabel : '取消',
+                    fromLabel : '起始时间',
+                    toLabel : '结束时间',
+                    customRangeLabel : '自定义',
+                    daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                    monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                    firstDay : 1
+                }
+            });
+        });
+
+        $(document).ready(function(){
+            ajax_get_table('search-form2',1);
+            $('#active_time').daterangepicker({
+                format:"YYYY/MM/DD",
+                singleDatePicker: false,
+                showDropdowns: true,
+                minDate:'2016/01/01',
+                maxDate:'2030/01/01',
+                startDate:'2016/01/01',
+                locale : {
+                    applyLabel : '确定',
+                    cancelLabel : '取消',
+                    fromLabel : '起始时间',
+                    toLabel : '结束时间',
+                    customRangeLabel : '自定义',
+                    daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                    monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                    firstDay : 1
+                }
+            });
+        });
+
+        // ajax 抓取页面
+        function ajax_get_table(tab,page){
+            cur_page = page; //当前页面 保存为全局变量
+            $.ajax({
+                type : "POST",
+                url:"/index.php/Admin/withdrawals/ajaxindex/p/"+page,//+tab,
+                data : $('#'+tab).serialize(),// 你的formid
+                success: function(data){
+                    $("#ajax_return").html('');
+                    $("#ajax_return").append(data);
+                }
+            });
+        }
+
+        // 点击排序
+        function sort(field)
+        {
+            $("input[name='order_by']").val(field);
+            var v = $("input[name='sort']").val() == 'desc' ? 'asc' : 'desc';
+            $("input[name='sort']").val(v);
+            ajax_get_table('search-form2',cur_page);
+        }
+    </script>
+
+  </body>
+</html>

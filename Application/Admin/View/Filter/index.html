@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>过滤设置</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+	.form-control{width:350px;}
+	</style>
+  </head>
+  <body>
+    <div class="container-fluid">
+        <div class="panel panel-primary" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title">过滤信息设置</h3>
+            </div>
+            <div class="panel-body">
+                <div role="tabpanel">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                      <li role="presentation" class="active"><a href="#guolv" aria-controls="guolv" role="tab" data-toggle="tab">过滤内容</a></li>
+
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content" style="padding-top:15px">
+                        <div role="tabpanel" class="tab-pane active" id="guolv">
+                            <form action="{:U('Filter/edit')}" method="post">
+                            	<input type="hidden" value="{$data.id}">
+                                <div class="form-group">
+									<div class="label">
+										<label style="color:red" for="readme">栏目内容：(过滤词之间以换行分开)</label>
+									</div>
+									<div class="field">
+										<textarea id="tk_des" placeholder="过滤字之间以，隔开" class="content" name="des" style="width:100%;height:350px;">{$des}</textarea>
+									</div>
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+                                </div>
+                            </form>
+                        </div>
+                      
+                      
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+
+	<script charset="utf-8" src="__PUBLIC__/edit/lang/zh_CN.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+  </body>
+</html>

@@ -9,19 +9,44 @@ use Lib\Api\Weixinapi\WeiChat;
 class BaseController extends Controller{
 
     public function _initialize(){
-
-        $UserInfo=session('UserInfo');
-        if($UserInfo){
-            $UserInfo=session('UserInfo');
-            session('uid',$UserInfo['uid']);
+        $PV=M('pv');
+        $time=time();
+        //获得当日凌晨的时间戳
+        $today = strtotime(date("Y-m-d"),$time);
+        //当天的24点时间戳
+        $end = $today+60*60*24;
+        //ip地址
+        $ip = get_client_ip();
+        $map['create_at']  = array('between',array($today,$end));
+        $map['ip']  = $ip;
+        $info=$PV->where($map)->find();
+        if(!$info){
+            $data['create_at']=$time;
+            $data['ip']=$ip;
+            $PV->add($data);
         }
-        if(is_weixin() && empty($UserInfo) && ACTION_NAME != 'login' ){
-            $oWeiChat = new WeiChat();
-            $authCallbackURL = urlencode('http://'.$_SERVER['HTTP_HOST'].U('Public/authCallback'));
-            //进行获取用户信息授权申请
-            $oWeiChat->login_base($authCallbackURL);
-        }
+    }
 
+    /**
+     * 用户回访周记录
+     */
+    protected function actionUserLog($uid){
+
+        $User=M('action_user_log');
+        /**************本周时间*************************/
+        $weekBegin=mktime(0, 0 , 0,date("m"),date("d")-date("w")+1,date("Y"));
+        $weekEnd=mktime(23,59,59,date("m"),date("d")-date("w")+7,date("Y"));
+        $map['create_at']  = array('between',array($weekBegin,$weekEnd));
+        $map['uid']  = $uid;
+        /**************本周时间*************************/
+
+        $data = $User->where($map)->find();
+        if(!$data){
+            $data['create_at']=time();
+            $data['uid']=$uid;
+            return $User->add($data);
+        }
+        return false;
     }
     
     /**
@@ -38,7 +63,7 @@ class BaseController extends Controller{
      * @param type $id 心愿id
      */
     protected function get_xy_title($id){
-        $data = M('Xinyuan')->find($id);
+        $data = M('Wishcard')->find($id);
         return $data['title'];
     }
     
@@ -97,7 +122,7 @@ class BaseController extends Controller{
      */
     public function get_avatar($uid){
         $User = M('User');
-    
+
         $udata = $User->find($uid);
         return $udata['avatar'];
     }
@@ -107,16 +132,18 @@ class BaseController extends Controller{
      * @param int $uid
      * @param int $des 消息内容
      */
-    protected function sendMsg($uid,$title,$xid,$url,$type,$des){
+    protected function sendMsg($uid,$nid,$title,$xid,$type,$wish_type,$keyword,$content){
         $Message = M('Message');
-    
+
         $data = array(
             'uid' => $uid,
             'xid' =>$xid,
+            'nid'=>$nid,
             'type' =>$type,
-            'url' =>$url,
+            'wish_type' =>$wish_type,
             'title' => $title,
-            'des' => $des,
+            'keyword' => $keyword,
+            'content' => $content,
             'posttime' => time(),
             'releasetime' => time(),
         );
@@ -523,23 +550,13 @@ class BaseController extends Controller{
 /*************************************** 会员 *************************************************/    
 
     /**
-     * 获取用户手机
+     * 获取用户昵称
      * @param type $uid 用户id
      */
     protected function get_user_phone($uid){
         $mode = M("User");
         $data = $mode->find($uid);
-        return $data['phone'];
-    }
-
-    /**
-     * 获取用户昵称
-     * @param type $uid 用户id
-     */
-    protected function get_user_nickname($uid){
-        $mode = M("User");
-        $data = $mode->find($uid);
-        return $data['nickname'];
+        return $data['username'];
     }
     
     

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>exUsers</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <style>
+        .num, .current, .next, .prev {
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-right: 5px;
+        }
+
+        .ml-20 {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="container-fluid">
+        <h2><span class="glyphicon glyphicon-user"></span>用户管理</h2>
+    </div>
+
+    <div class="panel-body">
+        <form method="post" action="" enctype="multipart/form-data">
+            <div class="am-form-group am-form-file">
+                <button type="button" class="btn am-btn-danger am-btn-sm">
+                    <i class="am-icon-cloud-upload"></i> 选择要上传的文件</button>
+                <input id="doc-form-file" name="excel" type="file">
+            </div>
+            <div id="file-list"></div>
+            <button type="submit" class="btn">提交</button>
+        </form>
+    </div>
+</div>
+
+
+</body>
+</html>

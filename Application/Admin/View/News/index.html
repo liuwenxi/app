@@ -1,0 +1,106 @@
+<include file="Public:indexheader"/>
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="index.html">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="/jscss/admin/design/">信义资讯</a><span class="crumb-step">&gt;</span><span>资讯列表</span></div>
+        </div>
+        <div class="search-wrap">
+
+        </div>
+        <div class="result-wrap">
+            <form name="myform" id="myform" method="post" action="{:U('News/del')}">
+                <div class="result-title">
+                    <div class="result-list">
+                        <a href="{:U('News/add')}"><i class="icon-font"></i>新增资讯</a>
+                        <a style="margin-right:1px;" href="javascript:void(0)"><i class="icon-font"></i></a><input style="margin-right:15px;" type="submit" value="批量删除">
+                        
+                    </div>
+                </div>
+                <div class="result-content">
+                    <table class="result-tab" width="100%">
+                        <tr>
+                            <th class="tc" width="5%"><input class="allChoose" name="" type="checkbox" value=""></th>
+                            <th>ID</th>
+                            <th style="width:100px;">标题</th>                          
+                            <th>分类</th>
+                            <th>更新时间</th>
+                            <th  style="width:400px;">内容</th>
+                            <th  style="width:100px;">操作</th>
+                        </tr>
+                        <tbody id="databox">
+                            <volist name="list" id="val">
+                            <tr>
+                                <td class="tc"><input class="ids" name="id[]" value="{$val.id}" type="checkbox"></td>
+                                <td>{$val.id}</td>
+                                <td title="">{$val.title}</td>
+                                
+                                <td>{$val.class_name}</td>
+                                <td>{$val.create_time}</td>
+                                <td>{$val.content}</td>
+                                <td>
+                                    <a class="link-update" href="{:U('update?id='.$value['id'])}">修改</a>
+                                    <a class="link-del" href="{:U('del?id='.$value['id'])}">删除</a>
+                                </td>
+                            </tr>
+                            </volist>
+                        </tbody>
+                    </table>
+                    <div id="pagebox" class="list-page"><?php echo $page ?></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+
+<script>
+
+$(function(){
+    
+    $(document).on('click', '#pagebox div a', function(){
+        var url = $(this).attr('href');        
+        $.get(url,'',function(data){
+            var dbox = '';
+            for (var i = 0 ; i < data.list.length; i++) {
+
+                dbox += '<tr>';
+                    dbox += '<td class="tc"><input class="ids" name="id[]" value="" type="checkbox"></td>';
+                    dbox += '<td>'+data.list[i].id+'</td>';
+                    dbox += '<td title="">'+data.list[i].title+'</td>';
+                    dbox += '<td>'+data.list[i].class_name+'</td>';
+                    dbox += '<td>'+data.list[i].create_time+'</td>';
+                    dbox += '<td>'+data.list[i].content+'</td>';
+                    dbox += '<td>';
+                        var uu = "{:U('update',array('id'=>'idddd'))}";
+                        uu = uu.replace('idddd', data.list[i].id);
+                        var duu = "{:U('del',array('id'=>'idddd'))}";
+                        duu = duu.replace('idddd', data.list[i].id);
+                        dbox += '<a class="link-update" href="'+uu+'">修改</a>';
+                        dbox += '<a class="link-del" href="'+duu+'">删除</a>';
+                    dbox += '</td>';
+                dbox += '</tr>';
+            }
+            
+            $('#pagebox').html(data.page);
+            $('#databox').html(dbox);
+        }, 'json');
+
+        return false;
+    });
+
+});    
+
+
+</script>
+
+<script type="text/javascript">
+$(function(){
+
+    //全选框选择
+    $(".allChoose").click(function(){
+        $(".ids").prop("checked", this.checked);
+    });
+});
+</script>

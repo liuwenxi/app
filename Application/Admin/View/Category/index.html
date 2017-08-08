@@ -1,0 +1,99 @@
+<include file="Public:indexheader"/>
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="index.html">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="/jscss/admin/design/">前台菜单管理</a><span class="crumb-step">&gt;</span><span>前台菜单列表</span></div>
+        </div>
+        <div class="search-wrap">
+            <div class="search-content">
+
+            </div>
+        </div>
+        <div class="result-wrap">
+            <form action="{:U('Category/del')}" method="post">
+                <div class="result-title">
+                    <div class="result-list">
+                        <a href="{:U('Category/add')}"><i class="icon-font"></i>新增菜单栏</a>
+                        <a style="margin-right:1px;" href="javascript:void(0)"><i class="icon-font"></i></a><input style="margin-right:15px;" type="submit" value="批量删除">
+                    </div>
+                </div>
+                <div class="result-content">
+                    <table class="result-tab" width="100%">
+                        <tr>
+                            <th class="tc" width="5%"><input class="allChoose" name="" type="checkbox"></th>
+			                <th>ID</th>
+                            <th>菜单栏名字</th>
+			                <th>父ID</th>                            
+                            <th>操作</th>
+                        </tr>
+                        <tbody id="databox">
+                            <foreach name="list" key="key" item="v" >
+	                            <tr>
+	                                <td class="tc">
+	                                   <input class="ids" name='id[]' value="{$v.id}" type="checkbox" >
+	                                </td>                              
+	                                <td>{$v.id}</td>
+	                                <td>{$v.name}</td>
+	                                <td>{$v.pid}</td>                                
+	                                <td>
+	                                    <a class="link-update" href="{:U('update?id='.$v['id'])}">修改</a>
+	                                    <a class="link-del" href="{:U('del?id='.$v['id'])}">删除</a>
+                                        {$v['id']}
+	                                </td>
+	                            </tr>
+                            </foreach >
+                        </tbody>
+                    </table>
+                    <div id="pagebox" class="list-page">{$page}</div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+
+<script >
+    
+$(function(){
+    $(document).on('click', '#pagebox div a', function(){
+        var url = $(this).attr('href');  //获取到当前对象的href属性值
+		$.get(url,'',function(data){  //发送一个ajax请求
+			var dbox = '';
+			for(var i=0; i<data.list.length; i++){
+				
+				dbox += '<tr>';
+					dbox += '<td class="tc"><input name="id[]" value="59" type="checkbox"></td>';
+					dbox += '<td>'+data.list[i].id+'</td>';
+					dbox += '<td>'+data.list[i].name+'</td>';
+					dbox += '<td>'+data.list[i].pid+'</td>';						
+					dbox += '<td>';
+                        var duu = "{:U('del',array('id'=>'idddd'))}";
+                        duu = duu.replace('idddd',data.list[i].id);
+
+                        dbox += '<a class="link-update" href="javascript:;">修改</a>';
+                        dbox += '<a class="link-del" href="'+duu+'">删除</a>';
+                    dbox += '</td>';
+				dbox += '</tr>';
+			}
+			
+			$('#pagebox').html(data.page);
+			$('#databox').html(dbox);			
+			
+		}, 'json');
+        return false;
+        
+    });
+});
+</script>
+
+<script type="text/javascript">
+$(function(){
+
+    //全选框选择
+    $(".allChoose").click(function(){
+        $(".ids").prop("checked", this.checked);
+    });
+});
+</script>

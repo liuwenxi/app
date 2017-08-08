@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>水军们</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/admin/css/div.css">
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+
+    </style>
+</head>
+<body>
+<ol class="breadcrumb bg">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Library</a></li>
+    <li class="active">Data</li>
+</ol>
+<div class="container-fluid">
+    <h4><span><span class="glyphicon glyphicon-user"></span>&nbsp;水军们</span><a class="btn btn-success pull-right" data-toggle="modal" data-target="#addmode"><span class="glyphicon glyphicon-plus"></span>&nbsp;添加</a></h4>
+</div>
+
+<div class="container-fluid" style="margin: 10px 0;">
+    <table class="table">
+        <tr>
+            <th>编号</th>
+            <th>头像</th>
+            <th>名称</th>
+            <th>操作</th>
+        </tr>
+        <volist name="data" id="vo">
+            <tr>
+                <if condition="$vo.bug eq 0">
+                    <td>{$i}</td>
+                    <td><img src="{$vo.img}" alt="" style="width: 100px;height: 100px" class="img-rounded brandico-mini"></td>
+                    <td>{$vo.username }</td>
+                    <td data-id="{$vo.id}">
+                        <if condition="$vo['state'] eq 1">
+                            <span style="color: #3c763d">默认</span>
+                            <else/>
+                            <a href="javascript:; " class="bg-sub set margin-right float-right">设为默认</a>
+                        </if>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-edit btn edit" data-toggle="modal" data-target="#editmode"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span class="glyphicon glyphicon-trash btn del"></span></td>
+                </if>
+            </tr>
+        </volist>
+    </table>
+</div>
+
+<div class="panel-foot" id="page">
+    {$page}
+</div>
+
+<!-- 添加 -->
+<div class="modal fade" id="addmode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">添加水军</h4>
+            </div>
+            <div class="modal-body">
+                <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">名称：</label>
+                        <input type="text" class="form-control" id="recipient-name" name="username">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">头像：</label>
+                        <input type="file"   name="img" >
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <button type="button" class="btn btn-primary tijiao">添加</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end 添加 -->
+
+<!-- 编辑 -->
+<div class="modal fade" id="editmode" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">编辑水军</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('Vip/edit_navy')}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="edit-name" class="control-label">管理员名称：</label>
+                        <input type="text" class="form-control" id="edit-name" name="username" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">头像：</label>
+                        <div class="media">
+                            <img src=""  id="edit-img" width="100px" height="60px" class="radius" alt="...">
+                            <!--/.{$data.img}-->
+                        </div>
+                        <input type="file" class="save-img"  name="img" >
+                    </div>
+
+                    <input type="hidden" name="id" id="edit-id" value="">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                <button type="button" class="btn btn-primary tijiao">修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/Admin/layer/layer.js"></script>
+<script>
+    $(function(){
+        //提交
+        $(".tijiao").click(function(){
+            $(this).parent().siblings(".modal-body").eq(0).children('form').eq(0).submit();
+        });
+
+        //编辑
+        $('.edit').click(function(){
+            var id = $(this).parent().attr('data-id');
+            $.ajax({
+                url:'{:U("Vip/edit_navy")}',
+                data:{id:id,ajax:1},
+                type:'post',
+                dataType:'json',
+                success:function(data){
+                    $('#edit-id').val(data['id']);
+                    $('#edit-name').val(data['username']);
+                    $('#edit-img').attr('src',''+data.img);
+                    var newstatus = '#edit-status'+data['userstatus'];
+                    $(newstatus).attr('checked','checked');
+                    $(".save-img").change(function() {
+                        $("#edit-img").css('display','none');
+                    });
+                },
+                error:function(){
+
+                }
+            });
+        });
+
+        //删除
+        $(".del").click(function(){
+            var delid = $(this).parent().attr('data-id');
+            layer.confirm('您确定要删除该数据吗？', {
+                btn: ['是的','按错'] //按钮
+            }, function(){
+                //选择 是的
+                $.ajax({
+                    type:'post',
+                    url:'{:U("Vip/del_navy")}',
+                    data:{id:delid},
+                    dataType:'json',
+                    success:function(data) {
+                        if(data === 1 ){
+                            layer.msg('删除成功', {shift: 6});
+                            window.location.reload();  //刷新当前页
+                        }else{
+                            layer.msg('删除失败');
+                        }
+                    }
+                });
+            }, function(){
+                //选择 按错 不执行
+            });
+        });
+    });
+
+    $(".set").click(function(){
+        var id = $(this).parent().attr('data-id');
+        $.ajax({
+            type:'post',
+            url:'{:U("Vip/state")}',
+            data:{id:id},
+            dataType:'json',
+            success:function(data) {
+                location.reload()
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

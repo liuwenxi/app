@@ -1,0 +1,181 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+
+		<div class="panel"> 
+				<div class="panel-head">文章管理</div>
+				<div class="panel-body">
+					<form method="post" class="form-x" action="" enctype="multipart/form-data">
+						<input type="hidden" name="id" value="{$id}">
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">关键字名称：</label>
+							</div>
+							<div class="field">
+								<input class="input input-auto" size="30" name="keyword" value="{$data.keyword}">
+								<a style="color:#ff0000"> *限10字以内</a>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">背景颜色：</label>
+							</div>
+							<div class="field">
+								<input class="input input-auto" size="30" name="bg_color" value="{$data.bg_color}">
+							</div>
+						</div>
+
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">封面大图：</label>
+								</div>
+								<div class="field">
+									<div class="media">
+										<input type="hidden" name="big_img" value="{$data.big_img}" id="edit-value">
+										<img src="{$data.big_img}" class="img-thumbnail brandico" id="image2" height="400px" width="600px">
+										<link rel="stylesheet" href="__PUBLIC__Admin/edit/themes/default/default.css" />
+										<script charset="utf-8" src="__PUBLIC__Admin/edit/kindeditor-min.js"></script>
+										<script charset="utf-8" src="__PUBLIC__Admin/edit/lang/zh_CN.js"></script>
+									</div>
+
+								</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">封面图中图：</label>
+							</div>
+							<div class="field">
+								<div class="media">
+									<input type="hidden" name="centre_img" value="{$data.centre_img}" id="edit-value2">
+									<img src="{$data.centre_img}" class="img-thumbnail brandico" id="image1">
+									<link rel="stylesheet" href="__PUBLIC__Admin/edit/themes/default/default.css" />
+									<script charset="utf-8" src="__PUBLIC__Admin/edit/kindeditor-min.js"></script>
+									<script charset="utf-8" src="__PUBLIC__Admin/edit/lang/zh_CN.js"></script>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">封面图小图：</label>
+							</div>
+							<div class="field">
+								<div class="media">
+									<input type="hidden" name="small_img" value="{$data.small_img}" id="edit-value3">
+									<img src="{$data.small_img}" class="img-thumbnail brandico" id="image3">
+									<link rel="stylesheet" href="__PUBLIC__Admin/edit/themes/default/default.css" />
+									<script charset="utf-8" src="__PUBLIC__Admin/edit/kindeditor-min.js"></script>
+									<script charset="utf-8" src="__PUBLIC__Admin/edit/lang/zh_CN.js"></script>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">排序：</label>
+							</div>
+							<div class="field">
+								<input  type="text"  class="form-control" name="sort" value="{$data.sort}" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">关键字详情：</label>
+							</div>
+							<div class="field">
+								<textarea id="tk_des" class="content" name="content" style="width:80%;height:350px;">{$data.content}</textarea>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">详情：</label>
+							</div>
+							<div class="field">
+								<textarea id="des" name="details" style="width:60%;height:100px;">{$data.details}</textarea>
+							</div>
+						</div>
+						<input type="hidden" value="{$data.type}" name="type">
+						<if condition ="$data.type eq 1">
+							<div class="form-group">
+								<div class="label">
+									<label for="readme">类别：</label>
+								</div>
+								<div class="field">
+									无秘室
+									<input type="checkbox" name="subclass" value="1" <if condition="$data.subclass eq 1">checked="checked"</if>>
+
+								</div>
+							</div>
+						</if>
+						
+						<div class="form-group">
+							<div class="label">
+							<label for="readme"></label>
+							</div>
+							<div class="field">
+							<input type="hidden" name="id"  value="{$data.id}" >
+								<input type="hidden" name="reveal" value="{$data.reveal}">
+							<input type="submit" class="button bg-main" value="提交" >
+
+							</div>
+						</div>
+					</form>
+				</div>
+		</div>
+	</div>
+<script src="__PUBLIC__/Admin/Js/ueditor/ueditor.config.js"></script>
+<script src="__PUBLIC__/Admin/Js/ueditor/ueditor.all.min.js"></script>
+<script type="text/javascript" src="__Admin_JS__jquery-1.10.2.min.js"></script>
+<script>
+    var ue = UE.getEditor('tk_des');
+</script>
+	<script type="text/javascript">
+
+        KindEditor.ready(function(K) {
+            var editor = K.editor({
+                allowFileManager : true
+            });
+
+            K('#image2').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        imageUrl : K('#edit-value').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            K('#edit-value').val(url);
+                            K('#image2').attr("src",url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+
+            K('#image3').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        imageUrl : K('#edit-value3').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            K('#edit-value3').val(url);
+                            K('#image3').attr("src",url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+            K('#image1').click(function() {
+                editor.loadPlugin('image', function() {
+                    editor.plugin.imageDialog({
+                        imageUrl : K('#edit-value2').val(),
+                        clickFn : function(url, title, width, height, border, align) {
+                            K('#edit-value2').val(url);
+                            K('#image1').attr("src",url);
+                            editor.hideDialog();
+                        }
+                    });
+                });
+            });
+        });
+        </script>
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="ThemeBucket">
+  <link rel="shortcut icon" href="#" type="image/png">
+
+  <title>后台综合管理</title>
+
+  <link href="__PUBLIC__/Admin/Css/style.css" rel="stylesheet">
+  <link href="__PUBLIC__/Admin/Css/style-responsive.css" rel="stylesheet">
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="__Admin_JS__html5shiv.js"></script>
+  <script src="__Admin_JS__respond.min.js"></script>
+  <![endif]-->
+  <style>
+  .main-content{
+	min-height:auto;
+	margin-top:40px;
+	padding-top:20px !important;
+  }
+  </style>
+</head>
+
+<body class="sticky-header">
+
+<section>
+    <!-- left side start-->
+    <div class="left-side sticky-left-side">
+
+        <!--logo and iconic logo start-->
+        <div class="logo">
+            <a href="index.html"><img src="__Admin_IMAGES__wxy-logo.png" width="40px" alt=""></a>
+            <img src="__Admin_IMAGES__weixy_logo.png" width="160px" alt="">
+        </div>
+
+        <div class="logo-icon text-center">
+            <a href="index.html"><img src="__Admin_IMAGES__wxy-logo.png" width="30px" alt=""></a>
+        </div>
+        <!--logo and iconic logo end-->
+
+        <div class="left-side-inner">
+
+            <!-- 手机可见 -->
+            <div class="visible-xs hidden-sm hidden-md hidden-lg">
+                <div class="media logged-user">
+                    <img alt="" src="__Admin_IMAGES__photos/user.jpg" class="media-object">
+                    <div class="media-body">
+                        <h4><a href="#">{$Think.session.name}</a></h4>
+                        <span>""</span>
+                    </div>
+                </div>
+
+                <h5 class="left-nav-title">Account Information</h5>
+                <ul class="nav nav-pills nav-stacked custom-nav">
+                  <li><a href="#"><i class="fa fa-user"></i> <span>简介</span></a></li>
+                  <li><a href="#"><i class="fa fa-cog"></i> <span>设置</span></a></li>
+                  <li><a href="{:U('Public/loginout')}"><i class="fa fa-sign-out"></i> <span>注销</span></a></li>
+                </ul>
+            </div>
+
+            <!--sidebar nav start-->
+            <ul class="mymenu nav nav-pills nav-stacked custom-nav">
+			
+                <li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-home"></i> <span>HOME</span></a>
+                    <ul class="sub-menu-list">
+                        <li class=""><a href="javascript:void(0);" data-url="{:U('index/home')}">home</a></li>
+                    </ul>
+                </li>
+                
+                <foreach name="menu_list" item="vo" key="k" >
+                 <li class="menu-list"><a href="javascript:void(0);"><i class="fa {$vo.icon}"></i> <span>{$vo.title}</span></a>
+                  <ul class="sub-menu-list">
+                      <foreach name="vo.submenu" item="vv" key="kk">
+                        <li><a href="javascript:void(0);" data-url="{$vv.url}"> {$vv.title}</a></li>
+                       </foreach>
+                    </ul>
+                </li>
+                </foreach>
+                
+<!--                <li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-shopping-cart"></i> <span>心愿</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Xinyuan/lists')}"> 心愿列表</a></li>
+                        <li><a href="javascript:void(0);" data-url="{:U('Xinyuan/Reach')}"> 已达成心愿列表</a></li>
+                        <li><a href="javascript:void(0);" data-url="{:U('Xinyuan/notReach')}"> 未达成心愿列表</a></li>
+                        <li><a href="javascript:void(0);" data-url="{:U('Type/lists')}"> 心愿分类</a></li>
+			<li><a href="javascript:void(0);" data-url="{:U('Goodsattr/index')}">商品属性</a></li> 
+                         <li><a href="javascript:void(0);" data-url="{:U('Order/index')}"> 订单列表</a></li> 
+						<li><a href="javascript:void(0);" data-url="{:U('Comment/lists')}"> 心愿评价</a></li>
+                    </ul>
+                </li>
+                
+              <li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-files-o"></i> <span>活动</span></a>
+                  <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Activity/lists')}"> 代金券列表</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-files-o"></i> <span>周刊管理</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Cms/artlist')}">所有文章</a></li>
+                        <li><a href="javascript:void(0);" data-url="{:U('Cms/weekly')}">周刊管理</a></li>
+                        <li><a href="javascript:void(0);" data-url="{:U('Cms/addcate')}"> 添加期数</a></li>
+                    </ul>
+                </li>
+				<li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-credit-card"></i> <span>任务</span></a>
+                    <ul class="sub-menu-list">
+                    	<li><a href="javascript:void(0);" data-url="{:U('Task/lists')}"> 任务管理</a></li>
+                        <li><a href="javascript:void(0);" data-url="{:U('Task/evdlists')}"> 每日任务</a></li>
+                    </ul>
+                </li>
+				<li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-envelope"></i> <span>反馈</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Advise/lists')}"> 意见反馈</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-desktop"></i> <span>广告</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Banner/lists')}"> 幻灯片</a></li>
+                         <li><a href="javascript:void(0);" data-url="{:U('Ad/commonAd')}"> 综合广告</a></li> 
+                    </ul>
+                </li>
+                <li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-users"></i> <span>会员</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Vip/lists')}"> 会员管理</a></li>
+                    </ul>
+                </li>
+                <li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-credit-card"></i> <span>信息</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Setting/index')}"> 基本信息设置</a></li>
+                    </ul>
+                </li>                
+				<li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-credit-card"></i> <span>统计</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Statistical/index')}"> 性别</a></li>
+                    </ul>
+                </li>
+				<li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-credit-card"></i> <span>提现申请</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Withdrawals/lists')}"> 所有申请</a></li>
+                        <li><a href="javascript:void(0);" data-url="{:U('Withdrawals/pendingaudit')}" style="padding-left: 75px;"> 待审核申请</a></li>
+                        <li><a href="javascript:void(0);" data-url="{:U('Withdrawals/reject')}" style="padding-left: 75px;"> 已驳回申请</a></li>	
+                        <li><a href="javascript:void(0);" data-url="{:U('Withdrawals/transfer')}"> 待转账申请</a></li>	
+                        <li><a href="javascript:void(0);" data-url="{:U('Withdrawals/transfers')}" style="padding-left: 75px;"> 转账成功</a></li>	
+                        <li><a href="javascript:void(0);" data-url="{:U('Withdrawals/transferf')}" style="padding-left: 75px;"> 转账失败</a></li>	
+                    </ul>
+                </li>
+                <li class="menu-list"><a href="javascript:void(0);"><i class="fa fa-cog"></i> <span>系统</span></a>
+                    <ul class="sub-menu-list">
+                        <li><a href="javascript:void(0);" data-url="{:U('Filter/index')}"> 过滤设置</a></li>
+						
+                        <li><a href="javascript:void(0);" data-url="{:U('Adminuser/lists')}">管理员</a></li>
+						
+                        <li><a href="javascript:void(0);" data-url="{:U('Notice/lists')}"> 通知管理</a></li>
+                        
+                        <li><a href="javascript:void(0);" data-url="{:U('QA/lists')}"> QA管理</a></li>
+						
+                    </ul>
+                </li>-->
+
+            </ul>
+            <!--sidebar nav end-->
+
+        </div>
+    </div>
+    <!-- left side end-->
+    
+   <!-- main content start-->
+    <div class="main-content" >
+
+        <!-- header section start-->
+        <div class="header-section">
+
+            <!--toggle button start-->
+            <a class="toggle-btn"><i class="fa fa-bars"></i></a>
+            <!--toggle button end-->
+			
+			<!-- systeminfo start -->
+				<div class="" style="float:left;padding: 12px 15px;height: 50px;font-size: 14px;background: #fff;color: #333;border-color: #fff;">
+					通知<i class="fa fa-volume-up text-danger"></i>：
+				</div>
+			<!-- systeminfo end -->
+            <!--notification menu start -->
+			
+            <div class="menu-right">
+                <ul class="notification-menu">
+                    <li>
+                        <a href="#" class="btn btn-default dropdown-toggle info-number" data-toggle="dropdown">
+                            <i class="fa fa-tasks"></i>
+                            <span class="badge" id="ordernum"></span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-head pull-right" id="infolist">
+                            <h5 class="title">未处理订单</h5>
+                            <ul class="dropdown-list normal-list" id='orderlist'>
+                                
+                            </ul>
+                            <ul>
+                            <li class="new"><a href="javascript:ovid(0)" data-url="{:U('order/index?isvalue=0')}">查看所有未处理订单</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    
+                    <li>
+                        <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <img src="__Admin_IMAGES__wxy-logo.png" width="30px" alt="" />
+                            {$Think.session.name}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
+                            <li><a href="#"><i class="fa fa-user"></i>个人信息</a></li>
+                            <li><a href="#"><i class="fa fa-cog"></i>资料修改</a></li>
+                            <li><a href="{:U('User/logout')}"><i class="fa fa-sign-out"></i> 注销</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+			
+            <!--notification menu end -->
+
+        </div>
+        <!-- header section end-->
+
+        <!-- page heading start-->
+        <!--
+        <div class="page-heading">
+            Page Tittle goes here
+        </div>
+        -->
+        <!-- page heading end-->
+
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <iframe id="dux-iframe" src="" marginheight="0" marginwidth="0" frameborder="0" ></iframe>
+        </div>
+        <!--body wrapper end-->
+
+        <!--footer section start-->
+        <footer class="sticky-footer">
+            2014 &copy; 后台系统
+        </footer>
+        <!--footer section end-->
+
+
+    </div>
+    <!-- main content end-->
+</section>
+
+<script src="__Admin_JS__jquery-1.10.2.min.js"></script>
+
+<script>
+//后台布局
+function boxwh(){
+var wwidth = $(window).width();//浏览器宽度
+var hheight = $(window).height();//浏览器高度
+var sidewidth = $('.left-side').width()+10;//侧栏菜单宽度,此处10为侧栏与内部框之间空白隔离
+var topheight = $('.header-section').height()+10;//header高度，此处10为顶部菜单与内容框之间的空白隔离
+var mainwidth = (wwidth - sidewidth - 10)+'px';//内容框宽度，此处10为内容框 右侧空白
+var mainheith = (hheight-topheight)+'px';//内容框高度
+$('.main-content').css('height',mainheith);
+var fheight = (hheight-topheight-90)+'px';
+$('#dux-iframe').css({"left":sidewidth,"top":topheight+'px',"width":mainwidth,"height":fheight});
+}
+
+$(function(){
+boxwh();
+$(window).resize(function() {
+boxwh();
+});
+});
+
+</script>
+<script src="__Admin_JS__jquery-migrate-1.2.1.min.js"></script>
+<script src="__Admin_JS__bootstrap.min.js"></script>
+<script src="__Admin_JS__modernizr.min.js"></script>
+<script src="__Admin_JS__jquery.nicescroll.js"></script>
+
+
+<!--common scripts for all pages-->
+<script src="__Admin_JS__scripts.js"></script>
+<script>
+$('.toggle-btn').click(function(){
+	boxwh();
+});
+</script>
+<script>
+    //左侧导航栏点击事件
+   jQuery('.sub-menu-list >li > a').click(function(){
+            var url = jQuery(this).attr('data-url');
+            (url === undefined) && $.error('url is not defined');
+            //jQuery('.wrapper').load(url);
+            $('#dux-iframe').attr('src',url);
+            //添加当前状态
+            var cur = jQuery(this).parent().attr('class');
+           // $(this).parent().addClass("nav-active");
+            if(cur !== 'active'){
+              $(this).parent().addClass('active').siblings().removeClass('active');
+           }
+                    boxwh();   
+    });
+    jQuery('.mymenu').find('a:eq(0)').click();
+    jQuery('.mymenu') .find('a:eq(1)').click().parent().addClass('active');
+    boxwh();
+    
+    //top 提醒信息点击事件
+    jQuery('#infolist').on('click','a',function(){
+        var url = jQuery(this).attr('data-url');
+            (url === undefined) && $.error('url is not defined');
+            $('#dux-iframe').attr('src',url);
+    });
+</script>
+<script>
+//滚动条美化
+$("#dux-iframe").niceScroll({
+styler:"fb",
+cursorcolor:"#65cea7", 
+cursorwidth: '6', 
+cursorborderradius: '0px',
+background: '#424f63',
+spacebarenabled:false,
+cursorborder: '0'
+}); 
+
+</script>
+<script>
+    //定时查询未处理订单
+    $(function(){
+//        getinfo();
+//        window.setInterval(getinfo, 60000); //每分钟查询一次
+    });
+    
+    
+    
+   function getinfo(){
+       $.ajax({
+        url:'{:U("order/getNoDoOrder")}',
+        type:'get',
+        dataType:'json',
+        success:function(res){
+            var html = '';
+            $.each(res['data'],function(key,vv){
+                html += '<li class="new">';
+                html += '<a href="javascript:ovid(0)" data-url="/admin/order/edit/id/'+vv["id"]+'">';
+                html += '<span class="label label-danger"><i class="fa fa-bolt"></i></span>';
+                html += '<span class="name">'+vv["order_no"]+'</span>';
+                html += '<em class="small" style="margin-left:5px;color:red;">'+vv["price"]+'元</em>';
+                html += '</a></li>';
+            });
+            $('#orderlist').html(html);
+            $('#ordernum').text(res["num"]);
+            console.log(res['data']);
+        }
+    });
+   }
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">任务管理<small class="padding-left"><a href="{:U('Task/add')}" class="button bg-main icon-pencil-square"> 添加任务</a></small></div> 
+				<div class="panel-body">
+						<table class="table">
+							<tr>
+								<th>#</th><th>任务标题</th><th>任务类型</th><th>发布时间</th><th>更新时间</th><th>发布管理员</th><th>更新管理员</th><th style="text-align:right;padding-right:60px;">操作</th>
+							</tr>
+							<volist name="list" id="vo">
+							<tr>
+								<td>{$vo.id}</td>
+								<td>{$vo.title}</td>
+								<td>{: ($vo['is_special'] == 0) ? '普通任务' : '<span style="color:red">特殊任务</span>' }</td>
+								<td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+								<td><span style="color:red">{$vo.update_time}</span></td>
+								<td>{$vo.aid}</td>
+								<td><span style="color:red">{$vo.up_aid}</span></td>
+								<td>
+									<a href="{:U('Task/del?id='.$vo['id'])}" onclick="if(confirm('确定删除?')==false)return false;" class="bg-dot tag margin-right float-right">删除</a>
+									<a href="{:U('Task/edit?id='.$vo['id'])}" class="bg-sub tag margin-right float-right">编辑</a>
+								</td>
+							</tr>
+							</volist>
+						</table>
+					
+				</div>
+				<div class="panel-foot" id="page">
+					{$page}
+				</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>广告管理</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/Admin/css/div.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>.layui-layer{top:50px !important;}</style>
+  </head>
+  <body>
+    <div class="container-fluid">
+        <div class="panel panel-default" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title">幻灯片管理<span class="glyphicon glyphicon-plus padd-20 pointers"  data-toggle="modal" data-target="#myModal">添加</span></h3>
+            </div>
+            <div class="panel-body">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>名称</th>
+                    <th>图标</th>
+                    <th>跳转地址</th>
+                      <th>关键id</th>
+                    <th>状态</th>
+                    <th>排序</th>
+                    <th>操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <volist name="data" id="vo">  
+                  <tr>
+                    <th scope="row">{$i}</th>
+                    <td>&nbsp;&nbsp;{$vo.title}</td>
+                    <td><img src="{$vo.img}" alt="" height="150px" class="img-rounded brandico-mini"></td>
+                    <td>{$vo.jump_url}</td>
+                    <td>{$vo.kid}</td>
+                    <td>{$vo.is_no}</td>
+                    <td>{$vo.sort}</td>
+                    <td data-id="{$vo.id}">
+                        <span class="glyphicon glyphicon-minus pointers padd-20 del"></span>
+                        <span class="glyphicon glyphicon-edit pointers padd-20 edit" data-toggle="modal" data-target="#editModal"></span>
+                    </td>
+                  </tr>
+                  </volist>
+                </tbody>
+              </table>   
+            </div>
+        </div>
+    </div>
+	<!-- 添加幻灯片 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">添加幻灯片</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('Banner/add')}" method="post">
+                <div class="form-group">
+                  <label for="recipient-name" class="control-label">幻灯片名称：</label>
+                  <input type="text" class="form-control" id="recipient-name" name="title">
+                </div>
+
+                <div class="form-group">
+                  <label for="recipient-name" class="control-label">跳转地址：</label>
+                    <select class="selectpicker" name="url" id="keyword">
+                        <option value="">请选择跳转地址</option>
+                        <option value="WishWallActivityPage">心愿墙活动页面（需要加id）</option>
+                        <option value="ActivityPage">banner活动页面</option>
+                        <option value="IndexPage">主页</option>
+                        <option value="UserIndexPage">个人中心</option>
+                        <option value="NameVerifyPage">实名认证</option>
+                        <option value="WishBeanPage">我的心愿豆</option>
+                        <option value="MessageManageListPage">我的消息</option>
+                        <option value="FeedbackPage">帮助与反馈</option>
+                        <option value="SettingsPage">设置</option>
+                    </select>
+                </div>
+
+                    <div class="form-group keywordid"  style="display:none">
+                        <label for="recipient-name" class="control-label">选择活动：</label>
+                        <select class="selectpicker" name="kid">
+                            <volist name="keywords" id="vo">
+                            <option value="{$vo.id}">{$vo.keyword}</option>
+                            </volist>
+                        </select>
+                    </div>
+                <!-- <div class="form-group">
+                  <label for="recipient-name" class="control-label">所属模块：</label>
+                  <select name="type" class="form-control">
+                    <option value="0">商城</option>
+                    <option value="1">礼品</option>
+                    <option value="2">官网</option>
+                    <option value="3">微信</option>
+                  </select>
+                </div> -->
+                <div class="form-group">
+                  <label for="message-text" class="control-label">幻灯片图：</label>
+                  <input type="hidden" name="value" value="">
+                  <img src="__PUBLIC__/Admin/images/bico.png" class="img-thumbnail brandico" id="image1">
+                  <link rel="stylesheet" href="__PUBLIC__Admin/edit/themes/default/default.css" />
+                    <script charset="utf-8" src="__PUBLIC__Admin/edit/kindeditor-min.js"></script>
+                    <script charset="utf-8" src="__PUBLIC__Admin/edit/lang/zh_CN.js"></script>
+                </div>
+                <div class="form-group">
+                    <div class="form-inline">
+                            <label for="add-pid" class="control-label">是否显示：</label>
+                            <input name="is_no" type="radio" value="1">关闭
+                            <input name="is_no" type="radio" value="0" checked="checked" >开启
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label for="message-order" class="control-label">排序：</label>
+                  <input type="text" class="form-control" id="recipient-order" name="sort" value="0">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+              <button type="button" class="btn btn-primary tijiao">添加</button>
+            </div>
+          </div>
+        </div>
+    </div>
+	<!-- end 添加幻灯片 -->
+	
+	<!-- 编辑 -->
+	<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">编辑幻灯片</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('Banner/edit')}" method="post">
+                <div class="form-group">
+                  <label for="edit-title" class="control-label">幻灯片名称：</label>
+                  <input type="text" class="form-control" id="edit-title" name="title" value="">
+                </div>
+
+                <div class="form-group">
+                        <select class="selectpicker" name="url" id="editkeyword">
+                            <option value="">请选择跳转地址</option>
+                            <option value="WishWallActivityPage">心愿墙活动页面（需要加id）</option>
+                            <option value="ActivityPage">banner活动页面</option>
+                            <option value="IndexPage">主页</option>
+                            <option value="UserIndexPage">个人中心</option>
+                            <option value="NameVerifyPage">实名认证</option>
+                            <option value="WishBeanPage">我的心愿豆</option>
+                            <option value="MessageManageListPage">我的消息</option>
+                            <option value="FeedbackPage">帮助与反馈</option>
+                            <option value="SettingsPage">设置</option>
+                        </select>
+                </div>
+                    <div class="form-group editkeyid"  style="display:none">
+                        <label for="recipient-name" class="control-label">选择活动：</label>
+                        <select class="selectpicker" name="kid">
+                            <volist name="keywords" id="vo">
+                                <option value="{$vo.id}">{$vo.keyword}</option>
+                            </volist>
+                        </select>
+                    </div>
+
+
+                <div class="form-group">
+                  <label for="message-text" class="control-label">幻灯片图：</label>
+                  <input type="hidden" name="value" value="" id="edit-value">
+                  <img src="__PUBLIC__Admin/images/bico.png" class="img-thumbnail brandico" id="image2">
+                  <link rel="stylesheet" href="__PUBLIC__Admin/edit/themes/default/default.css" />
+                    <script charset="utf-8" src="__PUBLIC__Admin/edit/kindeditor-min.js"></script>
+                    <script charset="utf-8" src="__PUBLIC__Admin/edit/lang/zh_CN.js"></script>
+                </div>
+                <div class="form-group">
+                    <div class="form-inline">
+                            <label for="add-pid" class="control-label">是否显示：</label>
+                            <input name="is_no" type="radio" value="1" id="edit-is_no1">关闭
+                            <input name="is_no" type="radio" value="0" id="edit-is_no0">开启
+                    </div>
+                </div>
+                <div class="form-group">
+                  <label for="edit-order" class="control-label">排序：</label>
+                  <input type="text" class="form-control" id="edit-order" name="sort" value="">
+                </div>
+				<input type="hidden" name="id" id="edit-id" value="">
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+              <button type="button" class="btn btn-primary tijiao">修改</button>
+            </div>
+          </div>
+        </div>
+    </div>
+	<!-- end 编辑 -->
+	
+    <!-- js -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__Admin/layer/layer.js"></script>
+    <script>
+            KindEditor.ready(function(K) {
+                    var editor = K.editor({
+                            allowFileManager : true
+                    });
+                    K('#image1').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('input[name="value"]').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('input[name="value"]').val(url);
+                                                    K('#image1').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+					K('#image2').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#edit-value').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#edit-value').val(url);
+                                                    K('#image2').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+            });
+            //提交
+            $(".tijiao").click(function(){
+				   $(this).parent().siblings(".modal-body").eq(0).children('form').eq(0).submit();
+			});
+			
+			//编辑
+			$('.edit').click(function(){
+				var id = $(this).parent().attr('data-id');
+				$.ajax({
+					url:'{:U("Banner/edit")}',
+					data:{id:id,ajax:1},
+					type:'post',
+					dataType:'json',
+					success:function(data){
+						if(data.status == 1){
+							$('#edit-id').val(data.id);
+							$('#edit-title').val(data.title);
+							$('#edit-url').val(data.jump_url);
+							$('#edit-kid').val(data.kid);
+							$('#edit-value').val(data.img);
+							$('#image2').attr('src',data.img);
+							$('#edit-order').val(data.sort);
+							//$("#edit-type").find("option[value="+data['type']+"]").attr("selected",true);
+							var newstatus = '#edit-is_no'+data.is_no;
+							$(newstatus).attr('checked','checked');
+						}
+					},
+					error:function(){
+						
+					}
+				});
+			});
+			
+            //警告框
+            $(".del").click(function(){
+                var delid = $(this).parent().attr('data-id');
+                layer.confirm('您确定要删除该数据吗？', {
+                    btn: ['是的','按错'] //按钮
+                }, function(){
+                    //选择 是的
+                    $.ajax({
+                        type:'post',
+                        url:'{:U("Banner/del")}',
+                        data:{id:delid},
+                        dataType:'json',
+                        success:function(data) {  
+                            if(data === 1 ){  
+                                layer.msg('删除成功', {shift: 6});
+                                window.location.reload();  //刷新当前页
+                            }else{  
+                                layer.msg('删除失败'); 
+                            }  
+                        }
+                    });
+                }, function(){
+                    //选择 按错 不执行
+                });
+            });
+
+            $("#keyword").change(function(){
+                if($(this).val() == 'WishWallActivityPage'){
+                    $(".keywordid").show();
+                }else{
+                    $(".keywordid").hide();
+                }
+            })
+            $("#editkeyword").change(function(){
+                if($(this).val() == 'WishWallActivityPage'){
+                    $(".editkeyid").show();
+                }else{
+                    $(".editkeyid").hide();
+                }
+            })
+    </script>
+  </body>
+</html>

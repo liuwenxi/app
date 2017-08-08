@@ -1,0 +1,86 @@
+<include file="Public/header" />
+	<!-- main -->
+	<style>
+		.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+		.ml-20{margin-left:20px;}
+		.tag{font-size: 75%;border-radius: 0.25em;background: #999;padding: 0.1em 0.5em 0.2em;color: #fff;}
+		.bg-sub{background-color: #0ae;}
+		.bg-dot{background-color: #e33;}
+		a{text-decoration:none;}
+		a:hover{color:#fff;text-decoration:none;}
+	</style>
+	<div class="container-fluid">
+		<h2>心愿列表</h2>
+	</div>
+	<div id="mainbody">
+
+		<div class="panel">
+			<div class="navbar navbar-default">
+				<form action=""  class="navbar-form form-inline" method="post" >
+					<div class="form-group">
+						<select name="state" class="form-control">
+							<option value="">不限状态</option>
+							<option value="1" <if condition="$status eq 1">selected</if>>进行中</option>
+								<option value="2" <if condition="$status eq 2">selected</if>>已失效</option>
+								<option value="3" <if condition="$status eq 3">selected</if>>已达成</option>
+								<option value="4" <if condition="$status eq 4">selected</if>>已下架</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<select name="time_sort" class="form-control">
+							<option value="0">不限排序方式</option>
+							<option value="1" <if condition="$time_sort eq 1">selected</if>>按时间正序</option>
+							<option value="2" <if condition="$time_sort eq 2">selected</if>>按时间倒序</option>
+						</select>
+					</div>
+					<button type="submit"  class="btn btn-primary"><i class="fa fa-search"></i> 筛选</button>
+				</form>
+			</div>
+
+
+
+					<div class="panel-body"  style="margin-top:20px;">
+						<table class="table">
+							<tr>
+								<th>ID</th>
+								<th>心愿图</th>
+								<th>内容</th>
+								<th>发布者</th>
+								<th>发布时间</th>
+								<th>状态</th>
+								<th style="text-align:right;padding-right:60px;">操作</th>
+							</tr>
+							<volist name="data" id="vo">
+							<tr>
+								<td>{$vo.id}</td>
+								<td><img width="100px" src="{$vo.img}"></td>
+								<td><?php echo mb_strlen($vo['content'], 'utf-8') > 16 ? mb_substr($vo['content'], 0, 16, 'utf-8').'....' : $vo['content'];?></td>
+								<td>{$vo.nickname}</td>
+								<td>{$vo.post_time|date="Y-m-d H:i:s",###}</td>
+								<td>
+									<if condition="$vo.status eq 0">待选择
+										<elseif condition="$vo.status eq 1"/>进行中
+										<elseif condition="$vo.status eq 2"/>已失效
+										<elseif condition="$vo.status eq 3"/>已达成
+										<elseif condition="$vo.status eq 4"/>已下架
+									</if>
+								</td>
+								<td>
+									<!--<a href="{:U('WishHelp/delwish?wish_id='.$vo['id'])}" onclick="if(confirm('确定删除?')==false)return false;" class="bg-dot tag margin-right float-right">删除</a>-->
+								    <a href="" class="bg-sub tag margin-right float-right">聊天记录</a>
+								    <a href="{:U('WishHelp/details?wish_id='.$vo['id'])}" class="bg-sub tag margin-right float-right">详情</a>
+									<a href="{:U('WishHelp/joinlist?wish_id='.$vo['id'])}"class="bg-sub tag margin-right float-right" href="">报名者</a>
+								</td>
+							</tr>
+							</volist>
+						</table>
+
+				</div>
+				<div class="panel-foot" id="page">
+					{$page}
+				</div>
+		</div>
+	</div>
+   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</body>
+</html>

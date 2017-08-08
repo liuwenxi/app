@@ -1,0 +1,91 @@
+<include file="Public/header" />
+	<!-- main -->
+	<style>
+		.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+		.ml-20{margin-left:20px;}
+		.tag{font-size: 75%;border-radius: 0.25em;background: #999;padding: 0.1em 0.5em 0.2em;color: #fff;}
+		.bg-sub{background-color: #0ae;}
+		.bg-dot{background-color: #e33;}
+		a{text-decoration:none;}
+		a:hover{color:#fff;text-decoration:none;}
+	</style>
+	<div class="container-fluid">
+		<h2>心愿列表</h2>
+	</div>
+	<div id="mainbody">
+
+		<div class="panel">
+			<div class="navbar navbar-default">
+				<form action=""  class="navbar-form form-inline" method="post" >
+					<input type="hidden" value="{$wish_id}" name="wish_id">
+					<div class="form-group">
+						<select name="state" class="form-control">
+							<option value="">是否选中</option>
+								<option value="1">是</option>
+								<option value="">否</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<select name="time_sort" class="form-control">
+							<option value="0">不限排序方式</option>
+							<option value="1">按时间正序</option>
+							<option value="2">按时间倒序</option>
+						</select>
+					</div>
+					<button type="submit"  class="btn btn-primary"><i class="fa fa-search"></i> 筛选</button>
+				</form>
+			</div>
+
+
+
+					<div class="panel-body"  style="margin-top:20px;">
+						<table class="table">
+							<tr>
+								<th>ID</th>
+								<th>头像</th>
+								<th>昵称</th>
+								<th>报名简介</th>
+								<th>信用分</th>
+								<th>是否选中</th>
+								<th>报名时间</th>
+								<th style="text-align:right;padding-right:60px;">操作</th>
+							</tr>
+							<volist name="data" id="vo">
+							<tr>
+								<td>{$vo.id}</td>
+								<td>
+									<img src="{$vo.avatar}" alt="" style="width: 40px;height: 40px" class="img-rounded brandico-mini">
+								</td>
+								<td>{$vo.nickname}</td>
+								<td><?php echo mb_strlen($vo['massge'], 'utf-8') > 16 ? mb_substr($vo['massge'], 0, 16, 'utf-8').'....' : $vo['massge'];?></td>
+								<td>{$vo.credit}</td>
+								<td>
+									<if condition="$vo.status eq 1">是
+										<else/>否
+									</if>
+								</td>
+								<td>{$vo.join_time|date="Y-m-d H:i:s",###}</td>
+								<td>
+									<a href="{:U('WishHelp/canselSignUp?id='.$vo['id'])}"
+									   onclick="if (confirm('确定取消该用户的报名') == false) return false;"
+									   class="bg-sub tag margin-right float-right">取消报名</a>
+									<a href="{:U('WishHelp/canselHelp?id='.$vo['id'])}"
+									   onclick="if (confirm('确定取消该用户的帮助') == false) return false;"
+									   class="bg-sub tag margin-right float-right">取消帮助</a>
+									<a href="{:U('WishHelp/CheckedUser?id='.$vo['id'])}"
+									   onclick="if (confirm('确定选择该用户帮助') == false) return false;"
+									   class="bg-sub tag margin-right float-right">选择帮忙</a>
+								</td>
+							</tr>
+							</volist>
+						</table>
+
+				</div>
+				<div class="panel-foot" id="page">
+					{$page}
+				</div>
+		</div>
+	</div>
+   <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+</body>
+</html>

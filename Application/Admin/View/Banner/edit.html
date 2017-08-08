@@ -1,0 +1,149 @@
+<include file="Public:addheader"/>
+<style>
+#selector{
+    background:#006dcc;
+    display:block;
+    width:100px;
+    height:50px;
+    border:1px solid #006dcc;
+    border-radius:8px;
+    cursor:pointer;
+    color:#FFF;
+    font-size:16px;
+	float:left;
+	margin:25px 25px 35px 20px;
+}
+</style>
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="/jscss/admin/design/">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="/jscss/admin/design/">广告图管理</a><span class="crumb-step">&gt;</span><span>广告图编辑</span></div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form action="{:U('Banner/edit', array('id' => $bdata['id']))}" method="post" id="myform" name="myform" enctype="multipart/form-data">
+                    <table class="insert-tab" width="100%">
+                        <tbody>
+	                        
+	                        <tr>
+	                        	<th width="120px"><i class="require-red">*</i>封面图</th>
+	                        	<td style="padding-top:5px;">
+	                        		<input type="button" id="selector" style="" value="选取图片">
+	                        		<input type="hidden" id="filepath" name="filepath" value="{$bdata.listimg}" readonly="readonly">
+	                        		<!-- <input type="text" id="" value="" width="150px"> -->
+	                        		<img src="{$bdata.listimg}" width=100 height=100 class="preview" style="float:left;<if condition="$bdata['listimg'] neq ''">display:inline-block;<else />display:none;</if>border:1px solid;margin-right:10px;">
+	                        		<span id="status"></span>
+	                        	</td>
+	                        </tr>
+	                        <script>
+	                        $(function ()
+                            {
+                                // 创建一个上传参数
+                                var uploadOption =
+                                {
+                                    // 提交目标
+                                    action: "{:U('Banner/uploadPic')}",
+                				    // 服务端接收的名称
+                				    name: "pic",
+                                    // 自动提交
+                                    autoSubmit: true,
+                                    // 选择文件之后…
+                                    onChange: function (file, extension) {
+                                        //if (new RegExp(/(jpg)|(jpeg)|(bmp)|(gif)|(png)/i).test(extension)) {
+                                        if(extension){
+                                            $("#filepath").val(file);
+                                        } else {
+                                            alert("只限上传图片文件，请重新选择！");
+                                        }
+                                    },
+                                    // 开始上传文件
+                                    onSubmit: function (file, extension) {
+                                        $("#status").text("正在上传" + file + "..");
+                                        $("img.preview").css('display','inline-block');
+                                        $("img.preview").attr('src','__Admin_IMAGES__loading.gif');
+                                    },
+                                    // 上传完成之后
+                                    onComplete: function (file, response) {                                    
+                                        if (response) {
+                                        	var obj = JSON.parse(response);
+                                        	if(obj.status == 1){
+                                        		$("#status").text("上传完成！");
+                    							//alert(response);
+                    							//var obj = eval('(' + response + ')');
+                                                var url = obj.pic;
+                    							$("#filepath").val(obj.pic);
+                                                $("img.preview").attr('src',url);
+                    							//$("img.preview").attr('src','__Admin_IMAGES__success1.jpg');
+                                        	}else if(obj.status == 2){
+                                        		$("#status").text("超过可上传的限制大小！");
+                                        	}
+                                        }else{
+                                            $("#status").text("上传失败");
+                                            $("img.preview").attr('src','');
+                                        }
+                                    }
+                                }
+
+                                // 初始化图片上传框
+                                var oAjaxUpload = new AjaxUpload('#selector', uploadOption);
+
+                                // 给上传按钮增加上传动作
+                                $("#up").click(function ()
+                                {
+                                    oAjaxUpload.submit();
+                                });
+
+                            });
+	                        </script>
+                            <tr>
+                                <th><i class="require-red">*</i>广告图标题：</th>
+                                <td>
+                                    <input class="common-text required" id="title" name="title" size="50" value="{$bdata.title}" type="text">
+                                </td>
+                            </tr>
+                            <!-- <tr>
+                                <th>内容：</th>
+                                <td><textarea name="content" class="common-textarea" id="content" cols="30" style="width: 98%;" rows="10"></textarea></td>
+                            </tr> -->
+
+                            <tr>
+                                <th>排序：(数字越大越靠后)</th>
+                                <td>
+                                    <input class="common-text required" id="sort" name="sort" size="20" value="{$bdata.sort}" type="text">
+                                </td> 
+                            </tr>
+                            <tr>
+                                <th>广告图URL</th>
+                                <td>
+                                    <input class="common-text required" id="banner" name="banner" size="50" value="{$bdata.banner_url}" type="text">
+                                </td> 
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <input  class="btn btn-primary btn6 mr10" value="提交" type="submit">
+                                    <input class="btn btn6" onclick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+<script type="text/javascript" src="__Admin_JS__ajaxupload.js"></script>
+<script type="text/javascript">
+    UE.getEditor('editor');
+
+    function getContent() {
+        var arr = [];
+        arr.push("浣跨敤editor.getContent()鏂规硶鍙互鑾峰緱缂栬緫鍣ㄧ殑鍐呭");
+        arr.push("鍐呭涓猴細");
+        arr.push(UE.getEditor('editor').getContent());
+        //alert(arr.join("\n"));
+    }
+</script>

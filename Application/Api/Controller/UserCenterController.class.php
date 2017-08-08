@@ -2,7 +2,7 @@
 namespace Api\Controller;
 
 use Common\Controller\BaseController;
-
+use Lib\Api\Weixinapi\WeiXin;
 /**
  * 个人中心类控制器
  * @package Api\Controller
@@ -17,22 +17,200 @@ class UserCenterController extends BaseController
 
     public function index()
     {
-        $User = M('User');
-        $UserRelation = M('UserRelation');
-        $myid = I('get.uid', 0, 'int');
-        $oid = I('get.oid', 0, 'int');
+       $User = M('User');
+       $UserRelation = M('UserRelation');
+
+       //自己的id
+        $myid = I('get.uid', '', 'int');
+
+        //用户id
+        $oid=I('get.oid','','int');
+
+        $results['status'] = 0;
+
+        //如果$oid为真才去查找下面的信息
         if ($oid) {
             $fields = "id,nickName,avatar,signature,is_auth as isAuth,credit,totalmon,gender,reg_time";
-            $results['userInfo'] = $User->field($fields)->find($oid);
+            $results['data']['userInfo'] = $User->field($fields)->find($oid);
+            $results['data']['userInfo']['id']=(int)$results['data']['userInfo']['id'];
+            $results['data']['userInfo']['isAuth']=(int)$results['data']['userInfo']['isAuth'];
+            $results['data']['userInfo']['creadit']=(int)$results['data']['userInfo']['credit'];
+            $results['data']['userInfo']['totalmon']=(int)$results['data']['userInfo']['totalmon'];
+            $results['data']['userInfo']['gender']=(int)$results['data']['userInfo']['gender'];
+            $results['data']['userInfo']['reg_time']=(int)$results['data']['userInfo']['reg_time'];
             $isFan = $UserRelation->where(array('fan_uid' => $myid, 'uid' => $oid, 'status' => 1))->count();
-            $results['isFan'] = !$isFan ? false : true;
-            $results['data'] = $this->dynamic($oid);
+            $results['data']['isFan'] = !$isFan ? false : true;
+
         }
-        if ($myid && empty($oid)) {
-            $results['data'] = $this->dynamic($myid);
+
+        //$oid为空的话就把$myid赋值给$oid
+        if(empty($oid)){$oid =$myid;}
+        if(!$oid){
+             $results['status']=1;
+             $results['error']=1;
+             $results['msg']='参数不完整';
+             dexit($results);
         }
+
+        $inteaction['follow'] =(int) $UserRelation->where(array('fan_uid' => $oid, 'status' => 1))->count();
+        $inteaction['fans'] = (int)$UserRelation->where(array('uid' => $oid, 'status' => 1))->count();
+        $results['data']['interaction'] = $inteaction;
+        //如果有别的用户来访问无秘室的心愿则不显示
+        if($_GET['oid']){
+            $count=M('Wishwall')->where('kid <>1 and  set_user='.$oid)->field('id,content,light_count,background,set_user,kid,is_top,posttime')->order('posttime desc')->count();
+            $countPage=(int)ceil($count/10);
+            $newlight=M('Wishwall')->where('kid <>1 and  set_user='.$oid)->field('id,content,light_count,background,set_user,kid,is_top,posttime')->limit(10)->order('posttime desc')->select();
+
+        }else{
+            $count=M('Wishwall')->where('set_user='.$oid)->field('id,content,light_count,background,set_user,kid,is_top,posttime')->order('posttime desc')->count();
+            $countPage=(int)ceil($count/10);
+            $newlight=M('Wishwall')->where('set_user='.$oid)->field('id,content,light_count,background,set_user,kid,is_top,posttime')->limit(10)->order('posttime desc')->select();
+        }
+
+        //根据set_user获取用户的性别，头像，昵称,背景图片
+        foreach($newlight as $key=>$val){
+            //用户信息
+            $userInfo=M('User')->field('nickname,avatar,gender')->where('id='.$val['set_user'])->find();
+
+            //背景信息
+            $bg=M('wishwall_background')->field('font_color,large_img')->where('id='.$val['background'])->find();
+
+            $count=M('Comment')->where('xid='.$val['id'])->count();
+            //是否点亮该条心愿
+            if($myid) {
+                $islight = M('Wishwall_join')->field('join_uid')->where(array('wish_id=' . $val['id'], 'join_uid=' . $myid))->find();
+                if ($islight) {
+                    $newlight[$key]['isLight'] = TRUE;
+                } else {
+                    $newlight[$key]['isLight'] = FALSE;
+                }
+            }else{
+                $newlight[$key]['isLight'] =FALSE;
+            }
+            //是否是无秘室
+            $subclass=M('Wishwall_keyword')->field('subclass')->where('id='.$val['kid'])->find();
+            if($subclass['subclass'] == '0'){
+                $newlight[$key]['nickName']=$userInfo['nickname'];
+                $newlight[$key]['avatar']=$userInfo['avatar'];
+            }else{
+                $font=mb_substr($userInfo['nickname'],0,1,'utf-8');
+                $avatar=get_url("/Uploads/userAvatar/avatar.png");
+                $newlight[$key]['nickName']= $font.'**';
+                $newlight[$key]['avatar']=$avatar;
+            }
+            //$newlight[$key]['nickName']=$userInfo['nickname'];
+            $newlight[$key]['fontColor']=$bg['font_color'];
+            $newlight[$key]['bgImg']=$bg['large_img'];
+            $newlight[$key]['background']=(int)$val['background'];
+           // $newlight[$key]['avatar']=$userInfo['avatar'];
+            $newlight[$key]['gender']=(int)$userInfo['gender'];
+            $newlight[$key]['uid']=(int)$val['set_user'];
+            $newlight[$key]['lightCount']=(int)$val['light_count'];
+            $newlight[$key]['posttime']=(int)$val['posttime'];
+            $newlight[$key]['commentCount']=(int)$count;
+            $newlight[$key]['kid']=(int)$val['kid'];
+            $newlight[$key]['id']=(int)$val['id'];
+            unset($newlight[$key]['light_count']);
+            unset($newlight[$key]['set_user']);
+            unset($newlight[$key]['is_top']);
+        }
+        /********************************************************************************************************************************************/
+
+        //微信js配置接口信息
+        $WeiChat = new WeiXin();
+        $JsConfig = $WeiChat->getSignPackage();
+        $results['data']['jsConfig'] = $JsConfig;
+        $results['data']['dynamic']['wish']= $newlight;
+        $results['data']['dynamic']['totalPage']=$countPage;
+
+
         dexit($results);
-        exit;
+    }
+
+    //个人中心加载分页
+    public function indexPage(){
+        //自己的id
+        $myid = I('get.uid', '', 'int');
+        //用户id
+        $oid=I('get.oid','','int');
+
+        $page=I('get.page','',int);
+        $page = $page<1?1:$page;
+        $pageSize=10;
+        $pre = ($page-1)*$pageSize;
+        if(empty($oid)){$oid =$myid;}
+
+        if(!$oid){
+            $results['status']=1;
+            $results['error']=1;
+            $results['msg']='参数不完整';
+            dexit($results);
+        }
+        //如果有别的用户来访问无秘室的心愿则不显示
+
+        if($_GET['oid']){
+            $count=M('Wishwall')->where('kid <>1 and  set_user='.$oid)->field('id,content,light_count,background,set_user,kid,is_top,posttime')->where('')->order('posttime desc')->count();
+            $countPage=(int)ceil(count($count)/$pageSize);
+            $newlight=M('Wishwall')->where('kid <>1 and  set_user='.$oid)->field('id,content,light_count,background,set_user,kid,is_top,posttime')->limit($pre,$pageSize)->order('posttime desc')->select();
+        }else{
+            $count=M('Wishwall')->where('set_user='.$oid)->field('id,content,light_count,background,set_user,kid,is_top,posttime')->order('posttime desc')->select();
+            $countPage=(int)ceil(count($count)/$pageSize);
+            $newlight=M('Wishwall')->where('set_user='.$oid)->field('id,content,light_count,background,set_user,kid,is_top,posttime')->limit($pre,$pageSize)->order('posttime desc')->select();
+        }
+
+        //根据set_user获取用户的性别，头像，昵称,背景图片
+        foreach($newlight as $key=>$val){
+            //用户信息
+            $userInfo=M('User')->field('nickname,avatar,gender')->where('id='.$val['set_user'])->find();
+
+            //背景信息
+            $bg=M('wishwall_background')->field('font_color,large_img')->where('id='.$val['background'])->find();
+
+            $count=M('Comment')->where('xid='.$val['id'])->count();
+            //是否点亮该条心愿
+            if($myid) {
+                $islight = M('Wishwall_join')->field('join_uid')->where(array('wish_id=' . $val['id'], 'join_uid=' . $myid))->find();
+                if ($islight) {
+                    $newlight[$key]['isLight'] = TRUE;
+                } else {
+                    $newlight[$key]['isLight'] = FALSE;
+                }
+            }else{
+                $newlight[$key]['isLight'] =FALSE;
+            }
+            //是否是无秘室
+            $subclass=M('Wishwall_keyword')->field('subclass')->where('id='.$val['kid'])->find();
+            if($subclass['subclass'] == '0'){
+                $newlight[$key]['nickName']=$userInfo['nickname'];
+                $newlight[$key]['avatar']=$userInfo['avatar'];
+            }else{
+                $font=mb_substr($userInfo['nickname'],0,1,'utf-8');
+                $avatar=get_url("/Uploads/userAvatar/avatar.png");
+                $newlight[$key]['nickName']= $font.'**';
+                $newlight[$key]['avatar']=$avatar;
+            }
+            //$newlight[$key]['nickName']=$userInfo['nickname'];
+            $newlight[$key]['fontColor']=$bg['font_color'];
+            $newlight[$key]['bgImg']=$bg['large_img'];
+            $newlight[$key]['background']=(int)$val['background'];
+            // $newlight[$key]['avatar']=$userInfo['avatar'];
+            $newlight[$key]['gender']=(int)$userInfo['gender'];
+            $newlight[$key]['uid']=(int)$val['set_user'];
+            $newlight[$key]['lightCount']=(int)$val['light_count'];
+            $newlight[$key]['posttime']=(int)$val['posttime'];
+            $newlight[$key]['commentCount']=(int)$count;
+            $newlight[$key]['kid']=(int)$val['kid'];
+            $newlight[$key]['id']=(int)$val['id'];
+            unset($newlight[$key]['light_count']);
+            unset($newlight[$key]['set_user']);
+            unset($newlight[$key]['is_top']);
+        }
+        /********************************************************************************************************************************************/
+        $results['status']=0;
+        $results['data']['dynamic']['totalPage']=$countPage;
+        $results['data']['dynamic']['wish'] = $newlight;
+        dexit($results);
+
     }
 
     public function dynamic($userid)
@@ -107,7 +285,6 @@ class UserCenterController extends BaseController
     //设置支付密码 by kar1
     public function setPayPassword()
     {
-
         if (IS_POST) {
             $User = M('User');
             $uid = session('uid');
@@ -194,6 +371,7 @@ class UserCenterController extends BaseController
         $nickname = I('post.nickName', '0', 'htmlspecialchars');
         $gender = I('post.gender');
         $signature = I('post.signature');
+        $age = I('post.age');
         //判断是否有数据
         if ($img) {
             //截取信息
@@ -221,13 +399,12 @@ class UserCenterController extends BaseController
         if ($nickname) {
             $data['nickname'] = $nickname;
         }
-        if ($gender) {
-            $data['gender'] = $gender;
-            $data['sex_status'] = 1;
-        }
         if ($signature) {
             $data['signature'] = $signature;
         }
+        $data['gender'] = $gender;
+        $data['age'] = $age;
+        $data['modify_gender'] = 1;
         if(!$data){
             $results['status'] = 1;
             $results['errcode'] = 2;
@@ -245,6 +422,8 @@ class UserCenterController extends BaseController
             $user['nickName'] =$userInfo['nickname'];
             $user['avatar'] =$userInfo['avatar'];
             $user['gender'] =(int)$userInfo['gender'];
+            $user['age'] =(int)$userInfo['age'];
+            $user['hasModifyGender'] =!$userInfo['modify_gender']?false:true;
             $user['credit'] =(int)$userInfo['credit'];
             $user['totalMon'] =(int)$userInfo['totalmon'];
             $user['regTime'] =(int)$userInfo['reg_time'];
@@ -253,6 +432,7 @@ class UserCenterController extends BaseController
             $user['signature'] =$userInfo['signature'];
             $user['payPwd'] = !$userInfo['pay_pwd']?false:true;
             $user['wechatOpenid'] = !$userInfo['wechat_openid']?false:$userInfo['wechat_openid'];
+            $user['wechatNickname'] = !$userInfo['wechat_nickname']?null:$userInfo['wechat_nickname'];
             $user['qqOpenid'] = !$userInfo['qq_openid']?false:$userInfo['qq_openid'];
             $user['weiboOpenid'] = !$userInfo['weibo_openid']?false:$userInfo['weibo_openid'];
             $user['bindFlag'] = !$userInfo['bind_flag']?false:true;
@@ -264,9 +444,8 @@ class UserCenterController extends BaseController
             dexit($results);
             exit;
         } else {
-            $results['status'] = 1;
-            $results['errcode'] = 3;
-            $results['msg'] = '设置失败';
+            $results['status'] = 0;
+            $results['msg'] = '保存成功';
             dexit($results);
             exit;
         }
@@ -281,6 +460,8 @@ class UserCenterController extends BaseController
         $User = M('User');
         $UserReal = M('UserReal');
         $uid = I('get.uid', '', 'int');
+
+
         if(!$uid){
             $results['status'] = 1;
             $results['errcode'] = 1;
@@ -290,9 +471,22 @@ class UserCenterController extends BaseController
         }
         $field = 'realname,idcard,full_photo,back_photo,hand_photo,is_auth';
         $real = $UserReal->where(array('uid' => $uid))->field($field)->find();
+
         if (!empty($real)) {
             $results['status'] = 0;
-            $results['real'] = $real;
+            $real['fullPhoto']=$real['full_photo'];
+            $real['backPhoto']=$real['back_photo'];
+            $real['handPhoto']=$real['hand_photo'];
+            $real['realName']=$real['realname'];
+            $real['isAuth']=(int)$real['is_auth'];
+            $real['idCard']=(int)$real['idcard'];
+            unset($real['full_photo']);
+            unset($real['back_photo']);
+            unset($real['hand_photo']);
+            unset($real['is_auth']);
+            unset($real['idcard']);
+            unset($real['realname']);
+            $results['data'] = $real;
             dexit($results);
             exit;
         } else {
@@ -312,15 +506,15 @@ class UserCenterController extends BaseController
         $User = M('User');
         $UserReal = M('UserReal');
 
-        $uid = I('post.uid', '', 'int');
-        $realname = I('post.realname');
-        $idcard = I('post.idcard');
-        $full = I('post.full_photo', 'htmlspecialchars');
+       $uid = I('post.uid', '', 'int');
+        $realname = I('post.realName');
+        $idcard = I('post.idCard');
+        $full = I('post.fullPhoto', 'htmlspecialchars');
         $full = str_ireplace(' ', '+', $full);   //图片base64码
-        $back = I('post.back_photo', 'htmlspecialchars');
+        $back = I('post.backPhoto', 'htmlspecialchars');
         $back = str_ireplace(' ', '+', $back);   //图片base64码
-        $hand = I('post.hand_photo', 'htmlspecialchars');
-        $hand = str_ireplace(' ', '+', $hand);   //图片base64码
+        $hand = I('post.handPhoto', 'htmlspecialchars');
+        $hand = str_ireplace(' ', '+', $hand);   //图片base64码*/
 
         if (empty($uid) || empty($realname) || empty($idcard) || empty($full) || empty($back) || empty($hand)) {
             $results['status'] = 1;
@@ -329,8 +523,10 @@ class UserCenterController extends BaseController
             dexit($results);
             exit;
         }
+
         $user = $User->where(array('id' => $uid))->find();
         $real = $UserReal->where(array('uid' => $uid))->find();
+
         if (empty($user)) {
             $results['status'] = 1;
             $results['errcode'] = 2;
@@ -352,6 +548,7 @@ class UserCenterController extends BaseController
             dexit($results);
             exit;
         }
+
         $full_photo = $this->VerifyPhoto($full);
         $hand_photo = $this->VerifyPhoto($back);
         $back_photo = $this->VerifyPhoto($hand);
@@ -362,6 +559,7 @@ class UserCenterController extends BaseController
             dexit($results);
             exit();
         }
+
 
         $data = array(
             'uid' => $user['id'],
@@ -380,8 +578,10 @@ class UserCenterController extends BaseController
         } else {
             $result = $UserReal->data($data)->add();
         }
-        $saveUser = $User->where(array('id' => $real['id']))->data(array('is_auth'=>3))->save();
-        if (!$result || !$saveUser) {
+
+       // $saveUser = $User->where(array('id' => $real['id']))->data(array('is_auth'=>3))->save();
+
+        if (!$result) {
             $m->rollback();
             $results['status'] = 1;
             $results['errcode'] = 6;
@@ -578,6 +778,8 @@ class UserCenterController extends BaseController
         $page = I('get.page', '0', 'int');
         $type = I('get.type', '0', 'int');//0关注，1粉丝
 
+
+
         if (!$uid && !$oid) {
             $results['status'] = 1;
             $results['errcode'] = 1;//信息不完整
@@ -586,46 +788,71 @@ class UserCenterController extends BaseController
         }
         if (!empty($oid) && !empty($uid)) {
             if ($type == 0) {
-                $fans = $UserRelation->alias('a')->field('a.status,b.id,b.nickName,b.avatar,b.signature,b.is_auth as isAuth,b.credit,b.totalmon,b.gender,b.phone,b.totalmon')->join('wxy_user as b ON a.uid = b.id', 'LEFT')->where(array('fan_uid' => $oid, 'a.status' => 1))->page($page, 10)->select();
+                $fans = $UserRelation->alias('a')->field('a.status,b.id,b.nickName,b.avatar,b.signature,b.is_auth as isAuth,b.credit,b.totalmon,b.gender,b.phone')->join('wxy_user as b ON a.uid = b.id', 'LEFT')->where(array('fan_uid' => $oid, 'a.status' => 1))->page($page, 10)->select();
                 foreach ($fans as $k => $v) {
+                    $fans[$k]['gender']=(int)$v['gender'];
+                    $fans[$k]['uid']=(int)$v['id'];
+                    $fans[$k]['isAuth']=(int)$v['isAuth'];
+                    $fans[$k]['phone']=(int)$v['phone'];
+                    $fans[$k]['status']=(int)$v['status'];
+                    unset($fans[$k]['id']);
                     $is_attention = $UserRelation->where(array('fan_uid' => $uid, 'uid' => $v['id'], 'status' => 1))->find();
                     if($uid == $v['id']){
-                        $fans[$k]['is_follow'] = true;
+                        $fans[$k]['isFollow'] = true;
                     }
-                    $fans[$k]['is_follow'] = !$is_attention ? false : true;
+                    $fans[$k]['isFollow'] = !$is_attention ? false : true;
                 }
                 $count = $UserRelation->alias('a')->join('wxy_user as b ON a.uid = b.id', 'LEFT')->where(array('fan_uid' => $oid, 'a.status' => 1))->count();
                 $countPage = ceil($count / 30);
             } elseif ($type == 1) {
-                $fans = $UserRelation->alias('a')->field('a.status,b.id,b.nickName,b.avatar,b.signature,b.is_auth as isAuth,b.credit,b.totalmon,b.gender,b.phone,b.totalmon')->join('wxy_user as b ON a.fan_uid = b.id', 'LEFT')->where(array('uid' => $oid, 'a.status' => 1))->page($page, 10)->select();
+                $fans = $UserRelation->alias('a')->field('a.status,b.id,b.nickName,b.avatar,b.signature,b.is_auth as isAuth,b.credit,b.totalmon,b.gender,b.phone')->join('wxy_user as b ON a.fan_uid = b.id', 'LEFT')->where(array('uid' => $oid, 'a.status' => 1))->page($page, 10)->select();
                 foreach ($fans as $k => $v) {
+                    $fans[$k]['gender']=(int)$v['gender'];
+                    $fans[$k]['uid']=(int)$v['id'];
+                    $fans[$k]['isAuth']=(int)$v['isAuth'];
+                    $fans[$k]['phone']=(int)$v['phone'];
+                    $fans[$k]['status']=(int)$v['status'];
+                    unset($fans[$k]['id']);
                     if($uid == $v['id']){
-                        $fans[$k]['is_follow'] = true;
+                        $fans[$k]['isFollow'] = true;
                     }
                     $is_attention = $UserRelation->where(array('fan_uid' => $uid, 'uid' => $v['id'], 'status' => 1))->find();
-                    $fans[$k]['is_follow'] = !$is_attention ? false : true;
+                    $fans[$k]['isFollow'] = !$is_attention ? false : true;
                 }
                 $count = $UserRelation->alias('a')->join('wxy_user as b ON a.fan_uid = b.id', 'LEFT')->where(array('uid' => $oid, 'a.status' => 1))->count();
                 $countPage = ceil($count / 30);
             }
         } elseif (!empty($uid)) {
             if ($type == 0) {
-                $fans = $UserRelation->alias('a')->field('a.status,b.id,b.nickName,b.avatar,b.signature,b.is_auth as isAuth,b.credit,b.totalmon,b.gender,b.phone,b.totalmon')->join('wxy_user as b ON a.uid = b.id', 'LEFT')->where(array('fan_uid' => $uid, 'a.status' => 1))->page($page, 10)->select();
+                $fans = $UserRelation->alias('a')->field('a.status,b.id,b.nickName,b.avatar,b.signature,b.is_auth as isAuth,b.gender,b.phone')->join('wxy_user as b ON a.uid = b.id', 'LEFT')->where(array('fan_uid' => $uid, 'a.status' => 1))->page($page, 10)->select();
                 foreach ($fans as $k => $v) {
-                    $fans[$k]['is_follow'] = true;
+                    $fans[$k]['gender']=(int)$v['gender'];
+                    $fans[$k]['uid']=(int)$v['id'];
+                    $fans[$k]['isAuth']=(int)$v['isAuth'];
+                    $fans[$k]['phone']=(int)$v['phone'];
+                    $fans[$k]['status']=(int)$v['status'];
+                    unset($fans[$k]['id']);
+                    $fans[$k]['isFollow'] = true;
                 }
                 $count = $UserRelation->alias('a')->join('wxy_user as b ON a.uid = b.id', 'LEFT')->where(array('fan_uid' => $uid, 'a.status' => 1))->count();
                 $countPage = ceil($count / 30);
             } elseif ($type == 1) {
-                $fans = $UserRelation->alias('a')->field('a.status,b.id,b.nickName,b.avatar,b.signature,b.is_auth as isAuth,b.credit,b.totalmon,b.gender,b.phone,b.totalmon')->join('wxy_user as b ON a.fan_uid = b.id', 'LEFT')->where(array('uid' => $uid, 'a.status' => 1))->page($page, 10)->select();
+                $fans = $UserRelation->alias('a')->field('a.status,b.id,b.nickName,b.avatar,b.signature,b.is_auth as isAuth,b.gender,b.phone')->join('wxy_user as b ON a.fan_uid = b.id', 'LEFT')->where(array('uid' => $uid, 'a.status' => 1))->page($page, 10)->select();
                 foreach ($fans as $k => $v) {
+                    $fans[$k]['gender']=(int)$v['gender'];
+                    $fans[$k]['uid']=(int)$v['id'];
+                    $fans[$k]['isAuth']=(int)$v['isAuth'];
+                    $fans[$k]['phone']=(int)$v['phone'];
+                    $fans[$k]['status']=(int)$v['status'];
+                    unset($fans[$k]['id']);
                     $is_attention = $UserRelation->where(array('fan_uid' => $uid, 'uid' => $v['id'], 'status' => 1))->count();
-                    $fans[$k]['is_follow'] = !$is_attention ? false : true;
+                    $fans[$k]['isFollow'] = !$is_attention ? false : true;
                 }
                 $count = $UserRelation->alias('a')->join('wxy_user as b ON a.fan_uid = b.id', 'LEFT')->where(array('uid' => $uid, 'a.status' => 1))->count();
                 $countPage = ceil($count / 30);
             }
         }
+
         $results['status'] = 0;
         $results['msg'] = '请求成功';
         $results['type'] = $type;
@@ -638,16 +865,72 @@ class UserCenterController extends BaseController
         $user = M('User');
         $model = M('Wishwall');
         $background = M('WishwallBackground');
-        $uid = I('post.uid');
-        $datas =$model->where(array('set_user'=>$uid))->field('*,FROM_UNIXTIME(posttime,"%Y") as year,FROM_UNIXTIME(posttime,"%m") as month')->order('posttime desc')->select();
-        foreach ($datas as $key=>$val){
-            $userinfo = $user->where(array('id'=>$val['set_user']))->find();
-            $ground = $background->where(array('id'=>$val['background']))->find();
-            $datas[$key]['nickName'] =$userinfo['nickname'] ;
-            $datas[$key]['avatar'] =$userinfo['avatar'] ;
-            $datas[$key]['font_color'] = $ground['font_color'];
-            $datas[$key]['large_img'] = $ground['large_img'];
+
+        //自己的id
+        $myid = I('post.uid', '', 'int');
+
+        //用户id
+        $oid=I('post.oid','','int');
+
+
+        //$oid为空的话就把$myid赋值给$oid
+        if(empty($oid)){$oid =$myid;}
+       if(!$oid){
+            $results['status']=1;
+            $results['error']=1;
+            $results['msg']='参数不完整';
+            dexit($results);
         }
+
+        if($_POST['oid']){
+            $datas =$model->where(array('set_user'=>$oid,'kid <> 1'))->field('id,content,light_count,background,set_user,kid,posttime,FROM_UNIXTIME(posttime,"%Y") as year,FROM_UNIXTIME(posttime,"%m") as month')->order('posttime desc')->select();
+
+        }else{
+            $datas =$model->where(array('set_user'=>$oid))->field('id,content,light_count,background,set_user,kid,posttime,FROM_UNIXTIME(posttime,"%Y") as year,FROM_UNIXTIME(posttime,"%m") as month')->order('posttime desc')->select();
+        }
+
+        foreach ($datas as $key=>$val){
+            //用户信息
+            $userInfo = $user->where(array('id'=>$val['set_user']))->find();
+            //背景信息
+            $ground = $background->field('font_color,large_img')->where(array('id'=>$val['background']))->find();
+            //评论总人数
+            $count=M('Comment')->where('xid='.$val['id'])->count();
+            //是否点亮
+            $islight = M('Wishwall_join')->field('join_uid')->where(array('wish_id=' . $val['id'], 'join_uid=' . $oid))->find();
+            if ($islight) {
+                $datas[$key]['isLight'] = TRUE;
+            } else {
+                $datas[$key]['isLight'] = FALSE;
+            }
+            $subclass=M('Wishwall_keyword')->field('subclass')->where('id='.$val['kid'])->find();
+            if($subclass['subclass'] == '0'){
+                $newlight[$key]['nickName']=$userInfo['nickname'];
+                $newlight[$key]['avatar']=$userInfo['avatar'];
+            }else{
+                $font=mb_substr($userInfo['nickname'],0,1,'utf-8');
+                $avatar=get_url("/Uploads/userAvatar/avatar.png");
+                $newlight[$key]['nickName']= $font.'**';
+                $newlight[$key]['avatar']=$avatar;
+            }
+            $datas[$key]['bgImg']=$ground['large_img'];
+            $datas[$key]['fontColor']=$ground['font_color'];
+            $datas[$key]['gender']=$userInfo['gender'];
+            $datas[$key]['uid']=(int)$val['set_user'];
+            $datas[$key]['lightCount']=(int)$val['light_count'];
+            $datas[$key]['commentCount']=(int)$count;
+            $datas[$key]['gender']=(int)$val['gender'];
+            $datas[$key]['kid']=(int)$val['kid'];
+            $datas[$key]['id']=(int)$val['id'];
+            $datas[$key]['posttime']=(int)$val['posttime'];
+            $datas[$key]['month']=(int)$val['month'];
+            $datas[$key]['year']=(int)$val['year'];
+            unset($datas[$key]['light_count']);
+            unset($datas[$key]['read_count']);
+            unset($datas[$key]['gender']);
+            unset($datas[$key]['set_user']);
+        }
+
         foreach ($datas as $k=>$v){
             $data[$v['year']]['month'][$v['month']]['wishList'][] = $v;
             $data[$v['year']]['year']=$v['year'];

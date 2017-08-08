@@ -1,0 +1,216 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理</title>
+    <link rel="stylesheet" type="text/css" href="__Admin_CSS__common.css"/>
+    <link rel="stylesheet" type="text/css" href="__Admin_CSS__main.css"/>
+
+    <script type="text/javascript" src="__Admin_JS__libs/modernizr.min.js"></script>
+    <script type="text/javascript" src="__Admin_JS__jquery-1.10.2.min.js"></script>
+</head>
+<body>
+<div class="topbar-wrap white">
+    <div class="topbar-inner clearfix">
+        <div class="topbar-logo-wrap clearfix">
+            <h1 class="topbar-logo none"><a href="index.html" class="navbar-brand">后台管理</a></h1>
+            <ul class="navbar-list clearfix">
+                <li><a class="on" href="{:U('Index/index')}">首页</a></li>
+                <!-- <li><a href="http://www.xinyi.cc/Home/Index/index" target="_blank">网站首页</a></li> -->
+                <volist name="cate" id="vo">
+                	<li><a href="{$vo.rule_url}">{$vo.rname}</a></li>
+                </volist>
+                <!-- <li><a href="{:U('Video/lists')}">视频管理</a></li>
+                <li><a href="{:U('Banner/lists')}">广告图管理</a></li>
+                <li><a href="{:U('Order/lists')}">订单管理</a></li>
+                <li><a href="{:U('Vip/lists')}">会员管理</a></li>
+                <li><a href="{:U('Manager/lists')}">管理员管理</a></li> -->
+            </ul>
+        </div>
+        <div class="top-info-wrap">
+            <ul class="top-info-list clearfix">
+                <li><span>欢迎您：{:session('uname')}</span></li>
+                <li><a href="{:U('User/chgPwd')}">修改密码</a></li>
+                <li><a href="{:U('User/logout')}">退出</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container clearfix">
+    <!-- <div class="sidebar-wrap">
+        <div class="sidebar-title">
+            <h1>菜单</h1>
+        </div>
+        <div class="sidebar-content">
+            <ul class="sidebar-list">
+                <li>
+                    <a href="#" class="nav-top-item"><i class="icon-font">&#xe003;</i>常用操作</a>
+                    <ul class="sub-menu">
+                        <li>
+                        	<a href="javascript:;" class="">
+                        		<i class="icon-font">&#xe006;</i>信义资讯
+                        	</a>
+						<ul>
+							<li>
+								<a href="{:U('News/index')}">
+									<i class="icon-font">&#xe005;</i>资讯列表
+								</a>
+							</li>
+                            <li>
+                                <a href="{:U('News/add')}">
+                                    <i class="icon-font">&#xe005;</i>资讯添加
+                                </a>
+                            </li>
+                            
+						</ul>
+						</li>
+                        <li>
+                            <a href="javascript:;" class="">
+                                <i class="icon-font">&#xe006;</i>前台菜单管理
+                            </a>
+                        <ul>
+                            <li>
+                                <a href="{:U('Category/index')}">
+                                    <i class="icon-font">&#xe005;</i>前台菜单列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{:U('Category/add')}">
+                                    <i class="icon-font">&#xe005;</i>前台菜单添加
+                                </a>
+                            </li>
+                            
+                        </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div> -->
+
+    <div class="main-wrap" style="margin-left:0;">
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font">&#xe06b;</i><span>欢迎登陆后台管理工具。</span></div>
+        </div>
+        
+        <div class="result-wrap">
+            <div class="result-title">
+                <h1>系统基本信息</h1>
+            </div>
+            <div class="result-content">
+                <ul class="sys-info-list">
+                    <li>
+                        <label class="res-lab">操作系统</label><span class="res-info">{$window}</span>
+                    </li>
+                    <li>
+                        <label class="res-lab">运行环境</label><span class="res-info">{$svrSys}  {$php}Apache/2.4.9 (Win64) PHP/5.5.12</span>
+                    </li>
+                    <li>
+                        <label class="res-lab">PHP运行方式</label><span class="res-info">{$phpMod}apache2handler</span>
+                    </li>
+                    <li>
+                        <label class="res-lab">上传附件限制</label><span class="res-info">{$uploadMax}</span>
+                    </li>
+                    <li>
+                        <label class="res-lab">服务器域名/IP</label><span class="res-info">{$host}||{$svrIp}</span>
+                    </li>
+                    <li>
+                        <label class="res-lab">Host</label><span class="res-info">{$host}</span>
+                    </li>
+                </ul>
+            </div>
+            <div style="width:100%;height:500px">
+            	<!-- <div id="container" style="width:500px;height:300px;float:left;"></div> -->
+            	<div id="cont" style="width:700px;height:500px;float:left;"></div>
+            	<!-- <div id="conr" style="width:500px;height:300px;float:left;"></div> -->
+            </div>
+            <script type="text/javascript" src="__Admin_JS__echarts.common.min.js"></script>
+            <script>
+            //var myChart = echarts.init(document.getElementById('container'));
+            var myCht = echarts.init(document.getElementById('cont'));
+            //var myChr = echarts.init(document.getElementById('conr'));
+            
+            //图标数据
+            var option = {
+            	title:{
+            		text:'测试图表'
+            	},
+            	tooltip:{},
+            	legend:{
+            		data:'销量'
+            	},
+            	xAxis:{
+            		data:["2016.1","2016.2","2016.3","2016.4","2016.5"]
+            	},
+            	yAxis:{},
+            	series:[{
+            		name:'销量',
+            		type:'bar',
+            		data:[125,210,336,223,256]
+            	}]
+            };
+            
+            //折现图数据
+            var opt = {
+                	title:{
+                		text:'时间-销量图表'
+                	},
+                	tooltip:{},
+                	legend:{
+                		data:'销量'
+                	},
+                	xAxis:{
+                		name:'时间',
+                		color:'#2ce',
+                		data:[{$mxkey}]      //["2016.1","2016.2","2016.3","2016.4","2016.5"]
+                	},
+                	yAxis:{
+                		name:'消费金额  单位/元',
+                		color:'#2ce',
+                	},
+                	series:[{
+                		name:'销量',
+                		type:'line',
+                		data:[{$myval}]        //[125,210,336,223,256]
+                	}]
+                };
+            
+            var optn = {
+            		backgroundColor:'#cccccc',
+                	title:{
+                		text:'测试图表'
+                	},
+                	tooltip:{},
+                	legend:{
+                		data:'销量'
+                	},
+                	series:[{
+                		name:'销量',
+                		type:'pie',
+                		data:[
+                		    {value:125,name:'2016.1'},
+                		    {value:210,name:'2016.2'},
+                		    {value:336,name:'2016.3'},
+                		    {value:223,name:'2016.4'},
+                		    {value:256,name:'2016.5'},
+                		],
+                		labelLine:{
+                			normal:{
+                				lineStyle:{
+                					color:'rgb(255,255,255,0.3)',
+                				}
+                			}
+                		}
+                	}]
+                };
+            //加载数据
+            //myChart.setOption(option);
+            myCht.setOption(opt);
+            //myChr.setOption(optn);
+            </script>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

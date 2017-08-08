@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>商品分类</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/admin/css/div.css">
+	<link rel="stylesheet" href="__PUBLIC__/edit/themes/default/default.css" />
+    
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>.layui-layer{top:50px !important;}</style>
+  </head>
+  <body>
+    <div class="container-fluid">
+        <div class="panel panel-default" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title">心愿分类 <span class="glyphicon glyphicon-plus padd-20 pointers"  data-toggle="modal" data-target="#myModal">添加</span></h3>
+            </div>
+            <div class="panel-body">
+            	<div class="form-group">
+                  <label for="recipient-name" class="control-label">请选择分类查看：</label>
+                  <select name="type" class="form-control" id="edit-ltype">
+                    <option value="1" selected="selected">梦想</option>
+                    <option value="2">兴趣</option>
+                    <option value="3">家庭</option>
+                    <option value="4">教育</option>
+                    <option value="5">文体</option>
+                    <option value="6">商业</option>
+                    <option value="7">健康</option>
+                  </select>
+                </div>
+            	<table class="table table-hover">
+	                <thead>
+	                  <tr>
+	                    <th>#</th>
+	                    <th>心愿名称</th>
+	                    <!-- <th>排序</th> -->
+	                    <th>操作</th>
+	                  </tr>
+	                </thead>
+	                <tbody>
+	                  <volist name="typedata" id="vo">  
+	                  <tr>
+	                    <th scope="row">{$i}</th>
+	                    <td>{$vo.name}</td>
+	                    <!-- <td>{$vo.sort}</td> -->
+	                    <td data-id="{$vo.id}">
+	                        <span class="glyphicon glyphicon-minus pointers padd-20 del"></span>
+	                        <span class="glyphicon glyphicon-edit pointers padd-20 edit" data-toggle="modal" data-target="#editModal"></span>
+	                    </td>
+	                  </tr>
+	                  </volist>
+	                </tbody>
+	           </table>
+                  <!-- <ul class="list-group hover" id="catelist">
+                      <volist name="list" id="vo">
+                          <li class="list-group-item" data-id="{$vo.cid}"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<span class="listname">{$vo.cname}</span><span style="margin-left:20px;"><img src="{$vo.cico|default='__PUBLIC__/mobile/images/menudefault.jpg'}" width="25px" height="25px"></span><span class="glyphicon glyphicon-minus pull-right pointers padd-20 del"></span><span class="glyphicon glyphicon-edit pull-right pointers padd-20 edit"  data-toggle="modal" data-target="#editModal"></span><span class="glyphicon glyphicon-plus pull-right pointers padd-20 add"  data-toggle="modal" data-target="#myModal"></span></li>
+                          <ul class="menu2">
+                              <volist name="vo.menu2" id="v">
+                                  <li class="list-group-item" data-id="{$v.cid}"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<span class="listname">{$v.cname}</span><span class="glyphicon glyphicon-minus pull-right pointers padd-20 del"></span><span class="glyphicon glyphicon-edit pull-right pointers padd-20 edit"  data-toggle="modal" data-target="#editModal"></span><span class="glyphicon glyphicon-plus pull-right pointers padd-20 add"  data-toggle="modal" data-target="#myModal"></span></li>
+                                  <ul class="menu3">
+                                      <volist name="v.menu3" id="vv">
+                                          <li class="list-group-item" data-id="{$vv.cid}"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;<span class="listname">{$vv.cname}</span><span class="glyphicon glyphicon-minus pull-right pointers padd-20 del"></span><span class="glyphicon glyphicon-edit pull-right pointers padd-20 edit"  data-toggle="modal" data-target="#editModal"></span><span class="glyphicon glyphicon-plus pull-right pointers padd-20 add"  data-toggle="modal" data-target="#myModal"></span></li>
+                                      </volist>
+                                  </ul>
+                              </volist>
+                          </ul>
+                      </volist>
+                  </ul> -->
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    
+    <!-- 添加分类 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">添加分类</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('Type/add')}" method="post">                
+                <div class="form-group">
+                  <label for="recipient-name" class="control-label">总分类名称：</label>
+                  <select name="type" class="form-control" id="edit-atype">
+					<option value="1">梦想</option>
+					<option value="2">兴趣</option>
+					<option value="3">家庭</option>
+					<option value="4">教育</option>
+					<option value="5">文体</option>
+					<option value="6">商业</option>
+					<option value="7">健康</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="add-pid" class="control-label">分类名称：</label>
+                  <!-- <span class="btn btn-success pid" id="add-pname">顶级分类</span> -->
+                  <input type="text" class="form-control" id="add-pid" name="typename" value="">
+                </div>
+				<!-- <div class="form-group">
+                  <label for="add-pid" class="control-label">分类图标：</label>
+                  <input type="hidden" id="add-cico" name="cico" value="">
+				  <img src="__PUBLIC__/admin/images/bico.png" class="img-thumbnail brandico" id="addcico"><small style="padding-left:20px;">ico 图标大小为36px *34px</small>
+                </div> -->
+                <!-- <div class="form-group">
+                  <label for="message-order" class="control-label">排序：</label>
+                  <input type="text" class="form-control" id="recipient-order" name="corder" value="0">
+                </div> -->
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+              <button type="button" class="btn btn-primary tijiao">添加</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- end 添加分类 -->
+    <!-- 编辑分类 -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">编辑分类</h4>
+            </div>
+            <div class="modal-body">
+                <form action="{:U('Type/edit')}" method="post">
+                <div class="form-group">
+                  <label for="edit-name" class="control-label">总分类名称：</label>
+                  <select name="type" class="form-control" id="edit-etype">
+                    <option value="1">梦想</option>
+                    <option value="2">兴趣</option>
+                    <option value="3">家庭</option>
+                    <option value="4">教育</option>
+                    <option value="5">文体</option>
+                    <option value="6">商业</option>
+                    <option value="7">健康</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="edit-pid" class="control-label">分类名称：</label>
+                  <!-- <span class="btn btn-success pid" id="edit-pname">顶级分类</span> -->
+                  <input type="text" class="form-control" id="edit-pid" name="typename" value="">
+                </div>
+				<!-- <div class="form-group">
+                  <label for="add-pid" class="control-label">分类图标：</label>
+                  <input type="hidden" id="edit-cico" name="cico" value="">
+				  <img src="__PUBLIC__/admin/images/bico.png" class="img-thumbnail brandico" id="editcico">
+                </div> -->
+                <!-- <div class="form-group">
+                  <label for="edit-order" class="control-label">排序：</label>
+                  <input type="text" class="form-control" id="edit-order" name="corder" value="">
+                </div> -->
+                    <input name="tpid" id="edit-id" type="hidden" value="">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">返回</button>
+                    <button type="submit" class="btn btn-primary tijiao">修改</button>
+              </form>
+            </div>
+            <div class="modal-footer">
+              
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- end 编辑分类 -->
+    <!-- js -->
+	<script charset="utf-8" src="__PUBLIC__/edit/kindeditor-min.js"></script>
+    <script charset="utf-8" src="__PUBLIC__/edit/lang/zh_CN.js"></script>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+	
+    <script>
+		//分类图标
+		KindEditor.ready(function(K) {
+                    var editor = K.editor({
+                            allowFileManager : true
+                    });
+                    K('#addcico').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#add-cico').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#add-cico').val(url);
+                                                    K('#addcico').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+					K('#editcico').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#edit-cico#').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#edit-cico').val(url);
+                                                    K('#editcico').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+            });
+		//end pic
+	
+        $(".tijiao").click(function(){
+               $(this).parent().siblings(".modal-body").eq(0).children('form').eq(0).submit();
+        });
+        //警告框
+        $('body').on('click','.del',function(){
+            var delid = $(this).parent().attr('data-id');
+            layer.confirm('您确定要删除该数据吗？', {
+                btn: ['是的','按错'] //按钮
+            }, function(){
+                //选择 是的
+                $.ajax({
+                    type:'post',
+                    url:'{:U("Type/del")}',
+                    data:{id:delid},
+                    dataType:'json',
+                    success:function(data) {  
+                        if(data === 1 ){  
+                            layer.msg('删除成功', {shift: 6});
+                            window.location.reload();  //刷新当前页
+                        }else{  
+                            layer.msg('删除失败'); 
+                        }  
+                    }
+                });
+            }, function(){
+                //选择 按错 不执行
+            });
+        });
+        //编辑
+        $('body').on('click','.edit',function(){
+            var id = $(this).parent().attr('data-id');
+            var edittype = $(this).parent().parent().parent().parent().parent().children('.form-group').children('select[name="type"]').find('option:selected').val();
+            $("#edit-etype").val(edittype);
+            
+            $.ajax({
+                url:'{:U("Type/edit")}',
+                data:{id:id,ajax:1},
+                type:'post',
+                dataType:'json',
+                success:function(data){
+                    if(data['status'] === 1){
+                        $('#edit-id').val(data['id']);
+                        //$('#edit-name').val(data['name']);
+						$('#edit-pid').val(data['name']);
+                        console.log(data);
+                    }
+                },
+                error:function(){
+                    
+                }
+            });
+        });
+        
+        //select框变化时候
+        $("#edit-ltype").change(function(){
+        	var sel = $(this).find('option:selected').val();
+
+        	$.ajax({
+        		url:'{:U("Type/lists")}',
+        		type:'POST',
+        		dataType:'JSON',
+        		data:{seltype:sel},
+        		success:function(data){
+        			$(".panel-body").children('table').children('tbody').remove();        			
+        			if(data.status == 1){
+        				var dbox = '';
+        				for(i=0;i<data.list.length;i++){
+        					var num = i+1;
+        					dbox += '<tbody>'
+        					dbox += '<tr>';
+        						dbox += '<th scope=\"row\">'+num+'</th>';
+        						dbox += '<td>'+data.list[i].name+'</td>';
+        						dbox += '<td data-id=\"'+data.list[i].id+'\">';
+        							dbox += '<span class=\"glyphicon glyphicon-minus pointers padd-20 del\"></span>';
+        							dbox += '<span class=\"glyphicon glyphicon-edit pointers padd-20 edit\" data-toggle=\"modal\" data-target=\"#editModal\"></span>';
+        						dbox += '</td>';
+        					dbox += '</tr>';
+        					dbox += '</tbody>'
+        				}
+        				$(".table-hover").append(dbox);
+        			}
+        		},
+        		error:function(){
+        			
+        		}
+        	});
+        });
+       
+        //添加
+        $('.add').click(function(){
+            var id = $(this).parent().attr('data-id');
+            var pname = $(this).parent().text();
+            $('#add-pname').text(pname);
+            $('#add-pid').attr('type','hidden').val(id);
+        });
+        
+        //三级菜单
+        $('.menu2 ,.menu3').hide();
+        $('.listname').css('cursor','pointer');
+        $('.listname').click(function(){
+            var v = $(this).prev().hasClass('glyphicon-plus');
+            if(v){
+                $(this).prev().removeClass('glyphicon glyphicon-plus ').addClass('glyphicon glyphicon-minus');
+                $(this).parent().next().show();
+            }else{
+                $(this).prev().removeClass('glyphicon glyphicon-minus').addClass('glyphicon glyphicon-plus');
+                $(this).parent().next().hide();
+            }
+            
+        });
+    </script>
+  </body>
+</html>

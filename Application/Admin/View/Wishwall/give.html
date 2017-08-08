@@ -1,0 +1,72 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">赠送心愿豆</div>
+				<div class="panel-body">
+					<form method="post" class="form-x" action="">
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">被赠送人：</label>
+								</div>
+								<div class="field">
+									<span>{$user.nickname}</span>
+								</div>
+						</div>
+
+							<div class="form-group">
+								<div class="label">
+									<label for="readme">已赠送数量：</label>
+								</div>
+								<div class="field">
+									<span>{$data.give_mon}心愿豆</span>
+								</div>
+							</div>
+
+						<div class="form-group">
+								<div class="label">
+									<label for="sort">赠送数量：</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="30" name="give_mon" placeholder="">
+									<span>心愿豆</span>
+								</div>
+						</div>
+
+						
+						<div class="form-group">
+							<div class="label">
+							<label for="readme"></label>
+							</div>
+							<div class="field">
+							<input type="submit" class="button bg-main" value="赠送" name="">
+							</div>
+						</div>
+							<a style="margin-left: 145px; color: red">注：确定赠送后将不可撤回取消，请仔细检查需要赠送的用户名称。</a>
+					</form>
+				</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+                var editor;
+                KindEditor.ready(function(K) {
+                        editor = K.create('textarea[name="content"]', {
+                                allowFileManager : true
+                        });
+                K('#listimg').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#listimg').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#list_img').val(url);
+                                                    K('#listimg').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+                });
+        </script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<include file="Public/header"/>
+<!-- main -->
+<div id="mainbody">
+
+    <div class="panel">
+        <div class="panel-head">心愿管理
+            <small class="padding-left">添加心愿</small>
+        </div>
+        <div class="panel-body">
+            <form method="post" class="form-x" action="" enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">选择男用户组1：</label>
+                    </div>
+                    <div class="field">
+                        <select name="uid1" style="width: 240px; height: 30px; ">
+                                <option>选择用户</option>
+                                <foreach name='userlist[1]' item='cat'>
+                                    <option value="{$cat.id}">{$cat.id} - {$cat.nickname}</option>
+                                </foreach>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">选择男用户组2：</label>
+                    </div>
+                    <div class="field">
+                        <select name="uid2" style="width: 240px; height: 30px; ">
+                            <option>选择用户</option>
+                            <foreach name='userlist[2]' item='cat'>
+                                <option value="{$cat.id}">{$cat.id} - {$cat.nickname}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">选择女用户组1：</label>
+                    </div>
+                    <div class="field">
+                        <select name="uid3" style="width: 240px; height: 30px; ">
+                            <option>选择用户</option>
+                            <foreach name='userlist[3]' item='cat'>
+                                <option value="{$cat.id}">{$cat.id} - {$cat.nickname}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">选择女用户组2：</label>
+                    </div>
+                    <div class="field">
+                        <select name="uid4" style="width: 240px; height: 30px; ">
+                            <option>选择用户</option>
+                            <foreach name='userlist[4]' item='cat'>
+                                <option value="{$cat.id}">{$cat.id} - {$cat.nickname}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                </div>
+
+            <!--    <div class="form-group">
+                    <div class="label">
+                        <label for="readme">选择所属周期：</label>
+                    </div>
+                    <div class="field">
+                        <select name="cycle"  id="cat_id" onchange="get_keyname(this.value,'cat_id_2','0');" style="width: 240px; height: 30px; ">
+                            <option>选择周期</option>
+                            <foreach name='cyclelist' item='cat'>
+                                <option value="{$cat.id}">{$cat.cycle}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                </div>-->
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">选择关键字：</label>
+                    </div>
+                    <div class="field">
+                        <select name="kid"  id="cat_id_2" style="width: 240px; height: 30px; ">
+                            <option>请选择关键字</option>
+                            <foreach name='keyword' item='vo'>
+                                <option value="{$vo.id}">{$vo.keyword}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">内容：</label>
+                    </div>
+                    <div class="field">
+                        <textarea class="input" name="content" rows="3" cols="50" ></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">点亮人数：</label>
+                    </div>
+                    <div class="field">
+                        <input class="input input-auto" size="30" name="light_count" placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme">选取背景ID号：</label>
+                    </div>
+                    <div class="field">
+                        <select name="background" style="width: 240px; height: 30px; ">
+                            <foreach name='backgroundlist' item='v'>
+                                <option value="{$v.id}">{$v.id}</option>
+                            </foreach>
+                        </select>
+                    </div>
+                </div>
+                <!--<div class="form-group">-->
+                    <!--<div class="label">-->
+                        <!--<label for="readme">发布时间：</label>-->
+                    <!--</div>-->
+                    <!--<div class="field">-->
+                        <!--<input class="input input-auto" size="30" name="posttime" placeholder="2017-04-18 12:12:12">-->
+                        <!--<a style="color:#ff0000"> *不填则默认当前时间</a>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+
+                <div class="form-group">
+                    <div class="label">
+                        <label for="readme"></label>
+                    </div>
+                    <div class="field">
+                        <input type="submit" class="button bg-main" value="提交" name="">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+
+    function get_keyname(id, next, select_id) {
+        var url = '/Admin/Wishwall/get_keyname?cycle=' + id;
+        $.ajax({
+            type: "GET",
+            url: url,
+            error: function (request) {
+                alert("服务器繁忙, 请联系管理员!");
+                return;
+            },
+            success: function (v) {
+                v = "<option value='0'>请选择关键字</option>" + v;
+                $('#' + next).empty().html(v);
+                (select_id > 0) && $('#' + next).val(select_id);//默认选中
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

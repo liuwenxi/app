@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>举报列表</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+      <style>
+          .num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+          .ml-20{margin-left:20px;}
+          .tag{font-size: 75%;border-radius: 0.25em;background: #999;padding: 0.1em 0.5em 0.2em;color: #fff;}
+          .bg-sub{background-color: #0ae;}
+          .bg-dot{background-color: #e33;}
+          th{text-align: center}
+          td{text-align: center;}
+          a{text-decoration:none;line-height: 50px}
+          b{text-decoration:none;line-height: 50px; font-weight: normal}
+          a b{color: #ac2925}
+          a:hover{color:#0000cc;text-decoration:none; line-height: 50px}
+      </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+          <div class="container-fluid">
+              <h2><span class="glyphicon glyphicon-user"></span>举报列表</h2>
+    </div>
+
+        <div class="navbar navbar-default" >
+            <form action=""  class="navbar-form form-inline" method="GET" style="float: left">
+                <div class="form-group">
+                    <select name="state" class="form-control">
+                        <option value="">不限状态</option>
+                        <option value="3">待审核</option>
+                        <option value="1">已通过</option>
+                        <option value="2">不通过</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="identity" class="form-control">
+                        <option value="">全部身份</option>
+                        <option value="1">发布者</option>
+                        <option value="2">帮助者</option>
+                        <option value="3">普通者</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select name="time" class="form-control">
+                        <option value="">不限排序方式</option>
+                        <option value="1">按举报时间正序</option>
+                        <option value="2">按举报时间倒序</option>
+                        <option value="3">按申请时间正序</option>
+                        <option value="4">按申请时间倒序</option>
+                    </select>
+                </div>
+                <button type="submit"  class="btn btn-primary"><i class="fa fa-search"></i> 筛选</button>
+            </form>
+
+            <!--<form action="" method="POST" style="float: right;margin:10px 50px 0 0;">-->
+                <!--<input type="text"  name="keyword" value="" placeholder="真实姓名" class="input-sm">-->
+                <!--<button type="submit" class="btn btn-success" style="margin-left:10px;">搜索</button>-->
+            <!--</form>-->
+
+        </div>
+
+
+        <div class="panel-body">
+            <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>编号</th>
+                    <th>投诉人</th>
+                    <th>投诉理由</th>
+                    <th>相关截图</th>
+                    <th>投诉时间</th>
+                    <th>被投诉人</th>
+                    <th>身份</th>
+                    <th>来源</th>
+                    <th class="numeric">状态</th>
+                    <th class="numeric">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <volist name="list" id="vo">
+                <tr>
+                    <td><b>{$vo.id}</b></td>
+                    <td><a>{$vo.informant}</a></td>
+                    <td style="color: #00aa88"><b><?php echo mb_strlen($vo['reason'], 'utf-8') > 9 ? mb_substr($vo['reason'], 0, 9, 'utf-8').'....' : $vo['reason'];?></b></td>
+                    <td>
+                        <volist name="vo.imgss" id="vv">
+                            <img width="50px" height="50px" style="margin-left: 10px;" src="{$vv.img}">
+                        </volist>
+                    </td>
+                    <td><b>{$vo.create_time|date="Y-m-d H:i:s",###}</b></td>
+                    <td><a>{$vo.informer}</a></td>
+                    <td><a></a></td>
+
+                    <td><a><if condition="$vo.type eq 1">心愿帮 | <b><?php echo mb_strlen($vo['xid'], 'utf-8') > 9 ? mb_substr($vo['xid'], 0, 9, 'utf-8').'....' : $vo['xid'];?></b>
+                        <elseif condition="$vo.type eq 2" />心愿墙 | <b><?php echo mb_strlen($vo['xid'], 'utf-8') > 9 ? mb_substr($vo['xid'], 0, 9, 'utf-8').'....' : $vo['xid'];?></b>
+                            <elseif condition="$vo.type eq 3" />心愿汇 | <b><?php echo mb_strlen($vo['xid'], 'utf-8') > 9 ? mb_substr($vo['xid'], 0, 9, 'utf-8').'....' : $vo['xid'];?></b>
+                            <elseif condition="$vo.type eq 4" />个人中心
+                            <else/>其他
+                            </if>
+                        </a></td>
+                    <td class="numeric">
+                       <b>
+                        <if condition="$vo.state eq 0">待审核
+                            <elseif condition="$vo.state eq 1"/>已通过
+                            <elseif condition="$vo.state eq 2"/>不通过
+                        </if>
+                       </b>
+                    </td>
+                    <td class="numeric" data-id="{$vo.id}">
+                        <a href="{:U('Complain/user_details?id='.$vo['id'])}" class="bg-sub tag margin-right">查看</a>
+                        <!--<if condition="$vo['state'] eq 1">-->
+                            <!--<a class="tag margin-right float-right">通过</a>-->
+                            <!--<else/>-->
+                            <!--<a href="javascript:;" class="bg-dot adopt tag margin-right" style="background: #00aa00">通过</a>-->
+                        <!--</if>-->
+                        <!--<if condition="$vo['state'] eq 2">-->
+                            <!--<a class="tag margin-right float-right">驳回</a>-->
+                            <!--<else/>-->
+                            <!--<a href="javascript:;" class="bg-dot reject tag margin-right">驳回</a>-->
+                        <!--</if>-->
+                        <if condition="$vo['state'] eq 0">
+                            <a href="javascript:;" class="bg-dot adopt tag margin-right" style="background: #00aa00">通过</a>
+                            <a href="javascript:;" class="bg-dot reject tag margin-right">驳回</a>
+                        </if>
+
+                </tr>
+                 </volist>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer">{$page}</div>
+    </div>
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/Admin/layer/layer.js"></script>
+  <script>
+      $(".adopt").click(function(){
+          var adopt = $(this).parent().attr('data-id');
+          layer.confirm('你正在通过该用户的投诉审核，是否确定？', {
+              btn: ['是的','按错'] //按钮
+          }, function(){
+              $.ajax({
+                  type:'post',
+                  url:'{:U("Complain/report_audit")}',
+                  data:{id:adopt,class:1,type:1},
+                  dataType:'json',
+                  success:function(data) {
+                      if(data === 1 ){
+                          layer.msg('投诉申请通过', {shift: 6});
+                          setTimeout(function(){
+                              window.location.reload();  //刷新当前页
+                          },2000);
+
+                      }else{
+                          layer.msg('操作失败，重新操作');
+                      }
+                  }
+              });
+          }, function(){
+              //选择 按错 不执行
+          });
+      });
+      $(".reject").click(function(){
+          var reject = $(this).parent().attr('data-id');
+          layer.confirm('你正在驳回该用户的投诉审核，是否确定？', {
+              btn: ['是的','按错'] //按钮
+          }, function(){
+              $.ajax({
+                  type:'post',
+                  url:'{:U("Complain/report_audit")}',
+                  data:{id:reject,class:1,type:2},
+                  dataType:'json',
+                  success:function(data) {
+                      if(data === 1 ){
+                          layer.msg('审核驳回成功');
+                          setTimeout(function(){
+                              window.location.reload();  //刷新当前页
+                          },2000);
+
+                      }else{
+                          layer.msg('操作失败，重新操作');
+                      }
+                  }
+              });
+          }, function(){
+              //选择 按错 不执行
+          });
+      });
+  </script>
+
+  </body>
+</html>

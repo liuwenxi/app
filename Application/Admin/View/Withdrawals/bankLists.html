@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>银行卡列表</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/admin/css/div.css">
+    <!--<script src="__PUBLIC__/js/pintuer.js"></script>-->
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+	.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+	.ml-20{margin-left:20px;}
+	.tag{font-size: 75%;border-radius: 0.25em;background: #999;padding: 0.1em 0.5em 0.2em;color: #fff;}
+	.bg-sub{background-color: #0ae;}
+	.bg-dot{background-color: #e33;}
+	a{text-decoration:none;}
+	a:hover{text-decoration:none;}
+	</style>
+  </head>
+  <body>
+        <div class="container-fluid">
+            <div class="container-fluid">
+              <h2>银行卡列表</h2>
+        </div>
+        <div class="container-fluid">
+            <span class="glyphicon glyphicon-list btn btn-default" style="float:left;">&nbsp;银行卡列表</span>
+            <span class="glyphicon glyphicon-list btn btn-default" style="float:right;">
+                <a href="{:U('Withdrawals/addBank')}">添加银行</a>
+            </span>
+        </div>
+
+        <div class="panel panel-default" style="margin-top:20px;">
+            <div class="panel-heading">
+                <h3 class="panel-title"></h3>
+            </div>
+            <div class="panel-body">
+              <table class="table table-bordered table-striped table-condensed">
+                 <thead>
+                    <tr>
+                    	<th>ID</th>
+                        <th>银行名称</th>
+                        <th>银行图片</th>
+                        <th>添加时间</th>
+                        <th class="numeric">操作</th>
+                    </tr>
+                  </thead>
+                    <tbody>
+                     <volist name="data" id="vo">
+                        <tr>
+                            <td>{$vo.id}</td>
+	                        <td>{$vo.bankname}</td>
+                            <td><img src="{$vo.img}" style="width: 50px;height: 50px" ></td>
+	                        <td>{$vo.created_at|date="Y-m-d H:i:s",###}</td>
+	                       <td data-id="{$vo.id}">
+                               <a href="{:U('Withdrawals/editBank?id='.$vo['id'])}" class="bg-sub tag margin-right float-right">编辑</a>
+							    <a href="javascript:;"  id="del" onclick="reject();" class="bg-dot del tag margin-right" style="background:red">删除</a>
+							</td>
+                        </tr>
+                     </volist>
+                    </tbody>
+                </table>
+            </div>
+			<div class="panel-footer">
+				{$page}
+			</div>
+        </div>
+    </div>
+    <!-- js -->
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	<script src="__PUBLIC__/Admin/layer/layer.js"></script>
+	<script>
+	 $(".del").click(function(){
+                var delid = $(this).parent().attr('data-id');
+                layer.confirm('是否删除', {
+                    btn: ['是的','按错'] //按钮
+                }, function(){
+                    //选择 是的
+					status: 1;
+					id : {$vo['id']};
+					var data = new Object();
+					data.j_status = status;
+                    $.ajax({
+                        type:'post',
+                        url:'{:U("Withdrawals/deletebank")}',
+                        data:{id:delid},
+                        dataType:'json',
+                        success:function(data) {
+                            if(data === 1 ){
+                                layer.msg('删除成功');
+                                window.location.href = '{:U("Withdrawals/bankLists")}';  //跳转页面
+                            }else{
+                                layer.msg('删除失败');
+                            }
+                        }
+                    });
+                }, function(){
+                    //选择 按错 不执行
+                });
+            });
+	</script>
+  </body>
+</html>

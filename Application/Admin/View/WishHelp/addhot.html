@@ -1,0 +1,98 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">添加热点</div>
+				<div class="panel-body">
+					<form method="post" class="form-x" action="" enctype="multipart/form-data">
+
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">热点名称：</label>
+							</div>
+							<div class="field">
+								<input class="input input-auto" size="30" name="name" placeholder="请填写热点名称">
+							</div>
+						</div>
+
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">热点介绍：</label>
+								</div>
+							<div class="field">
+									<textarea class="input" name="introduce" rows="3" cols="50"></textarea>
+							</div>
+						</div>
+
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">背景图：</label>
+								</div>
+								<div class="field">
+									<div class="media">
+										<img src="__PUBLIC__/admin/images/defaultimg.png" id="listimg" width="100px" height="60px" class="radius" alt="...">
+									</div>
+									<input type="file" size="40" id="list_img" name="img" value="">
+								</div>
+						</div>
+
+						<div class="form-group">
+								<div class="label">
+									<label for="sequence">状态：</label>
+								</div>
+								<div class="field">
+									<div id="status" class="button-group radio">
+											<input name="state" value="0" checked="checked" type="radio">
+											显示
+											<input name="state" value="1" type="radio"><span class="icon icon-times"></span>
+											隐藏
+									</div>
+								</div>
+						</div>
+
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">排序：</label>
+							</div>
+							<div class="field">
+								<input class="input input-auto" size="30" name="sort" placeholder="填写数字">
+								<span> 数值越大，越靠前</span>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="label">
+							<label for="readme"></label>
+							</div>
+							<div class="field">
+								<input class="button" onclick="history.go(-1)" value="返回" type="button">
+							    <input type="submit" class="button bg-main" value="提交" name="">
+							</div>
+						</div>
+					</form>
+				</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+                var editor;
+                KindEditor.ready(function(K) {
+                        editor = K.create('textarea[name="content"]', {
+                                allowFileManager : true
+                        });
+                K('#listimg').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#listimg').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#list_img').val(url);
+                                                    K('#listimg').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+                });
+        </script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+<include file="Public/header" />
+<!-- main -->
+<div id="mainbody">
+
+	<div class="panel">
+		<div class="panel-head">新增周期</div>
+		<div class="panel-body">
+			<form method="post" class="form-x" action="" enctype="multipart/form-data">
+				<div class="form-group">
+					<div class="label">
+						<label for="readme">已有周期：</label>
+					</div>
+					<div class="field">
+						<select name="" style="width: 240px; height: 30px; ">
+							<option value="0">查看已有周期</option>
+							<foreach name='cycle' item='v'>
+								<option value="">{$v.cycle}</option>
+							</foreach>
+						</select>
+						<a style="color:#ff0000"> *此处仅供你查看已有周期数，点击不做记录</a>
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<div class="label">
+						<label for="readme">周期名称：</label>
+					</div>
+					<div class="field">
+						<input class="input input-auto" size="30" name="cycle" placeholder="请填写周期名称" >
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="label">
+						<label for="readme">开始时间：</label>
+					</div>
+					<div class="field">
+						<input class="input input-auto" size="60" name="start_time" placeholder="格式 ：2017-03-02">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<div class="label">
+						<label for="readme">结束时间：</label>
+					</div>
+					<div class="field">
+						<input class="input input-auto" size="60" name="end_time" placeholder="格式 ：2017-03-09">
+					</div>
+				</div>
+
+
+				<div class="form-group">
+					<div class="label">
+						<label for="readme">关键字：</label>
+					</div>
+					<div class="field">
+						<fieldset style="border:none;margin-top: 5px;">
+							<foreach name="data" item="vo">
+								<label style="margin-left: 10px;"><input name="keyword[]" value="{$vo.id}"  type="checkbox">{$vo.keyword}</label>
+							</foreach>
+						</fieldset>
+					</div>
+				</div>
+
+
+
+				<div class="form-group">
+					<div class="label">
+						<label for="readme"></label>
+					</div>
+					<div class="field">
+						<input type="submit" class="button bg-main" value="提交" name="">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+    var editor;
+    KindEditor.ready(function(K) {
+        editor = K.create('textarea[name="content"]', {
+            allowFileManager : true
+        });
+        K('#listimg').click(function() {
+            editor.loadPlugin('image', function() {
+                editor.plugin.imageDialog({
+                    imageUrl : K('#listimg').val(),
+                    clickFn : function(url, title, width, height, border, align) {
+                        K('#list_img').val(url);
+                        K('#listimg').attr("src",url);
+                        editor.hideDialog();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

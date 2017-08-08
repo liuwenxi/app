@@ -1,0 +1,96 @@
+<include file="Public/header"/>
+<!-- main -->
+<div class="panel-body" style="margin-top:20px;">
+    <table class="table">
+        <tr>
+            <th>ID</th>
+            <th>内容</th>
+            <th>发布者</th>
+            <th>点亮数</th>
+            <th>心愿关键字</th>
+            <th>发布时间</th>
+            <th>赠送心愿豆数量</th>
+            <th style="text-align:right;padding-right:60px;">操作</th>
+        </tr>
+        <volist name="data" id="vo">
+            <tr>
+                <td>{$vo.id}</td>
+                <td><?php echo mb_strlen($vo['content'], 'utf-8') > 9 ? mb_substr($vo['content'], 0, 9,
+                    'utf-8').'....' : $vo['content'];?>
+                </td>
+                <td>{$vo.nickname}</td>
+                <td>{$vo.light_count}</td>
+                <td>{$vo.keyword}</td>
+                <td>{$vo.cycle}</td>
+                <td>{$vo.posttime|date="Y-m-d H:i:s",###}</td>
+                <td>{$vo.give_mon}</td>
+                <td data-id="{$vo.id}">
+                    <a href="{:U('Wishwall/delwish?id='.$vo['id'])}"
+                       onclick="if(confirm('确定删除?')==false)return false;"
+                       class="bg-dot tag margin-right float-right">删除</a>
+                    <a href="{:U('Wishwall/details?id='.$vo['id'])}"
+                       class="bg-sub tag margin-right float-right">修改</a>
+                    <if condition="$vo['time'] gt $vo['end_time']">
+                        <a class="bg-sub tag margin-right float-right"
+                                        href="{:U('Wishwall/give?id='.$vo['id'])}"
+                                        class="tag margin-right float-right">赠送心愿豆</a>
+                        <else/>
+                        <a class="tag margin-right float-right">赠送心愿豆</a>
+                    </if>
+                    <a href="{:U('Wishwall/comment?id='.$vo['id'])}"
+                       class="bg-sub tag margin-right float-right">评论</a>
+                    <a data-id="{$vo.id}"
+                       class="bg-sub tag margin-right float-right top">置顶</a>
+                </td>
+            </tr>
+        </volist>
+    </table>
+
+</div>
+<div class="col-sm text-center">
+    {$page}
+</div>
+</div>
+</div>
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script>
+    // 点击分页触发的事件
+    $(".pagination a").click(function () {
+        cur_page = $(this).data('p');
+        ajax_get_table('search-form2', cur_page);
+    });
+
+</script>
+
+<!-- js -->
+<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/Admin/layer/layer.js"></script>
+<script>
+    $(".top").click(function(){
+        var id = $(this).parent().attr('data-id');
+            $.ajax({
+                type:'post',
+                url:'{:U("Wishwall/wishTop")}',
+                data:{id:id, is_top:1},
+                dataType:'json',
+                success:function(data) {
+                    location.reload()
+                }
+            });
+    });
+
+    $(".notop").click(function(){
+        var id = $(this).parent().attr('data-id');
+        $.ajax({
+            type:'post',
+            url:'{:U("Wishwall/wishTop")}',
+            data:{id:id, is_top:0},
+            dataType:'json',
+            success:function(data) {
+                location.reload()
+            }
+        });
+    });
+
+</script>

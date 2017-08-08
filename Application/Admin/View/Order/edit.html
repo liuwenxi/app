@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>订单编辑</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="__PUBLIC__/edit/themes/default/default.css" />
+	<link rel="stylesheet" href="__PUBLIC__/css/pintuer.css" />
+	<script src="__PUBLIC__/js/jquery.js"></script>
+	<script src="__PUBLIC__/js/pintuer.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+		.form-group {
+			border-bottom: 1px solid #eff2f7;
+			padding-bottom: 15px;
+			margin-bottom: 15px;
+		}
+		.margin-bottom-mini{margin-bottom:10px;}
+		#txmsg{
+			width:500px;
+			border:1px solid #ccc;
+			border-radius:3px;
+		}
+	</style>
+  </head>
+  <body>
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+		<h3 class="panel-title"><span><span class="glyphicon glyphicon-plus"></span>&nbsp;订单编辑</span></h3>
+	  </div>
+	  <div class="panel-body">
+		<form action="" method="post" class="form-horizontal">
+			<div class="form-group">
+				<label for="title" class="col-sm-2 col-lg-1 col-md-2 control-label">标题：</label>
+				<div class="col-sm-10 col-lg-11 col-md-10">
+				  <p class="form-control-static"><span style="color:blue;"><if condition="$otype eq '1'">充值<else />提现</if></span></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="semtitle" class="col-sm-2 col-lg-1 col-md-2 control-label">订单编号：</label>
+				<div class="col-sm-10 col-lg-11 col-md-10">
+				  <p class="form-control-static">{$data.out_trade_no}</p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="gcode" class="col-sm-2 col-lg-1 col-md-2 control-label">下单用户：</label>
+				<div class="col-sm-10 col-lg-11 col-md-6">
+                     <p class="form-control-static">
+                     	<span>{$list.order_user}</span>
+                     	<if condition="$otype eq '1'">
+                     		<span style="margin-left:20px;font-weight: bold;">下单时间：</span>
+                     		<span>{$data.posttime|date="Y-m-d h:i:s",###}</span>
+                     	<else />
+                     	</if>
+                     </p>
+				</div>
+			</div>
+            <div class="form-group">
+				<label for="gcode" class="col-sm-2 col-lg-1 col-md-2 control-label">订单金额：</label>
+				<div class="col-sm-10 col-lg-11 col-md-6">
+                     <p class="form-control-static">
+                     	<if condition="$otype eq '1'">
+                     		<span>{$list.pay_price} 元</span>
+	                     	<span style="margin-left:20px;font-weight: bold;">支付时间：</span>
+	                     	<span>{$list.paytime|date="Y-m-d h:i:s",###}</span>
+                     	<else />
+                     		<span>{$list.tx_price} 元</span>
+                     		<span style="margin-left:20px;font-weight: bold;">申请时间：</span>
+	                     	<span>{$list.posttime|date="Y-m-d h:i:s",###}</span>
+                     	</if>
+                     </p>
+				</div>
+			</div>
+            
+            <switch name="otype">
+				<case value="1">
+		            <div class="form-group">
+						<label for="gcode" class="col-sm-2 col-lg-1 col-md-2 control-label">订单状态：</label>
+						<div class="col-sm-2 col-lg-2 col-md-2">
+		                     <p class="form-control-static">
+		                     	<if condition="$list.is_pay eq '0'"><span style="color:red">未支付</span><else /><span>已支付</span></if>
+		                     </p>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="gcode" class="col-sm-2 col-lg-1 col-md-2 control-label">付款类型：</label>
+						<div class="col-sm-2 col-lg-2 col-md-2">
+		                     <p class="form-control-static">
+		                     	<if condition="$list.pay_type eq '1'"><span>微信支付</span><else /><span>支付宝支付</span></if>
+		                     </p>
+						</div>
+					</div>
+				</case>
+				<case value="2">
+					<div class="form-group">
+						<label for="gcode" class="col-sm-2 col-lg-1 col-md-2 control-label">审核状态：</label>
+						<div class="col-sm-10 col-lg-11 col-md-6">
+			                <div class="button-group radio">
+			                	<if condition="$list.is_check eq '0'">
+								<label class="button active">
+									<input name="is_check" value="0" checked="checked" type="radio"><span class="icon icon-times"></span>
+									未审核
+								</label>
+								<label class="button">
+									<input name="is_check" value="1" type="radio"><span class="icon icon-check text-green"></span>
+									审核
+								</label>
+								<else />
+								<label class="button">
+									<input name="is_check" value="0" type="radio"><span class="icon icon-times"></span>
+									未审核
+								</label>
+								<label class="button active">
+									<input name="is_check" value="1" checked="checked" type="radio"><span class="icon icon-check text-green"></span>
+									审核
+								</label>
+								</if>
+							</div>
+								
+						</div>
+							
+					</div>
+					<if condition="$gid eq '1'">
+					<div class="form-group">
+						<label for="gcode" class="col-sm-2 col-lg-1 col-md-2 control-label">是否通过：</label>
+						<div class="col-sm-10 col-lg-11 col-md-6">
+			                <div class="button-group radio">
+			                	<if condition="$list.is_do eq '0'">
+								<label class="button active">
+									<input name="is_do" value="0" checked="checked" type="radio"><span class="icon icon-times"></span>
+									不通过
+								</label>
+								<label class="button">
+									<input name="is_do" value="1" type="radio"><span class="icon icon-check text-green"></span>
+									通过
+								</label>
+								<else />
+								<label class="button">
+									<input name="is_do" value="0" type="radio"><span class="icon icon-times"></span>
+									不通过
+								</label>
+								<label class="button active">
+									<input name="is_do" value="1" checked="checked" type="radio"><span class="icon icon-check text-green"></span>
+									通过
+								</label>
+								</if>
+							</div>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="gcode" class="col-sm-2 col-lg-1 col-md-2 control-label">不通过原因：</label>
+						<div class="col-sm-10 col-lg-11 col-md-6">
+			                <p class="form-control-static">
+			                	<textarea cols="20" rows="3" id="txmsg" name="tx_msg" placeholder="不通过原因，可不填"></textarea>
+			                	<span style="color:#ccc;font-size:12px;">不通过原因，可不填(100字以内)</span>
+		                     </p>
+						</div>
+					</div>
+					<else />
+					</if>
+				</case>
+				<default />
+			</switch>
+			
+			
+            <div class="form-group">
+				<label for="gcode" class="col-sm-2 col-lg-1 col-md-2 control-label">提现详情：</label>
+				<div class="col-sm-10 col-lg-11 col-md-6">
+	                <table class="table table-condensed">
+	                    <tr>
+	                        <th>提现人姓名</th>
+	                        <th>银行绑定手机号</th>
+	                        <th>银行名称</th>
+	                        <th>银行卡号</th>
+	                    </tr>
+	                    <php>//unserialize();</php>
+	                    <volist name="data['goods']" id="vv">
+	                    <tr>
+	                        <td><a href="{:U('mobile/index/detail?skuid='.$vv['goods_sku_id'])}" target="_blank"><img src="{$vv.image}" width="50px">充值</a></td>
+	                        <td>{$vv.pay_price}</td>
+	                        <td>{$vv.num}</td>
+	                        <td>{$vv.num}</td>
+	                    </tr>
+	                    </volist>
+	                </table>
+				</div>
+			</div>
+			
+			<if condition="$otype eq '2'">
+			<div class="form-group">
+				<input type="hidden" name="id" value="{$data.id}">
+				<label for="gstatus" class="col-sm-2 col-lg-1 col-md-2 control-label"></label>
+				<div class="col-sm-10 col-lg-11 col-md-3">
+                      <input type="submit" class="btn btn-success" value="保存修改">
+				</div>
+			</div>
+			<else />
+			</if>
+		</form>
+	  </div>
+	</div>
+
+	<script src="__PUBLIC__/admin/js/jquery-1.10.2.min.js"></script>
+	<script src="__PUBLIC__/layer/layer.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script>
+	
+	//提交表单
+	$('.tj').click(function(){
+		if(validata()){
+			$('form').submit();
+		}
+	});
+	
+	//验证数值
+	function validata(){
+		if($('#title').val().length==0){
+			alert('标题不能为空');
+			$('#title').focus();
+			return false;
+		}
+		if($('#gcode').val().length == 0){
+			alert('编码不能为空');
+			$('#gcode').focus();
+			return false;
+		}
+		return true;
+	}
+    </script> 
+  </body>
+</html>

@@ -1,0 +1,65 @@
+<include file="Public:addheader"/>
+<style>
+
+</style>
+    <div class="main-wrap">
+
+        <div class="crumb-wrap">
+            <div class="crumb-list"><i class="icon-font"></i><a href="/jscss/admin/design/">首页</a><span class="crumb-step">&gt;</span><a class="crumb-name" href="/jscss/admin/design/">广告图管理</a><span class="crumb-step">&gt;</span><span>广告图添加</span></div>
+        </div>
+        <div class="result-wrap">
+            <div class="result-content">
+                <form action="{:U('Manager/add')}" method="post" id="myform" name="myform" enctype="multipart/form-data">
+                    <table class="insert-tab" width="100%">
+                        <tbody>
+	                        
+	                        <tr>
+	                        	<th><i class="require-red">*</i>管理员名字：</th>
+                                <td>
+                                    <input class="common-text required" id="uname" name="uname" size="20" value="" type="text">
+                                </td>
+	                        </tr>
+	                        <input type="hidden" name="url" value="{:U('Video/lists')}">
+                            <tr>
+                                <th><i class="require-red">*</i>管理员密码：</th>
+                                <td>
+                                    <input class="common-text required" id="pwd" name="pwd" size="50" value="" type="text">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><i class="require-red">*</i>管理员权限：</th>
+                                <td>
+                                	<volist name="rule" id="vv">
+                                		<label><input style="margin-left:10px;" type="checkbox" name="ruleid[]" value="{$vv.id}">{$vv.rname}</label>
+                                	</volist>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td>
+                                    <input  class="btn btn-primary btn6 mr10" value="提交" type="submit">
+                                    <input class="btn btn6" onclick="history.go(-1)" value="返回" type="button">
+                                </td>
+                            </tr>
+                        </tbody></table>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    <!--/main-->
+</div>
+</body>
+</html>
+<script type="text/javascript" src="__Admin_JS__ajaxupload.js"></script>
+<script type="text/javascript">
+    UE.getEditor('editor');
+
+    function getContent() {
+        var arr = [];
+        arr.push("使用editor.getContent()方法可以获得编辑器的内容");
+        arr.push("内容为：");
+        arr.push(UE.getEditor('editor').getContent());
+        //alert(arr.join("\n"));
+    }
+</script>

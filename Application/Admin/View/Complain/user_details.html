@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>投诉详情</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .form-group { padding-bottom: 15px;margin-bottom: 15px;}
+        .form-horizontal .control-label{padding:0 0 0 0}
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="panel panel-default" style="margin-top:20px;">
+        <div class="panel-heading"><span class="glyphicon glyphicon-pencil"></span> 投诉详情</div>
+        <div class="panel-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="phone" class="col-sm-2 col-lg-1 col-md-2 control-label">投诉人：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        {$data['informant']}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">来源：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        <if condition="$data['data']['type'] eq 1">心愿帮 | {$data['data']['xid']}
+                            <elseif condition="$data['data']['type'] eq 2" /><a>心愿墙</a> | <b>{$data['data']['xid']}</b>
+                            <elseif condition="$data['data']['type'] eq 3" /><a>心愿汇</a> | <b>{$data['data']['xid']}</b>
+                            <elseif condition="$data['data']['type'] eq 4" /><a>个人中心</a>
+                            <else/>其他
+                        </if>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">投诉理由：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        {$data['data']['reason']}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">投诉截图：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        <volist name="data.imgss" id="vv">
+                            <img style="margin-left: 10px;max-width:500px; max-height:200px" src="{$vv.img}">
+                        </volist>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">被投诉人：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        {$data['$informer']}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">投诉时间：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        {$data['data']['create_time']|date="Y-m-d H:i:s",###}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">状态：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        <if condition="$data['data']['state'] eq 0">待审核
+                        <elseif  condition="$data['data']['state'] eq 1"/>审核通过
+                        <elseif  condition="$data['data']['state'] eq 2"/>审核不通过
+                        </if>
+                    </div>
+                </div>
+
+                <if condition="$data['data']['state'] eq 0">
+                    <div class="form-group" data-id="{$data['data']['id']}">
+                        <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">审核：</label>
+                        <a href="javascript:;" class="adopt" style="font-size:20px;color: #00aa00">通过</a>
+                        <a href="javascript:;" class="reject" style="font-size:20px;color: #ac2925;margin-left: 10px;">驳回</a>
+                    </div>
+                    <else/>
+                </if>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/Admin/layer/layer.js"></script>
+<script>
+    $(".adopt").click(function(){
+        var adopt = $(this).parent().attr('data-id');
+        layer.confirm('你正在通过该用户的投诉审核，是否确定？', {
+            btn: ['是的','按错'] //按钮
+        }, function(){
+            $.ajax({
+                type:'post',
+                url:'{:U("Complain/report_audit")}',
+                data:{id:adopt,class:1,type:1},
+                dataType:'json',
+                success:function(data) {
+                    if(data === 1 ){
+                        layer.msg('投诉申请通过', {shift: 6});
+                        setTimeout(function(){
+                            window.location.reload();  //刷新当前页
+                        },2000);
+
+                    }else{
+                        layer.msg('操作失败，重新操作');
+                    }
+                }
+            });
+        }, function(){
+            //选择 按错 不执行
+        });
+    });
+    $(".reject").click(function(){
+        var reject = $(this).parent().attr('data-id');
+        layer.confirm('你正在驳回该用户的投诉审核，是否确定？', {
+            btn: ['是的','按错'] //按钮
+        }, function(){
+            $.ajax({
+                type:'post',
+                url:'{:U("Complain/report_audit")}',
+                data:{id:reject,class:1,type:2},
+                dataType:'json',
+                success:function(data) {
+                    if(data === 1 ){
+                        layer.msg('审核驳回成功');
+                        setTimeout(function(){
+                            window.location.reload();  //刷新当前页
+                        },2000);
+
+                    }else{
+                        layer.msg('操作失败，重新操作');
+                    }
+                }
+            });
+        }, function(){
+            //选择 按错 不执行
+        });
+    });
+</script>
+
+</body>
+</html>

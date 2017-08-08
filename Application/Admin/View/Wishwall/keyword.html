@@ -1,0 +1,84 @@
+<include file="Public/header"/>
+<!-- main -->
+<div class="container-fluid">
+    <h2>活动管理</h2>
+</div>
+<div id="mainbody">
+
+    <div class="panel">
+        <div class="panel-head" style="height: 73px;">
+            <small class="padding-left"><a href="{:U('Wishwall/addkeyword?type=0')}" class="button bg-main icon-pencil-square" style="float:right;"> 新增关键字</a></small>
+        </div>
+
+        <div class="panel-body" style="margin-top:20px;">
+            <table class="table">
+                <tr>
+                    <th>ID</th>
+                    <th>心愿关键字</th>
+                    <th>背景大图</th>
+                    <th>背景中图</th>
+                    <th>背景小图</th>
+                    <th>背景颜色</th>
+                    <th>排序</th>
+                    <th style="text-align:right;padding-right:60px;">操作</th>
+                </tr>
+                <volist name="data" id="vo">
+                    <tr>
+                        <td>{$vo.id}</td>
+                        <td>{$vo.keyword}</td>
+                        <td><img src="{$vo.big_img}" alt="" style="width: 50px;height: 50px" class="img-rounded brandico-mini"></td>
+                        <td><img src="{$vo.centre_img}" alt="" style="width: 50px;height: 50px" class="img-rounded brandico-mini"></td>
+                        <td><img src="{$vo.small_img}" alt="" style="width: 50px;height: 50px" class="img-rounded brandico-mini"></td>
+                        <td>{$vo.bg_color}</td>
+                        <td>{$vo.sort}</td>
+                        <td>
+                            <a href="{:U('Wishwall/delkey?id='.$vo['id'])}" onclick="if (confirm('确定删除?') == false) return false;" class="bg-dot tag margin-right float-right">删除</a>
+                            <a href="{:U('Wishwall/editkey?id='.$vo['id'])}" class="bg-sub tag margin-right float-right">编辑</a>
+                            <if condition="$vo.reveal eq 0">
+                                <a class="bg-dot tag margin-right float-right hid"    data-id="{$vo.id}" value="1">隐藏</a>
+                                <else />
+                                <a class="bg-sub tag margin-right float-right hid"    data-id="{$vo.id}" value="0">显示</a>
+                            </if>
+                        </td>
+                    </tr>
+
+                </volist>
+            </table>
+
+        </div>
+        <div class="panel-foot" id="page">
+            {$page}
+        </div>
+    </div>
+</div>
+<link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<link rel="stylesheet" href="__PUBLIC__/admin/css/div.css">
+<link href="__PUBLIC__/admin/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+<script src="__PUBLIC__/admin/js/daterangepicker/moment.min.js"></script>
+<script src="__PUBLIC__/admin/js/daterangepicker/daterangepicker.js"></script>
+<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<script>
+
+ // ajax修改显示或隐藏
+ $(".hid").click(function(){
+     id=$(this).attr('data-id');
+     type=$(this).attr('value');
+     $.ajax({
+         type:'GET',
+         data:{id:id,type:type},
+         url:"/Admin/Wishwall/activity",
+         success:function(data){
+             if(data == "1"){
+                 alert('修改成功');
+                 location.reload()
+             }else{
+                 alert('修改失败')}
+         }
+
+     })
+ })
+</script>
+
+
+</body>
+</html>

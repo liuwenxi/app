@@ -41,15 +41,15 @@ class AboutsController extends BaseController
     public function queryUserGuide()
     {
         $qa = M('Qa');
-        $type = I('post.module');
-        if(!$type){
+        $id = I('get.id');
+        if(!$id){
             $results['status'] = 1;
             $results['errcode'] = 1;
             $results['msg'] = '参数不全';
             dexit($results);
             exit;
         }
-        $data = $qa->where(array('type'=>$type))->select();
+        $data = $qa->where(array('class_id'=>$id))->order('sort desc')->select();
         $results['status'] = 0;
         $results['data'] = $data;
         dexit($results);
@@ -59,6 +59,7 @@ class AboutsController extends BaseController
     {
         $setting = M('Setting');
         $data = $setting->field('about_des')->find();
+        $data['about_des']=htmlspecialchars_decode ($data['about_des']);
         $results['status'] = 0;
         $results['data'] = $data;
         dexit($results);
@@ -68,6 +69,7 @@ class AboutsController extends BaseController
     public function queryTerms(){
         $setting = M('Setting');
         $data = $setting->field('tk_des')->find();
+        $data['tk_des']=htmlspecialchars_decode ($data['tk_des']);
         $results['status'] = 0;
         $results['data'] = $data;
         dexit($results);
@@ -82,6 +84,15 @@ class AboutsController extends BaseController
         $coop_qq = array('name'=>'媒体合作','content'=>$datas['coop_qq']);
         $tg_email = array('name'=>'渠道推广','content'=>$datas['tg_email']);
         $data = array($QQ,$email,$coop_email,$coop_qq,$tg_email);
+        $results['status'] = 0;
+        $results['data'] = $data;
+        dexit($results);
+    }
+
+    public function queryQaclass()
+    {
+        $QA = M('qa_class');
+        $data=$QA->field('id,class_name as className')->where(array('is_show'=>1))->order('sort desc')->select();
         $results['status'] = 0;
         $results['data'] = $data;
         dexit($results);

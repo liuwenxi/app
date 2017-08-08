@@ -75,44 +75,43 @@ class PublicController extends BaseController {
             $userInfo = $User->field($field,true)->where(array('phone' => $phone))->find();
 
             if ($userInfo){ //已存在用户信息
-//            $this->userLoginLog($userInfo['id'], 0, '', 2); //用户登录日志
+
+                $this->userLoginLog($userInfo['id'], 0, '', 1); //用户登录日志
 
                 //用户信息
                 $user=array();
-                $user['uid'] =(int)$userInfo['id'];
+                $user['uid'] =$userInfo['id'];
                 $user['nickName'] =$userInfo['nickname'];
                 $user['avatar'] =$userInfo['avatar'];
-                $user['gender'] =(int)$userInfo['gender'];
-                $user['credit'] =(int)$userInfo['credit'];
-                $user['totalMon'] =(int)$userInfo['totalmon'];
+                $user['hasModifyGender'] =!$userInfo['modify_gender']?false:true;
+                $user['totalMon'] =$userInfo['totalmon'];
                 $user['regTime'] =(int)$userInfo['reg_time'];
                 $user['isAuth'] =!$userInfo['is_auth']?false:true;
                 $user['phone'] =$userInfo['phone']?$userInfo['phone']:null;
                 $user['signature'] =$userInfo['signature'];
                 $user['payPwd'] = !$userInfo['pay_pwd']?false:true;
                 $user['wechatOpenid'] = !$userInfo['wechat_openid']?false:$userInfo['wechat_openid'];
+                $user['wechatNickname'] = !$userInfo['wechat_nickname']?null:$userInfo['wechat_nickname'];
                 $user['qqOpenid'] = !$userInfo['qq_openid']?false:$userInfo['qq_openid'];
                 $user['weiboOpenid'] = !$userInfo['weibo_openid']?false:$userInfo['weibo_openid'];
                 $user['bindFlag'] = !$userInfo['bind_flag']?false:true;
                 $user['isRegister'] = true;
 
                 //返回用户信息
-                $results['status'] = 0;
-                $results['user'] = $user;
-                $results['msg'] = '登录成功';
-                dexit($results);
+                Json(0,'user',$user,'登录成功');
                 exit;
             }else { //无用户信息
 
                 $data=array();
+                $totalmon=10;
                 $data['phone'] =$phone;
                 $data['nickname'] =mb_substr($phone,0,3)."****".mb_substr($phone,-4);
                 $data['avatar'] =get_url("/Uploads/userAvatar/avatar.png");
-                $data['totalmon'] =10;
+                $data['totalmon'] =$totalmon;
                 $data['reg_time'] =$time;
                 $data['status'] =1;
                 $data['is_auth'] =0;
-                $data['bind_flag'] =0;
+                $data['bind_flag'] =1;
 
                 //开启事务
                 $m=M();
@@ -123,21 +122,17 @@ class PublicController extends BaseController {
 
                     $m->rollback();//事务回滚
 
-                    $results['status'] = 1;
-                    $results['errcode'] = 3;
-                    $results['msg'] = '用户信息保存失败！';
-                    dexit($results);
+                    Json(1,'errcode',3,'用户信息保存失败!');
                     exit;
                 }
-//            $this->userLoginLog($add_id, 2, '', 2);   //用户登录日志
+
                 $userInfo = $User->field($field,true)->where(array('id' => $add_id))->find();
 
                 $user=array();
-                $user['uid'] =(int)$userInfo['id'];
+                $user['uid'] =$userInfo['id'];
                 $user['nickName'] =$userInfo['nickname'];
                 $user['avatar'] =$userInfo['avatar'];
-                $user['gender'] =(int)$userInfo['gender'];
-                $user['credit'] =(int)$userInfo['credit'];
+                $user['hasModifyGender'] =!$userInfo['modify_gender']?false:true;
                 $user['totalMon'] =(int)$userInfo['totalmon'];
                 $user['regTime'] =(int)$userInfo['reg_time'];
                 $user['isAuth'] =!$userInfo['is_auth']?false:true;
@@ -145,6 +140,7 @@ class PublicController extends BaseController {
                 $user['signature'] =$userInfo['signature'];
                 $user['payPwd'] = !$userInfo['pay_pwd']?false:true;
                 $user['wechatOpenid'] = !$userInfo['wechat_openid']?false:$userInfo['wechat_openid'];
+                $user['wechatNickname'] = !$userInfo['wechat_nickname']?null:$userInfo['wechat_nickname'];
                 $user['qqOpenid'] = !$userInfo['qq_openid']?false:$userInfo['qq_openid'];
                 $user['weiboOpenid'] = !$userInfo['weibo_openid']?false:$userInfo['weibo_openid'];
                 $user['bindFlag'] = !$userInfo['bind_flag']?false:true;
@@ -152,14 +148,30 @@ class PublicController extends BaseController {
 
                 //更新登录时间
                 if($User->where(array('id' => $userInfo['id']))->save(array('last_time'=>$time))){
+                    $content = '你的心愿之旅即将开启，我是你的全能客服小微！再小的心愿都不要放弃去实现它哦，让你的心愿一点一点实现就是我最大的心愿！';
+                    $content2 = '微心愿已经在你的仓库里装入了心愿豆，一定要好好保管它哦，因为我们将会有好多兑换活动会一波儿接一波儿的带你飞！';
+                    $content3 = '恭喜你获得微心愿赠送的'.$totalmon.'颗心愿豆';
+                    $this->sendMsg($add_id, '1', '', '', '1','','', $content);
+                    $this->sendMsg($add_id, '1', '', '', '1','','', $content2);
+                    $this->sendMsg($add_id, '3', '', '', '3','','', $content3);
+                    $this->userLoginLog($userInfo['id'], 0, '', 2);   //用户登录日志
+
+                    //添加到账单
+                    $bill=array(
+                        'uid'=>$add_id,
+                        'type'=>10,
+                        'wishType'=>0,
+                        'mon'=>$totalmon,
+                        'posttime'=>time(),
+                        'is_finish'=>1,
+                    );
+                    M('bill')->add($bill);
+
                     $m->commit();//提交事务
                 }
 
                 //返回用户信息
-                $results['status'] = 0;
-                $results['user'] = $user;
-                $results['msg'] = '注册成功！';
-                dexit($results);
+                Json(0,'user',$user,'注册成功!');
                 exit;
             }
         }
@@ -256,12 +268,28 @@ class PublicController extends BaseController {
                 exit;
             }
             //绑定
-            if($User->where(array('uid'=>$uid))->save(array('phone'=>$phone))){
-                $userInfo['phone']=$phone;
+            if($User->where(array('id'=>$uid))->save(array('phone'=>$phone))){
+
+                $user=array();
+                $user['uid'] =$userInfo['id'];
+                $user['nickName'] =$userInfo['nickname'];
+                $user['avatar'] =$userInfo['avatar'];
+                $user['hasModifyGender'] =!$userInfo['modify_gender']?false:true;
+                $user['totalMon'] =$userInfo['totalmon'];
+                $user['regTime'] =(int)$userInfo['reg_time'];
+                $user['isAuth'] =!$userInfo['is_auth']?false:true;
+                $user['phone'] =$phone;
+                $user['signature'] =$userInfo['signature'];
+                $user['payPwd'] = !$userInfo['pay_pwd']?false:true;
+                $user['wechatOpenid'] = !$userInfo['wechat_openid']?false:$userInfo['wechat_openid'];
+                $user['wechatNickname'] = !$userInfo['wechat_nickname']?null:$userInfo['wechat_nickname'];
+                $user['qqOpenid'] = !$userInfo['qq_openid']?false:$userInfo['qq_openid'];
+                $user['weiboOpenid'] = !$userInfo['weibo_openid']?false:$userInfo['weibo_openid'];
+                $user['bindFlag'] = !$userInfo['bind_flag']?false:true;
                 $results = array(
                     'status' => 0,
                     'msg' => '绑定成功！',
-                    'user' => $userInfo,
+                    'user' => $user,
                 );
                 echo dexit($results);
                 exit;
@@ -307,6 +335,64 @@ class PublicController extends BaseController {
             echo dexit($results);
             exit;
         }
+
+        if (!empty($aData['type']) && !empty($aData['uid'])) {
+
+            $User = M('user');
+            $userInfo = $User->where(array('id' => $aData['uid']))->find();
+            if (empty($userInfo)) {
+                $results = array(
+                    'status' => 1,
+                    'errcode' => 3,
+                    'msg' => '获取用户信息失败！',
+                );
+                echo dexit($results);
+                exit;
+            }
+            $userinfo = $User->where(array('wechat_openid' => $aUserInfo['openid']))->find();
+            if($userinfo){
+                $results = array(
+                    'status' => 1,
+                    'errcode' => 3,
+                    'msg' => '该微信号已绑定用户！',
+                );
+                echo dexit($results);
+                exit;
+            }
+
+            $data=array();
+            $data['wechat_openid']=$aUserInfo['openid'];
+            $data['wechat_nickname'] = $aUserInfo['nickname'];
+            $User->where(array('id' => $aData['uid']))->save($data);
+
+            $user=array();
+            $user['uid'] =$userInfo['id'];
+            $user['nickName'] =$userInfo['nickname'];
+            $user['avatar'] =$userInfo['avatar'];
+            $user['totalMon'] =$userInfo['totalmon'];
+            $user['regTime'] =(int)$userInfo['reg_time'];
+            $user['isAuth'] =!$userInfo['is_auth']?false:true;
+            $user['phone'] =$userInfo['phone']?$userInfo['phone']:null;
+            $user['signature'] =$userInfo['signature'];
+            $user['payPwd'] = !$userInfo['pay_pwd']?false:true;
+            $user['wechatOpenid'] = !$aUserInfo['openid']?false:$aUserInfo['openid'];
+            $user['wechatNickname'] = !$aUserInfo['nickname']?null:$aUserInfo['nickname'];
+            $user['qqOpenid'] = !$userInfo['qq_openid']?false:$userInfo['qq_openid'];
+            $user['weiboOpenid'] = !$userInfo['weibo_openid']?false:$userInfo['weibo_openid'];
+            $user['bindFlag'] = !$userInfo['bind_flag']?false:true;
+            $user['isRegister'] = true;
+
+            //返回用户信息
+            $results = array(
+                'status' => 0,
+                'msg' => '绑定成功！',
+                'user' => $user,
+            );
+            echo dexit($results);
+            exit;
+
+        }
+
         //用户信息操作
         if ($this->_doLogin($aUserInfo)) {
 
@@ -318,25 +404,26 @@ class PublicController extends BaseController {
                     'errcode' => 3,
                     'msg' => '保存用户信息失败！',
                 );
+                echo dexit($results);
+                exit;
             }
             $user=array();
-            $user['uid'] =(int)$userInfo['id'];
+            $user['uid'] =$userInfo['id'];
             $user['nickName'] =$userInfo['nickname'];
             $user['avatar'] =$userInfo['avatar'];
-            $user['gender'] =(int)$userInfo['gender'];
-            $user['credit'] =(int)$userInfo['credit'];
-            $user['totalMon'] =(int)$userInfo['totalmon'];
+            $user['totalMon'] =$userInfo['totalmon'];
             $user['regTime'] =(int)$userInfo['reg_time'];
             $user['isAuth'] =!$userInfo['is_auth']?false:true;
             $user['phone'] =$userInfo['phone']?$userInfo['phone']:null;
             $user['signature'] =$userInfo['signature'];
             $user['payPwd'] = !$userInfo['pay_pwd']?false:true;
             $user['wechatOpenid'] = !$userInfo['wechat_openid']?false:$userInfo['wechat_openid'];
+            $user['wechatNickname'] = !$userInfo['wechat_nickname']?null:$userInfo['wechat_nickname'];
             $user['qqOpenid'] = !$userInfo['qq_openid']?false:$userInfo['qq_openid'];
             $user['weiboOpenid'] = !$userInfo['weibo_openid']?false:$userInfo['weibo_openid'];
             $user['bindFlag'] = !$userInfo['bind_flag']?false:true;
             $user['isRegister'] = true;
-
+            $this->userLoginLog($userInfo['id'], 0, '', 2);   //用户登录日志
             //返回用户信息
             $results = array(
                 'status' => 0,
@@ -396,17 +483,39 @@ class PublicController extends BaseController {
         }else{
             $data['gender'] = 0;
         }
+
         $time=time();
-        $data['totalmon'] =10;
+        $totalmon=10;
+        $data['totalmon'] =$totalmon;
         $data['status'] =1;
         $data['is_auth'] =0;
-        $data['bind_flag'] =1;
+        $data['bind_flag'] =0;
         $data['avatar'] = $aUserInfo['headimgurl'];
         $data['wechat_openid'] = $aUserInfo['openid'];
         $data['nickname'] = $aUserInfo['nickname'];
+        $data['wechat_nickname'] = $aUserInfo['nickname'];
         $data['reg_time'] = $time;
         $data['last_time'] = $time;
-        return M('User')->add($data);
+        $id=M('User')->add($data);
+        $content = '你的心愿之旅即将开启，我是你的全能客服小微！再小的心愿都不要放弃去实现它哦，让你的心愿一点一点实现就是我最大的心愿！';
+        $content2 = '微心愿已经在你的仓库里装入了心愿豆，一定要好好保管它哦，因为我们将会有好多兑换活动会一波儿接一波儿的带你飞！';
+        $content3 = '恭喜你获得微心愿赠送的'.$totalmon.'颗心愿豆';
+         //添加到账单
+        $bill=array(
+            'uid'=>$id,
+            'type'=>10,
+            'wishType'=>0,
+            'mon'=>$totalmon,
+            'posttime'=>time(),
+            'is_finish'=>1,
+        );
+        $bills=M('bill')->add($bill);
+        
+        $this->sendMsg($id, '1', '', '', '1','','', $content);
+        $this->sendMsg($id, '1', '', '', '1','','', $content2);
+        $this->sendMsg($id, '1', '', '', '3','','', $content3);
+
+        return $id;
 
     }
 
@@ -832,9 +941,9 @@ class PublicController extends BaseController {
      * @param int $uid
      * @param int $status 登录状态 0是登录成功，1为登录失败，2注册成功，3注册失败，4修改密码成功，5修改密码失败
      * @param string $doquery 登录失败时记录登录消息
-     * @param int $zhongduan 登录终端 ,array('pc','wap','weixin')
+     * @param int $terminal 登录终端 ,array('wap','weixin')
      */
-    protected function userLoginLog($uid,$status,$doquery,$zhongduan){
+    protected function userLoginLog($uid,$status,$doquery,$terminal){
     
         $model = M('login_user_log');
         $model->uid = $uid;
@@ -842,7 +951,7 @@ class PublicController extends BaseController {
         $model->doquery = $doquery;
         $model->dotime = time();
         $model->ip = get_client_ip();
-        $model->zhongduan = $zhongduan;
+        $model->terminal = $terminal;
         $model->add();
         return TRUE;
     }

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>管理员</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__PUBLIC__/admin/css/div.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+	.num,.current,.next,.prev{border: 1px solid #ccc; padding: 5px 10px; border-radius: 5px; margin-right:5px;}
+	
+	</style>
+  </head>
+  <body>
+    <ol class="breadcrumb bg">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">Library</a></li>
+      <li class="active">Data</li>
+    </ol>
+    <div class="container-fluid">
+        <h4><span><span class="glyphicon glyphicon-user"></span>&nbsp;管理员列表</span> <a href="{:U('Admin/role_info')}" class="btn btn-primary pull-right"><i class="fa fa-plus"></i>添加角色</a></h4>
+    </div>
+      <div class="container-fluid" style="margin: 10px 0;">
+        <table class="table">
+            <tr><th>编号</th><th>角色名称</th><th>描述</th><th>操作</th></tr>
+            <foreach name="list" item="vo" key="k" >
+		 <tr>
+                   <if condition="$vo.bug eq 0">
+                    <td>{$vo.role_id}</td>
+                    <td><span class="glyphicon glyphicon-user"></span> {$vo.role_name}</td>
+                    <td>{$vo.role_desc}</td>
+                    
+                    <td data-id="{$vo.role_id}"><a class="glyphicon glyphicon-edit btn edit"  href="{:U('Admin/role_info',array('role_id'=>$vo['role_id']))}"></a>&nbsp;&nbsp;&nbsp<a class="glyphicon glyphicon-trash btn del"></a></td>
+                  </if>
+                 </tr>
+           </foreach>
+        </table>
+    </div>
+      
+
+	
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="__PUBLIC__/layer/layer.js"></script>
+    <script>
+	$(function(){
+		//提交
+		$(".tijiao").click(function(){
+               $(this).parent().siblings(".modal-body").eq(0).children('form').eq(0).submit();
+        });
+		
+        //删除
+        $(".del").click(function(){
+            var delid = $(this).parent().attr('data-id');
+            layer.confirm('您确定要删除该数据吗？', {
+                btn: ['是的','按错'] //按钮
+            }, function(){
+                //选择 是的
+                $.ajax({
+                    type:'post',
+                    url:'{:U("Admin/delRole")}',
+                    data:{id:delid},
+                    dataType:'json',
+                    success:function(data) {  
+                        if(data === 1 ){  
+                            layer.msg('删除成功', {shift: 6});
+                            window.location.reload();  //刷新当前页
+                        }else{  
+                            layer.msg('删除失败'); 
+                        }  
+                    }
+                });
+            }, function(){
+                //选择 按错 不执行
+            });
+        });
+	});
+    </script>
+  </body>
+</html>

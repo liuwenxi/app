@@ -1,0 +1,119 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">文章管理<small class="padding-left">增加文章</small></div> 
+				<div class="panel-body">
+					<form method="post" class="form-x" action="" enctype="multipart/form-data">
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">已有周期：</label>
+							</div>
+							<div class="field">
+								<select name="" style="width: 240px; height: 30px; ">
+									<option value="0">查看已有周期</option>
+									<foreach name='cate' item='cat'>
+										<option value="">{$cat.number}</option>
+									</foreach>
+								</select>
+								<a style="color:#ff0000"> *此处仅供你查看周刊期数，点击不做记录</a>
+							</div>
+						</div>
+
+
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">添加周期：</label>
+							</div>
+							<div class="field">
+								<input class="input input-auto" size="30" name="number" placeholder="请填写周期数" data-validate="required:请填写周期数">
+							</div>
+						</div>
+					
+					
+					
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">标题：</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="60" name="title" placeholder="文章标题" data-validate="required:请填写文章标题">
+									<input class="input input-auto" size="35" name="subtitle" placeholder="文章小标题，可选">
+								</div>
+						</div>
+
+						<div class="form-group">
+							<div class="label">
+								<label for="readme">周刊描述：</label>
+							</div>
+							<div class="field">
+								<textarea class="input" name="content" rows="3" cols="50"></textarea>
+							</div>
+						</div>
+
+
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">封面图：</label>
+								</div>
+								<div class="field">
+									<div class="media">
+										<img src="__PUBLIC__/admin/images/defaultimg.png" id="listimg" width="100px" height="60px" class="radius" alt="...">
+									</div>
+									<input type="file" size="40" id="list_img" name="img" value="">
+								</div>
+						</div>
+
+						<div class="form-group">
+								<div class="label">
+									<label for="sequence">状态：</label>
+								</div>
+								<div class="field">
+									<div id="status" class="button-group radio">
+										<label class="button active">
+											<input name="status" value="1" checked="checked" type="radio"><span class="icon icon-check text-green"></span>
+											正常
+										</label>
+										<label class="button">
+											<input name="status" value="0" type="radio"><span class="icon icon-times"></span>
+											禁止
+										</label>
+									</div>
+								</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="label">
+							<label for="readme"></label>
+							</div>
+							<div class="field">
+							<input type="submit" class="button bg-main" value="添加周刊" name="">
+							</div>
+						</div>
+					</form>
+				</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+                var editor;
+                KindEditor.ready(function(K) {
+                        editor = K.create('textarea[name="content"]', {
+                                allowFileManager : true
+                        });
+                K('#listimg').click(function() {
+                            editor.loadPlugin('image', function() {
+                                    editor.plugin.imageDialog({
+                                            imageUrl : K('#listimg').val(),
+                                            clickFn : function(url, title, width, height, border, align) {
+                                                    K('#list_img').val(url);
+                                                    K('#listimg').attr("src",url);
+                                                    editor.hideDialog();
+                                            }
+                                    });
+                            });
+                    });
+                });
+        </script>
+</body>
+</html>

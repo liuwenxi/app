@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>用户详情</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        .form-group { padding-bottom: 15px;margin-bottom: 15px;}
+        .form-horizontal .control-label{padding:0 0 0 0}
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="panel panel-default" style="margin-top:20px;">
+        <div class="panel-heading"><span class="glyphicon glyphicon-pencil"></span>实名详情</div>
+        <div class="panel-body">
+            <form action="" method="post" class="form-horizontal">
+                <div class="form-group">
+                    <label for="phone" class="col-sm-2 col-lg-1 col-md-2 control-label">用户名：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        {$username.nickname}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">真实姓名：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        {$data.realname}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">身份证号码：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        {$data.idcard}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">证件正面照：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        <img src="{$data.full_photo}" style="width:50px; height:50px;"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">证件背面照：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        <img src="{$data.back_photo}" style="width:50px; height:50px;"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">手持证件照：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        <img src="{$data.hand_photo}" style="width:50px; height:50px;"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">申请时间：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        {$data.create_time|date="Y-m-d H:i:s",###}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 col-lg-1 col-md-2 control-label">状态：</label>
+                    <div class="col-sm-10 col-lg-6 col-md-6">
+                        <if condition="$data['is_auth'] eq 0" >待审核</if>
+                        <if condition="$data['is_auth'] eq 1" >审核通过</if>
+                        <if condition="$data['is_auth'] eq 2" >不通过</if>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

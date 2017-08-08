@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>评价详细</title>
+    <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span12">
+				<h3 class="text-center">
+					评论详情
+				</h3>
+				<div class="media well">
+					 <a href="#" class="pull-left"><img src="{$data.goods_images}" width="125px" height="125px" class="media-object" alt='' /></a>
+					<div class="media-body">
+						<h4 class="media-heading">
+							{$data.goods_title}
+						</h4>
+						订单号：{$data.order_sn}<br/>
+						评论者：{$data.uname}<br/>
+						评论时间：{$data.time|date="Y-m-d H:i:s",###}<br/>
+						评论IP：{$data.ip}<br/>
+						评分：{$data.points}分
+					</div>
+				</div>
+			</div>
+		</div>
+		<form action="{:U('Comment/edit')}" method="post">
+			<div class="form-group">
+				  <!-- Textarea -->
+				  <label class="control-label">评论内容</label>
+					<div class="textarea">
+						  <textarea name="content" class="form-control" rows="3">{$data.content}</textarea>
+					</div>
+			</div>
+			<div class="form-group">
+				  <!-- Textarea -->
+				  <label class="control-label">晒图评论</label>
+					<div class="row">
+					<volist name="data.commont_img" id="vo">
+					  <div class="col-xs-6 col-md-2">
+						<a href="#" class="thumbnail">
+						  <img src="{$vo}" alt="...">
+						</a>
+					  </div>
+					  </volist>
+					</div>
+			</div>
+			<div class="form-group">
+				<div class="form-inline">
+					 <label for="add-pid" class="control-label">是否显示：</label>
+						<if condition="$data['show'] eq 1 ">
+							<input name="show" type="radio" value="1" checked="checked" >显示
+							<input name="show" type="radio" value="0">禁止
+						<else />
+							<input name="show" type="radio" value="1" >显示
+							<input name="show" type="radio" value="0" checked="checked">禁止
+					</if>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<input type="hidden" name="id" value="{$data.id}">
+                <button type="submit" class="btn btn-primary pull-left tijiao">修改</button>
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onclick="history.go(-1)">返回</button>
+            </div>
+		</form>
+	</div>
+	
+
+    <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
+</html>

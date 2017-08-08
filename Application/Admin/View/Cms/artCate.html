@@ -1,0 +1,19 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">分类管理<small class="padding-left">分类列表</small></div> 
+					<div class="margin-top margin-left"><a href="{:U('Cms/addCate')}" class="button bg-main icon-pencil-square"> 添加分类</a></div>
+					<ul class="list-group margin-left margin-top">
+					<volist name="cate" id="vo">
+						<li data-id="{$vo.id}">{$vo.html}<span class=""></span>{$vo.name} <a href="{:U('Cms/delCate?id='.$vo['id'])}" onclick="if(confirm('确定删除?')==false)return false;" class="bg-dot tag margin-right float-right">删除</a><a href="{:U('Cms/editCate?id='.$vo['id'])}" class="bg-sub tag margin-right float-right">编辑</a></li>
+					</volist>
+					</ul>
+				<div class="panel-foot" id="page">
+					{$page}
+				</div>
+		</div>
+	</div>
+</body>
+</html>

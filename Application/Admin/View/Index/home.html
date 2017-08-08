@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="keywords" content="admin, dashboard, bootstrap, template, flat, modern, theme, responsive, fluid, retina, backend, html5, css, css3">
+  <meta name="description" content="">
+  <meta name="author" content="ThemeBucket">
+  <link rel="shortcut icon" href="#" type="image/png">
+
+  <title></title>
+
+  <!--icheck-->
+  <link href="__PUBLIC__/Admin/Js/iCheck/skins/minimal/minimal.css" rel="stylesheet">
+  <link href="__PUBLIC__/Admin/Js/iCheck/skins/square/square.css" rel="stylesheet">
+  <link href="__PUBLIC__/Admin/Js/iCheck/skins/square/red.css" rel="stylesheet">
+  <link href="__PUBLIC__/Admin/Js/iCheck/skins/square/blue.css" rel="stylesheet">
+
+  <!--dashboard calendar-->
+  <link href="__PUBLIC__/Admin/Css/clndr.css" rel="stylesheet">
+
+
+  <!--common-->
+  <link href="__PUBLIC__/Admin/Css/style.css" rel="stylesheet">
+  <link href="__PUBLIC__/Admin/Css/style-responsive.css" rel="stylesheet">
+
+
+
+
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="__PUBLIC__/admin/js/html5shiv.js"></script>
+  <script src="__PUBLIC__/admin/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+
+<body class="sticky-header">
+
+<section>
+    
+    
+    <!-- main content start-->
+    <div class="main-content" style="margin-left:0;padding-top: 0;" >
+        <!--body wrapper start-->
+        <div class="wrapper">
+            <div class="row states-info">
+            <div class="col-md-3">
+                <div class="panel red-bg">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <i class="fa fa-money"></i>
+                            </div>
+                            <div class="col-xs-8">
+                                <span class="state-title">总心愿豆</span>
+                                <h4>{$xyd}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel blue-bg">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <i class="fa fa-tag"></i>
+                            </div>
+                            <div class="col-xs-8">
+                                <span class="state-title">  心愿总数 </span>
+                                <h4>{$xynum}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel green-bg">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <div class="col-xs-8">
+                                <span class="state-title">  会员总数{$usernum}</span>
+                                <h4>{$usernum}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="panel yellow-bg">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <i class="fa fa-eye"></i>
+                            </div>
+                            <div class="col-xs-8">
+                                <span class="state-title">  网页浏览量  </span>
+                                <h4>{$bv}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <!-- <div class="row">
+                <div class="col-md-8">
+                    <section class="panel">
+                        <header class="panel-heading">
+                            近7天流量
+                        </header>
+                        <div class="panel-body">
+                                <div id="chartcontainer" style="min-width: 310px; height: 355px; margin: 0 auto"></div>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-md-4" style="height: 400px;">
+                    <div class="wdgt-profile">
+                        <div class="profile">
+                            <img src="__Admin_IMAGES__gallery/site.jpg" alt=""/>
+                            <div class="profile-social">
+                                
+                            </div>
+                            <ul class="profile-tab">
+                                <li>
+                                    <a href="{:U('Goods/add')}">
+                                        <i class="fa  fa-plus-circle"></i>
+                                        上传商品
+                                    </a>
+                                </li>
+                                <li class="">
+                                    <a href="{:U('User/index')}">
+                                        <i class="fa fa-user"></i>
+                                        会员管理
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{:U('GoodsOrder/lists')}">
+                                        <i class="fa fa-tasks"></i>
+                                        订单信息
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{:U('Weixin/qrscanlog')}">
+                                        <i class="fa fa-qrcode"></i>
+										扫码营销
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                        <div class="profile-info">
+                            <h5>SYSTEM INFO</h5>
+                            <span>版本：1.3</span>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="panel">
+                        <header class="panel-heading">
+                            管理员信息
+                        </header>
+                        <div class="panel-body">
+                            <ul class="chats cool-chat">
+                                <li class="in">
+                                    <img src="__Admin_IMAGES__wxy-logo.png" alt="" class="avatar">
+                                    <div class="message">
+                                        <span class="arrow"></span>
+                                        <a class="name" href="#">{$admin['username']} </br> 角色 : {$role['role_name']}</a>
+                                        <span class="datetime">（登录正常）</span>
+                                        <span class="body">
+                                            上次登录时间为：{$admin['last_time'] |date="Y-m-d H:i:s", ###} </br> 上次登录IP：{$admin['last_ip']}
+                                        </span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <section class="panel post-wrap pro-box">
+                        <aside class="post-highlight purple v-align">
+                            <div class="panel-body">
+                                <h2>后台信息系统 <a href="javascript:;"> http://{$sys_info.domain}/</a><br> 服务电话：<br>400-820-8820</h2>
+                            </div>
+                        </aside>
+                        <aside>
+                            <div class="post-info">
+                                <span class="arrow-pro left"></span>
+                                <div class="panel-body">
+                                    <div class="text-center twite">
+                                        <i class="fa fa-twitter"></i>
+                                        <h1>系统信息</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <!--body wrapper end-->
+        
+        <div class="row">
+          	     <div class="col-md-12">
+			       	 <div class="box  box-primary">
+                        <div class="box-body">
+                            <div class="info-box">                 
+                            	<table class="table table-bordered">
+                                <tbody>
+                                <tr>
+                                    <td>服务器操作系统：</td>
+                                    <td>{$sys_info.os}</td>
+                                    <td>服务器域名/IP：</td>
+                                    <td>{$sys_info.domain} [ {$sys_info.ip} ]</td> 
+                                    <td>服务器环境：</td> 
+                                    <td>{$sys_info.web_server}</td>       
+                                </tr> 
+                                <tr>
+                                    <td>PHP 版本：</td>
+                                    <td>{$sys_info.phpv}</td>
+                                    <td>Mysql 版本：</td>
+                                    <td>{$sys_info.mysql_version}</td> 
+                                    <td>GD 版本</td> 
+                                    <td>{$sys_info.gdinfo}</td>  
+                                </tr>   
+                                <tr>
+                                    <td>文件上传限制：</td>
+                                    <td>{$sys_info.fileupload}</td>
+                                    <td>最大占用内存：</td>
+                                    <td>{$sys_info.memory_limit}</td> 
+                                    <td>最大执行时间：</td> 
+                                    <td>{$sys_info.max_ex_time}</td>  
+                                </tr>  
+                                <tr>
+                                    <td>安全模式：</td>
+                                    <td>{$sys_info.safe_mode}</td>
+                                    <td>Zlib支持：</td>
+                                    <td>{$sys_info.zlib}</td> 
+                                    <td>Curl支持：</td> 
+                                    <td>{$sys_info.curl}</td>  
+                                </tr>  
+                            	</table>				
+                            </div>
+                        </div>
+                    </div>
+			    </div>
+          </div>
+        
+        
+        
+        
+
+
+    </div>
+    <!-- main content end-->
+</section>
+
+<!-- Placed js at the end of the document so the pages load faster -->
+<script src="__PUBLIC__/Admin/Js/jquery-1.10.2.min.js"></script>
+<script src="__PUBLIC__/Admin/Js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="__PUBLIC__/Admin/Js/jquery-migrate-1.2.1.min.js"></script>
+<script src="__PUBLIC__/Admin/Js/bootstrap.min.js"></script>
+<script src="__PUBLIC__/Admin/Js/modernizr.min.js"></script>
+<script src="__PUBLIC__/Admin/Js/jquery.nicescroll.js"></script>
+
+
+<!--common scripts for all pages-->
+<script src="__PUBLIC__/Admin/Js/scripts.js"></script>
+
+<!-- highcharts -->
+<script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+<script src="http://cdn.hcharts.cn/highcharts/modules/exporting.js"></script>
+<script type="text/javascript">
+$(function () {
+    $('#chartcontainer').highcharts({
+	credits:{
+     enabled:false // 禁用版权信息
+	},
+        chart: {
+            zoomType: 'xy'
+        },
+        title: {
+            text: '网站流量统计和会员活跃统计'
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: [{
+            categories: [{$day}],
+            crosshair: true
+        }],
+        yAxis: [{ // Primary yAxis
+            labels: {
+                format: '{value} bv',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            },
+            title: {
+                text: '网站浏览量',
+                style: {
+                    color: Highcharts.getOptions().colors[1]
+                }
+            }
+        }, { // Secondary yAxis
+            title: {
+                text: '会员活跃人数',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            labels: {
+                format: '{value} p',
+                style: {
+                    color: Highcharts.getOptions().colors[0]
+                }
+            },
+            opposite: true
+        }],
+        tooltip: {
+            shared: true
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            x: 120,
+            verticalAlign: 'top',
+            y: 100,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        series: [{
+            name: '会员活跃度',
+            type: 'column',
+            yAxis: 1,
+            data: [{$userlogin}],
+            tooltip: {
+                valueSuffix: '个'
+            }
+
+        }, {
+            name: '网站浏览量',
+            type: 'spline',
+            data: [{$chartdata}],
+            tooltip: {
+                valueSuffix: 'bv'
+            }
+        }]
+    });
+});
+</script>
+
+</body>
+</html>

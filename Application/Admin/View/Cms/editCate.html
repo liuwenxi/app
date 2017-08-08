@@ -1,0 +1,129 @@
+<include file="Public/header" />
+	<!-- main -->
+	<div id="mainbody">
+		
+		<div class="panel"> 
+				<div class="panel-head">分类管理<small class="padding-left">编辑分类</small></div> 
+				<div class="panel-body">
+					<form method="post" class="form-x" action="">
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">分类名称</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="30" name="name" value="{$data.name}" placeholder="请填写分类名称" data-validate="required:请填写分类名称">
+									<input class="input input-auto" size="30" name="enname" value="{$data.enname}" placeholder="分类英文名，可选">
+								</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">上级分类</label>
+								</div>
+								<div class="field">
+									<select name="pid" class="input">
+										<if condition="$data.id eq 0">
+										<option value="0" selected="selected">顶级分类</option>
+										<else />
+										<option value="0">顶级分类</option>
+										</if>
+										<volist name="cate" id="vo">
+											<if condition="$vo.id eq $data['pid']">
+												<option value="{$vo.id}" selected="selected">{$vo.html}{$vo.name}</option>
+											<else />
+												<option value="{$vo.id}">{$vo.html}{$vo.name}</option>
+											</if>
+										</volist>
+									</select>
+								</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">关键词：</label>
+								</div>
+								<div class="field">
+									<input class="input" size="30" name="keyword" placeholder="例如：高尚,品德,大众化" value="{$data.keyword}">
+								</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">描述：</label>
+								</div>
+								<div class="field">
+									<textarea class="input" name="description" rows="5" cols="50" placeholder="栏目描述，填写描述更有利于搜索引擎收录">{$data.description}</textarea>
+								</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="readme">栏目内容：</label>
+								</div>
+								<div class="field">
+									<textarea id="content" name="content" style="width:100%">{$data.content}</textarea>
+								</div>
+								<!-- 实例化编辑器 -->
+						<script type="text/javascript">
+							var editor;
+                                                        KindEditor.ready(function(K) {
+                                                                editor = K.create('textarea[name="content"]', {
+                                                                        allowFileManager : true
+                                                                       
+                                                                });
+                                                        });
+						</script>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="sequence">自定义排序：</label>
+								</div>
+								<div class="field">
+									<input class="input input-auto" size="30" name="sequence" value="{$data.sequence}" placeholder="0，数字越大排序越前，最大为99">
+								</div>
+						</div>
+						<div class="form-group">
+								<div class="label">
+									<label for="sequence">状态：</label>
+								</div>
+								<div class="field">
+								<if condition="$data.show eq 0">
+									<div class="button-group radio">
+										<label class="button active">
+											<input name="show" value="0" checked="checked" type="radio"><span class="icon icon-check text-green"></span>
+											正常
+										</label>
+										<label class="button">
+											<input name="show" value="1" type="radio"><span class="icon icon-times"></span>
+											禁止
+										</label>
+									</div>
+								<else />
+									<div class="button-group radio">
+										<label class="button">
+											<input name="show" value="0" type="radio"><span class="icon icon-check text-green"></span>
+											正常
+										</label>
+										<label class="button active">
+											<input name="show" value="1" checked="checked" type="radio"><span class="icon icon-times"></span>
+											禁止
+										</label>
+									</div>
+								</if>
+								</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="label">
+							<label for="readme"></label>
+							</div>
+							<div class="field">
+							<input type="hidden" name="id" value="{$data.id}">
+							<input type="submit" class="button bg-main" value="修改分类" name="">
+							</div>
+						</div>
+					</form>
+				</div>
+				<div class="panel-foot" id="page">
+					{$page}
+				</div>
+		</div>
+	</div>
+</body>
+</html>

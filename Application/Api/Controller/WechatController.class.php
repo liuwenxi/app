@@ -9,7 +9,7 @@
 // | Author: 微心愿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
 // +----------------------------------------------------------------------
 
-namespace App\Controller;
+namespace Api\Controller;
 
 use Think\Controller;
 use Com\Wechat;
@@ -96,7 +96,7 @@ class WechatController extends Controller{
             case Wechat::MSG_TYPE_EVENT:
                 switch ($data['Event']) {
                     case Wechat::MSG_EVENT_SUBSCRIBE:
-                        $wechat->replyText("你来得真是好时候呢！/示爱\n微心愿——95后心愿社交神器。\n产品近期上线公测/坏笑，新用户登录、每天完成日常任务、提出优化建议都可以获得产品送出的心愿豆哦/吓！\n最近有什么心愿呢？/大兵\n有什么想买的想玩的想做的你通通可以在这里实现，赶快点击底部菜单【微心愿】进入体验一下吧！\n微心愿，助你心愿达成！");
+                        $wechat->replyText("你好呀，我的有愿人/示爱\n如果你有心愿，就说出来吧→<a href='http://m.17wxy.com/#/index'>【微心愿主页】</a>");
                         break;
 
                     case Wechat::MSG_EVENT_UNSUBSCRIBE:
